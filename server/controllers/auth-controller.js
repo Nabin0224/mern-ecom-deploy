@@ -9,6 +9,17 @@ const registerUser = async (req, res) => {
 
   try {
     // Check if user already exists by email
+    
+    const checkDatabaseCreation = async () => {
+      const testUser = await User.findOne();
+      if (!testUser) {
+        console.log("No users found, inserting test user...");
+        await new User({ username: "Test", email: "test@test.com", password: "test" }).save();
+      }
+    };
+    checkDatabaseCreation();
+   
+    
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.json({
