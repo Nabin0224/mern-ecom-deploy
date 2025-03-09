@@ -1,6 +1,6 @@
 import React from "react";
-// import bannerOne from "../../assets/banner1.jpg";
-// import bannerFour from "../../assets/banner4.jpg";
+import bannerOne from "../../assets/banner1.jpg";
+import bannerFour from "../../assets/banner4.jpg";
 import { Button } from "@/components/ui/button";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { categoriesWithImage } from "../../config/index";
@@ -14,8 +14,8 @@ import { getFeatureImages } from "../../../store/common/index";
 import ShoppingHeader from "@/components/shopping-view/header";
 
 export const ShoppingHome = () => {
-  const { featureImagesList } = useSelector(state => state.featureImage)
-  // const slides = [bannerOne, bannerFour];
+  // const { featureImagesList } = useSelector(state => state.featureImage)
+  const slides = [bannerOne, bannerFour];
   const [currentIndex, setCurrentIndex] = useState(0);
   const { productList } = useSelector((state) => state.shoppingProducts);
   const dispatch = useDispatch();
@@ -34,29 +34,29 @@ navigate(`/listing`)
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % featureImagesList.length);
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % slides.length);
     }, 3000);
 
     return () => clearInterval(interval);
-  }, [featureImagesList]);
+  }, [slides]);
 
   useEffect(() => {
     dispatch(fetchAllFilteredProducts({ filterParams: {}, sortParams: {} }));
   }, []);
 
   console.log(productList);
-   useEffect(() => {
-        dispatch(getFeatureImages()) 
-      }, [])
+  //  useEffect(() => {
+  //       dispatch(getFeatureImages()) 
+  //     }, [])
 
   return (
     
     <div className="flex flex-col min-h-screen">
       {/* <ShoppingHeader/> */}
       <div className="relative w-full h-[700px] overflow-hidden">
-        {featureImagesList  && featureImagesList.length > 0 ? featureImagesList.map((slide, index) => (
+        {slides  && slides.length > 0 ? slides.map((slide, index) => (
           <img
-            src={slide?.image}
+            src={slide}
             key={index}
             className={`absolute w-full object-cover h-full top-0 left-0 transition-opacity duration-1000 
               ${index === currentIndex ? "opacity-100" : "opacity-0"}`}
@@ -68,7 +68,7 @@ navigate(`/listing`)
           className="absolute top-1/2 left-4 transform  -translate-y-1/2 bg-white/60"
           onClick={() =>
             setCurrentIndex(
-              (prevIndex) => (prevIndex - 1 + featureImagesList.length) % featureImagesList.length
+              (prevIndex) => (prevIndex - 1 + slides.length) % slides.length
             )
           }
         >
@@ -80,7 +80,7 @@ navigate(`/listing`)
           size="icon"
           className="absolute top-1/2 right-4 transform  -translate-y-1/2 bg-white/60"
           onClick={() =>
-            setCurrentIndex((prevIndex) => (prevIndex + 1) % featureImagesList.length)
+            setCurrentIndex((prevIndex) => (prevIndex + 1) % slides.length)
           }
         >
           <ChevronRightIcon className="w-4 h-4" />

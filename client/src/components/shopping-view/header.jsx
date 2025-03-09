@@ -1,3 +1,4 @@
+import styleme  from "../../assets/logo/styleme.jpg"
 import {
   CircleUserRound,
   House,
@@ -164,8 +165,8 @@ const ShoppingHeader = () => {
       <div className="flex h-16 items-center justify-between px-4 md:px-6">
         <Link to="/
         " className="flex items-center gap-2">
-          <House className="h-6 w-6" />
-          <span className="font-bold">Hy-girls</span>
+          <img src={styleme} className="h-10 w-10 rounded-sm" />
+          <span className="font-bold">Style Me</span>
         </Link>
 
         {/* for mobile devices  */}
