@@ -19,7 +19,12 @@ const PORT = process.env.PORT;
 const mongoose = require("mongoose");
 
 mongoose
-  .connect(process.env.CONNECTION)
+  .connect(process.env.CONNECTION, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    serverSelectionTimeoutMS: 30000,
+     // Increase timeout duration
+  })
   .then(() => console.log("MongoDb connected successfully"))
   .catch((e) => console.log("Error:", e));
 
