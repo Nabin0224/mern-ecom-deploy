@@ -106,45 +106,45 @@ export const shoppingViewHeaderMenuItems = [
   {
     id: 'home',
     label: 'Home',
-    path: '/shop/home'
+    path: '/'
 
   },
 
   {
     id: "products",
     label: "All Products",
-    path: '/shop/listing'
+    path: '/listing'
   },
 
   {
     id: 'dress',
     label: 'Dress',
-    path: '/shop/listing'
+    path: '/listing'
 
   },
 
   {
     id: 'bags',
     label: 'Bags',
-    path: '/shop/listing'
+    path: '/listing'
 
   },
 
   {
     id: 'footwear',
     label: 'Footwear',
-    path: '/shop/listing'
+    path: '/listing'
 
   },
   {
     id: 'accessories',
     label: 'Accessories',
-    path: '/shop/listing'
+    path: '/listing'
   },
   {
     id: 'search',
     label: 'Search',
-    path: '/shop/search'
+    path: '/search'
   }
 ];
 

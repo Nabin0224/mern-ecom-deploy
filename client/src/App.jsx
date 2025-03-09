@@ -35,7 +35,7 @@ const App = () => {
   }, [dispatch]);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div className="text-2xl font-bold content-center">Loading...</div>;
   }
 
   return (
@@ -68,17 +68,21 @@ const App = () => {
           </Route>
 
           <Route
-            path="/shop"
+            path="/"
             element={
-              <CheckAuth isAuthenticated={isAuthenticated} user={user}>
+             
                 <ShoppingLayout />
-              </CheckAuth>
+              
             }
           >
-            <Route path="account" element={<ShoppingAccount />} />
-            <Route path="checkout" element={<ShoppingCheckout />} />
+            <Route path="account" element={ <CheckAuth isAuthenticated={isAuthenticated} user={user}>
+            <ShoppingAccount />
+              </CheckAuth>} />
+            <Route path="checkout" element={ <CheckAuth isAuthenticated={isAuthenticated} user={user}>
+            <ShoppingCheckout />
+              </CheckAuth>} />
             <Route path="listing" element={<ShoppingListing />} />
-            <Route path="home" element={<ShoppingHome />} />
+            <Route path="/" element={<ShoppingHome />} />
             <Route path="paypal-return" element={<PayPalReturnPage />} />
             <Route path="esewa-return" element={<EsewaReturnPage />} />
             <Route path="payment-success" element={<PaymentSuccessPage />} />

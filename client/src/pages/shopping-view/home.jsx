@@ -11,6 +11,7 @@ import ShoppingProducttile from "./product-tile";
 import { fetchAllFilteredProducts } from "../../../store/shop/product-slice/index";
 import { useNavigate } from "react-router-dom";
 import { getFeatureImages } from "../../../store/common/index";
+import ShoppingHeader from "@/components/shopping-view/header";
 
 export const ShoppingHome = () => {
   const { featureImagesList } = useSelector(state => state.featureImage)
@@ -26,7 +27,7 @@ export const ShoppingHome = () => {
     [section] : [getCurrentItem.id]
   }
 sessionStorage.setItem('filters', JSON.stringify(currentFilter))
-navigate(`/shop/listing`)
+navigate(`/listing`)
 
   
   }
@@ -49,7 +50,9 @@ navigate(`/shop/listing`)
       }, [])
 
   return (
+    
     <div className="flex flex-col min-h-screen">
+      {/* <ShoppingHeader/> */}
       <div className="relative w-full h-[700px] overflow-hidden">
         {featureImagesList  && featureImagesList.length > 0 ? featureImagesList.map((slide, index) => (
           <img

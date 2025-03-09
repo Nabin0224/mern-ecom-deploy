@@ -36,7 +36,7 @@ const UserCartWrapper = ({cartItems, setOpenCartSheet}) => {
             <span className="font-semibold">Rs{totalCartAmount}</span>
             </div>
         </div>
-        <Button onClick={()=>{ navigate('/shop/checkout'); setOpenCartSheet(false)}} className="w-full mt-8 ">Checkout</Button>
+        <Button onClick={()=>{ navigate('/checkout'); setOpenCartSheet(false)}} className="w-full mt-8 ">Checkout</Button>
         
     </SheetContent>
     

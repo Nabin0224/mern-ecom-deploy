@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom'
 
 const PaymentSuccessPage = () => {
   function handleViewdetails() {
-    navigate("/shop/account")
+    navigate("/account")
   }
   const navigate = useNavigate();
   return <>

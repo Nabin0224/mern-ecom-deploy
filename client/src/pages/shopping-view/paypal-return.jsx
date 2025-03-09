@@ -17,7 +17,7 @@ const PayPalReturnPage = () => {
         dispatch(captureOrder({payerId, paymentId, orderId})).then((data)=> {
           if(data?.payload?.success){
             sessionStorage.removeItem('currentOrderId')
-            window.location.href = '/shop/payment-success'
+            window.location.href = '/payment-success'
           }
         })
       }
