@@ -19,7 +19,7 @@ const CheckAuth = ({isAuthenticated, user, children}) => {
     if (user?.role === "admin") {
       return <Navigate to="/admin/dashboard" />;
     } else {
-      return <Navigate to="/home" />;
+      return <Navigate to="/" />;
     }
   }
 
