@@ -62,7 +62,7 @@ navigate(`/listing`)
               ${index === currentIndex ? "opacity-100" : "opacity-0"}`}
           />
         )) : null }
-        <Button
+        {/* <Button
           variant="outline"
           size="icon"
           className="absolute top-1/2 left-4 transform  -translate-y-1/2 bg-white/60"
@@ -84,7 +84,7 @@ navigate(`/listing`)
           }
         >
           <ChevronRightIcon className="w-4 h-4" />
-        </Button>
+        </Button> */}
       </div>
 
       <section className=" py-12 bg-gray-50">
