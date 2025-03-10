@@ -36,7 +36,7 @@ const ShoppingFooter = () => {
   }
 
   return (
-    <div className="flex flex-col max-w-screen-sm w-full  bg-black max-h-full border-t">
+    <div className="flex flex-col w-full  bg-black max-h-full border-t">
       <div className="h-[30%] flex flex-col md:flex-row w-full justify-between gap-2 ">
         <h1 className="text-white/90 font-semibold md:font-thin text-4xl md:text-6xl mx-16 tracking-widest my-2 md:my-12 ">
           Style Me
@@ -73,7 +73,7 @@ const ShoppingFooter = () => {
             <span>
               <Mail />
             </span>
-            <p className="font-light">stylemeofficial@gmail.com</p>
+            <p className="font-light text-xs">stylemeofficial@gmail.com</p>
           </div>
         </div>
         <div className="text-white flex flex-col gap-3">
