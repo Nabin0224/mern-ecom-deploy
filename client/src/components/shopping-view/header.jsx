@@ -42,7 +42,7 @@ import { fetchCartItems } from "../../../store/shop/cart-slice/index";
 import { Label } from "../ui/label";
 
 
-function MenuItems() {
+function MenuItems({setOpenMobileCartSheet}) {
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -91,8 +91,10 @@ function MenuItems() {
 
     if (location.pathname.includes("listing") && currentFilter !== null) {
       setSearchParams(new URLSearchParams(`?category=${menuItem.id}`));
+      setOpenMobileCartSheet(false)
     } else {
       navigate(menuItem.path);
+      setOpenMobileCartSheet(false)
     }
   }
 
@@ -109,6 +111,7 @@ function MenuItems() {
 
         <Label
         onClick={() => handleNavigate(menuItem)}
+        
         className={`text-sm font-medium cursor-pointer transition-all duration-300 relative ${
           isActive("/listing", menuItem.id)
             ? " font-[550] text-md underline decoration-black-100"
@@ -145,14 +148,19 @@ function HeaderRightContent({
 
   return (
     <div className="flex lg:flex-row lg:item-center flex-col gap-6">
-      <Sheet open={openCartSheet} onOpenChange={() => setOpenCartSheet(false)}>
+      <Sheet open={openCartSheet} onOpenChange={() => {setOpenCartSheet(false); setOpenMobileCartSheet(false)}}>
         <Button
-          onClick={() => setOpenCartSheet(true)}
+          onClick={() => {
+            setOpenCartSheet(true);
+            
+          }
+          }
           variant="outline"
           size="icon"
           className="relative"
         >
-          <ShoppingCart className="h-6 w-6" />
+          <ShoppingCart className="h-6 w-6"  
+          />
           {cartItems?.items?.length > 0 ? (
             <span className="absolute top-[-2px] right-[4px] font-bold text-xs">
               {cartItems?.items?.length}
@@ -167,6 +175,7 @@ function HeaderRightContent({
               : []
           }
           setOpenCartSheet={setOpenCartSheet}
+          setOpenMobileCartSheet={setOpenMobileCartSheet}
         />
       </Sheet>
       <DropdownMenu>
@@ -231,7 +240,7 @@ const ShoppingHeader = () => {
           </SheetTrigger>
           <SheetContent side="right" className="w-[200px] ">
             <div className="flex flex-col h-full w-full items-center  gap-6">
-              <MenuItems />
+              <MenuItems setOpenMobileCartSheet={setOpenMobileCartSheet}/>
               <HeaderRightContent
                 setOpenMobileCartSheet={setOpenMobileCartSheet}
                 openMobileCartSheet={openMobileCartSheet}
