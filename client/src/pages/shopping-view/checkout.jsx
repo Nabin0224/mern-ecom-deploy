@@ -8,6 +8,7 @@ import { createNewOrder } from "../../../store/shop/order-slice/index";
 import { useToast } from "@/hooks/use-toast";
 import { createEsewaOrder } from "../../../store/shop/esewa-slice/createorder";
 import axios from "axios";
+import { Separator } from "@/components/ui/separator";
 
 const ShoppingCheckout = () => {
   const { toast } = useToast();
@@ -220,12 +221,11 @@ const ShoppingCheckout = () => {
 
   return (
     <div className="flex flex-col">
-      <div className="relative h-[300px] w-full overflow-hidden">
-        <img
-          src={img}
-          alt=""
-          className="h-full w-full object-cover object-center"
-        />
+      <div className="relative h-[200px] w-full overflow-hidden bg-black flex flex-col">
+        <h1 className="text-white h-[25%] w-1/2 mx-auto text-center text-4xl mt-4">Checkout Page</h1>
+        <Separator className="w-[35%] mx-auto opacity-55"/>
+        <p className="text-xs text-white/70 tracking-widest w-1/2 mx-auto text-center mt-2">Please review your item details carefully</p>
+      
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-5 p-5">
         <Address
