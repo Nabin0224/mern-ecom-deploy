@@ -31,10 +31,10 @@ const CheckAuth = ({isAuthenticated, user, children}) => {
 
   if (
     isAuthenticated &&
-    (user?.role == "admin" &&
-    location.pathname.includes("/"))
+    (user?.role === "admin" &&
+    location.pathname.includes("/login"))
   ) {
-    return <Navigate to="/admin/dashboard" />;
+    return <Navigate to="/admin/dashboard"  replace={true}/>;
   }
  
   return children;

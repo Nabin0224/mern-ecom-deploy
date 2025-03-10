@@ -41,6 +41,7 @@ import UserCartWrapper from "./cart-wrapper";
 import { fetchCartItems } from "../../../store/shop/cart-slice/index";
 import { Label } from "../ui/label";
 
+
 function MenuItems() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -58,7 +59,9 @@ function MenuItems() {
 
     location.pathname.includes("listing") && currentFilter !== null
       ? setSearchParams(new URLSearchParams(`?category=${menuItem.id}`))
-      : navigate(menuItem.path);
+      : setTimeout(() => {
+        navigate(menuItem.path);
+      }, 1000); 
   }
   return (
     <nav className="flex flex-col items-center gap-6 lg:flex-row ">
