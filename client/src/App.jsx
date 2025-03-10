@@ -23,6 +23,7 @@ import EsewaReturnPage from "./pages/shopping-view/esewa-return";
 import PaypalCancelPage from "./pages/shopping-view/payment-cancel";
 import PaymentCancelPage from "./pages/shopping-view/payment-cancel";
 import SearchPage from "./pages/shopping-view/search";
+import ScrollToTop from "./config/scroll";
 
 const App = () => {
   const { isAuthenticated, isLoading, user } = useSelector(
@@ -40,6 +41,7 @@ const App = () => {
 
   return (
     <>
+          <ScrollToTop/>
       <div className="flex flex-col ">
         <Routes>
           <Route

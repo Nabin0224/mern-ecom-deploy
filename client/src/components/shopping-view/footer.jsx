@@ -20,11 +20,13 @@ const ShoppingFooter = () => {
               }
             : null;
         sessionStorage.setItem("filters", JSON.stringify(currentFilter));
+        
     
         location.pathname.includes("listing") && currentFilter !== null
           ? setSearchParams(new URLSearchParams(`?category=${menuItem.id}`))
           : setTimeout(() => {
             navigate(menuItem.path);
+
           }, 1000); 
       }
    
