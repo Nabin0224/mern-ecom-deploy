@@ -20,18 +20,17 @@ const ShoppingFooter = () => {
               }
             : null;
         sessionStorage.setItem("filters", JSON.stringify(currentFilter));
-        
     
         location.pathname.includes("listing") && currentFilter !== null
           ? setSearchParams(new URLSearchParams(`?category=${menuItem.id}`))
           : setTimeout(() => {
             navigate(menuItem.path);
-
+            
           }, 1000); 
       }
    
   return (
-    <div className="flex flex-col w-full bg-black h-full">
+    <div className="flex flex-col w-full bg-black max-h-full border-t">
       <div className="h-[35%] flex w-full justify-between">
         <h1 className="text-white/90 font-thin text-6xl mx-16 tracking-widest my-12">
           Style Me

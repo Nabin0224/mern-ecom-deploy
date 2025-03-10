@@ -47,32 +47,77 @@ function MenuItems() {
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
 
+  // function handleNavigate(menuItem) {
+  //   sessionStorage.removeItem("filters");
+  //   const currentFilter =
+  //     menuItem.id !== "home" && menuItem.id !== "products" && menuItem.id !== "search"
+  //       ? {
+  //           category: [menuItem.id],
+  //         }
+  //       : null;
+  //   sessionStorage.setItem("filters", JSON.stringify(currentFilter));
+
+  //   location.pathname.includes("listing") && currentFilter !== null
+  //     ? setSearchParams(new URLSearchParams(`?category=${menuItem.id}`))
+  //     : setTimeout(() => {
+  //       navigate(menuItem.path);
+  //     }, 1000); 
+  // }
+
+  // Function to determine if the link is active
+  const isActive = (path, category = "") => {
+    const currentPath = location.pathname;
+    const currentCategory = searchParams.get("category");
+    
+    // Check if the path matches and category matches (if provided)
+    if (category) {
+      return currentPath === path && currentCategory === category;
+    }
+    return currentPath === path;
+  };
+
+  // Handle navigation
   function handleNavigate(menuItem) {
     sessionStorage.removeItem("filters");
+
     const currentFilter =
       menuItem.id !== "home" && menuItem.id !== "products" && menuItem.id !== "search"
         ? {
             category: [menuItem.id],
           }
         : null;
+
     sessionStorage.setItem("filters", JSON.stringify(currentFilter));
 
-    location.pathname.includes("listing") && currentFilter !== null
-      ? setSearchParams(new URLSearchParams(`?category=${menuItem.id}`))
-      : setTimeout(() => {
-        navigate(menuItem.path);
-      }, 1000); 
+    if (location.pathname.includes("listing") && currentFilter !== null) {
+      setSearchParams(new URLSearchParams(`?category=${menuItem.id}`));
+    } else {
+      navigate(menuItem.path);
+    }
   }
+
   return (
     <nav className="flex flex-col items-center gap-6 lg:flex-row ">
       {shoppingViewHeaderMenuItems.map((menuItem) => (
+        // <Label
+        //   onClick={() => handleNavigate(menuItem) }
+        //   className="text-sm font-medium cursor-pointer"
+        //   key={menuItem.id}
+        // >
+        //   {menuItem.label}
+        // </Label>
+
         <Label
-          onClick={() => handleNavigate(menuItem)}
-          className="text-sm font-medium cursor-pointer"
-          key={menuItem.id}
-        >
-          {menuItem.label}
-        </Label>
+        onClick={() => handleNavigate(menuItem)}
+        className={`text-sm font-medium cursor-pointer transition-all duration-300 relative ${
+          isActive("/listing", menuItem.id)
+            ? " font-[550] text-md underline decoration-black-100"
+            : "hover:underline"
+        }`}
+        key={menuItem.id}
+      >
+        {menuItem.label}
+      </Label>
       ))}
     </nav>
   );
@@ -164,7 +209,7 @@ const ShoppingHeader = () => {
   console.log(user, "userInfo");
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-white/80 backdrop-blur-md shadow-md transition-all duration-300">
+    <header className="top-0 z-50 w-full border-b bg-white backdrop-blur-md shadow-md transition-all duration-300">
       <div className="flex h-16 items-center justify-between px-4 md:px-6">
         <Link to="/
         " className="flex items-center gap-2">

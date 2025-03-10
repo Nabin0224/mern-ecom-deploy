@@ -78,7 +78,7 @@ const SearchPage = () => {
       }
 
   return (
-    <div className="container mx-auto md:px-6 px-4 py-8">
+    <div className="container mx-auto md:px-6 px-4 py-8 min-h-[60vh]">
       <div className="flex justify-center mb-8">
         <div className="w-full flex items-center">
           <Input
