@@ -63,7 +63,7 @@ const ShoppingFooter = () => {
       <div className="grid sm:grid-cols-1 md:grid-cols-4  gap-8 md:gap-4 h-full mx-8 md:mt-6 md:mx-8">
         <div className="text-white flex flex-col gap-3">
           <h3 className="text-2xl font-light mb-1 md:mb-2">Get Connected</h3>
-          <div className="flex gap-2 mx-4 text-white/80 cursor-pointer text-xs">
+          <div className="flex gap-2 mx-4 text-white/80 cursor-pointer text-xs md:text-sm">
             <span>
               <Phone />
             </span>
@@ -73,22 +73,22 @@ const ShoppingFooter = () => {
             <span>
               <Mail />
             </span>
-            <p className="font-light text-xs">stylemeofficial@gmail.com</p>
+            <p className="font-light text-xs md:text-sm">stylemeofficial@gmail.com</p>
           </div>
         </div>
         <div className="text-white flex flex-col gap-3">
           <h3 className="text-2xl font-light mb-1  md:mb-2">Quick Links</h3>
           <div className="flex gap-2 mx-4 text-white/80 text-xs">
-            <p className="font-light">About Style Me</p>
+            <p className="font-light md:text-sm">About Style Me</p>
           </div>
           <div className="flex gap-2 mx-4 text-white/80 text-xs">
-            <p className="font-light">Contact Us</p>
+            <p className="font-light md:text-sm">Contact Us</p>
           </div>
         </div>
         <div className="text-white flex flex-col gap-3 cursor-pointer">
           <h3 className="text-2xl font-light mb:1 md:mb-2">Shop Now</h3>
           {shoppingViewHeaderMenuItems.map((menuItem) => (
-            <div className="flex gap-2 mx-4 text-white/80 text-xs">
+            <div className="flex gap-2 mx-4 text-white/80 text-xs md:text-sm">
               <p
                 onClick={() => handleNavigate(menuItem)}
                 key={menuItem.id}
@@ -102,16 +102,16 @@ const ShoppingFooter = () => {
         <div className="text-white flex flex-col gap-3 cursor-pointer">
           <h3 className="text-2xl font-light nb:1 md:mb-2">Our Services</h3>
           <div className="flex gap-2 mx-4 text-white/80">
-            <p className="font-light text-xs">Privacy Policy</p>
+            <p className="font-light text-xs md:text-sm">Privacy Policy</p>
           </div>
           <div className="flex gap-2 mx-4 text-white/80">
-            <p className="font-light text-xs">Shipping Policy</p>
+            <p className="font-light text-xs md:text-sm">Shipping Policy</p>
           </div>
           <div className="flex gap-2 mx-4 text-white/80">
-            <p className="font-light text-xs">Exchange and Refunds</p>
+            <p className="font-light text-xs md:text-sm">Exchange and Refunds</p>
           </div>
           <div className="flex gap-2 mx-4 text-white/80">
-            <p className="font-light text-xs">Terms and Conditions</p>
+            <p className="font-light text-xs md:text-sm">Terms and Conditions</p>
           </div>
         </div>
       </div>

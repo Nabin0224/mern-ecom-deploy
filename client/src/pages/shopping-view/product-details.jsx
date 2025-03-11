@@ -90,7 +90,8 @@ const ProductDetailsDialogue = ({ open, setOpen, productDetails }) => {
           </div>
           <div>
             {
-              productDetails.totalStock === 0 ? 
+              productDetails?.totalStock === 0 ? 
+            
               <Button
               
               className="w-full opacity-60 cursor-not-allowed"
