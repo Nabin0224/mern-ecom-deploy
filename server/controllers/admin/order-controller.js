@@ -1,16 +1,26 @@
 const  Order  = require('../../models/Order')
+const EsewaOrder = require('../../models/EsewaOrder')
 
 const getAllOrdersofAllUser = async(req, res)=> {
 try {
   
-  const orders = await Order.find({})  // returns array of orders present in the database 
+  const paypalorders = await Order.find({})
+  const esewaorders = await EsewaOrder.find({});  // returns array of orders present in the database 
 
-  if(orders.length === 0 ) {
+  if(paypalorders.length === 0 ) {
     return res.status(404).json({
       success: false,
-      message: "No orders found!"
+      message: "No paypal orders found!"
     })
   }
+  if(esewaorders.length === 0 ) {
+    return res.status(404).json({
+      success: false,
+      message: "No esewa orders found!"
+    })
+  }
+
+  const orders = [...paypalorders, ...esewaorders]
   res.status(200).json({
     success: true,
     data: orders,

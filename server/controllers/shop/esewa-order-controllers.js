@@ -206,7 +206,7 @@ const getAllOrdersByUser = async(req, res)=> {
   if(order.length === 0) {
     return res.status(404).json({
       success: false,
-      message: "Order not found!",
+      message: "Order not found in getAllOrdersByUser!",
     })
   }
   console.log(order, "allordersbyuser")

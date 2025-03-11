@@ -7,29 +7,61 @@ import AdminOrderDetailsView from './order-details'
 import { useDispatch, useSelector } from 'react-redux'
 import { getAllOrdersForAdmin, getOrderDetailsForAdmin, resetOrderDetails } from '../../../store/admin/order-slice/index'
 import { Badge } from '../ui/badge'
+import { getAllOrdersByUserOfEsewa, getOrderDetailsOfEsewa } from '../../../store/shop/esewa-slice/createorder'
 
 const AdminOrdersView = () => {
+  const { orderListOfEsewa, orderDetailsOfEsewa } = useSelector(state=> state.esewaOrders)
+  const { user } = useSelector(state => state.auth)
   const[openDialouge, setOpenDialouge] = useState(false);
   const {orderList, orderDetails} = useSelector(state=> state.adminOrders);
   
   const dispatch = useDispatch();
+  
+  // console.log("User ID for fetching orders:", user?.id);
 
-  useEffect(() => {
-    dispatch(getAllOrdersForAdmin())
-  }, [dispatch])
   // console.log(orderList, "order list from admin")
-
+  
   function handleFetchOrderDetails(getId) {
-
+    
     dispatch(getOrderDetailsForAdmin(getId));
   }
+  
+  
+  function handleFetchOrderDetailsOfEsewa(getId) {
+    
+    dispatch(getOrderDetailsOfEsewa(getId))
+  }
+  
+  useEffect(() => {
+    if(orderDetails || orderDetailsOfEsewa) {
+      setOpenDialouge(true)
+    }else{
+      setOpenDialouge(false)
+    }
+  }, [orderDetails, orderDetailsOfEsewa])
+  
+
+  
+  
 
   useEffect(() => {
-    if(orderDetails !== null) setOpenDialouge(true)
-    
-  }, [orderDetails])
+    dispatch(getAllOrdersForAdmin(user?.id))
+  }, [dispatch, user?.id])
   
-  console.log("orderDetails", orderDetails)
+  
+  // console.log("orderDetails", orderDetails)
+
+  // esewa 
+
+   
+   
+   // making single array from paypal and esewa 
+   
+
+   // making single object from paypal and esewa 
+   const AllOrderDetails = orderDetails || orderDetailsOfEsewa
+
+
   
    return  <Card>
       <CardHeader>
@@ -80,12 +112,14 @@ const AdminOrdersView = () => {
                         }}
                       >
                         <Button
-                          onClick={() =>handleFetchOrderDetails(item?._id) 
+                          onClick={() =>{
+                            item?.paymentMethod === "eSewa" ? handleFetchOrderDetailsOfEsewa(item?._id) :
+                            handleFetchOrderDetails(item?._id)} 
                           }
                         >
                           View Details
                         </Button>
-                        <AdminOrderDetailsView orderDetails={orderDetails} />
+                        <AdminOrderDetailsView orderDetails={AllOrderDetails} />
                       </Dialog>
                     </TableCell>
                   </TableRow>
