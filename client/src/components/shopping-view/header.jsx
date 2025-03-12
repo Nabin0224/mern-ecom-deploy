@@ -40,6 +40,8 @@ import { logOut } from "../../../store/auth-slice/index";
 import UserCartWrapper from "./cart-wrapper";
 import { fetchCartItems } from "../../../store/shop/cart-slice/index";
 import { Label } from "../ui/label";
+import AuthPopup from "./login-card";
+
 
 
 function MenuItems({setOpenMobileCartSheet}) {
@@ -140,6 +142,9 @@ function HeaderRightContent({
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [openCartSheet, setOpenCartSheet] = useState(false);
+  const [isLogin, setIsLogin] = useState(false);
+  
+
 
   useEffect(() => {
     dispatch(fetchCartItems(user?.id));
@@ -149,6 +154,7 @@ function HeaderRightContent({
   return (
     <div className="flex lg:flex-row lg:item-center flex-col gap-6">
       <Sheet open={openCartSheet} onOpenChange={() => {setOpenCartSheet(false); setOpenMobileCartSheet(false)}}>
+<div className={`${user ? "hidden" : "block"}`}><AuthPopup isLogin={isLogin} setIsLogin={setIsLogin}/></div>
         <Button
           onClick={() => {
             setOpenCartSheet(true);
@@ -215,8 +221,8 @@ function HeaderRightContent({
 const ShoppingHeader = () => {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
   const [openMobileCartSheet, setOpenMobileCartSheet] = useState(false);
+  
   console.log(user, "userInfo");
-
   return (
     <header className="top-0 z-50 w-full border-b bg-white backdrop-blur-md shadow-md transition-all duration-300">
       <div className="flex h-16 items-center justify-between px-4 md:px-6">

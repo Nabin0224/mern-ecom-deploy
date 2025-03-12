@@ -6,8 +6,8 @@ const AuthLayout = () => {
     <div className="flex min-h-screen w-full">
       <div className="hidden lg:flex justify-center items-center bg-black w-1/2">
         <div className="max-w-md text-center ">
-          <h1 className="text-white text-4xl font-extrabold tracking-tighter">
-            Welcome to Ecommerce Shopping
+          <h1 className="text-white text-4xl font-extrabold tracking-normal">
+           Hey! Welcome to<br/>Style Me 
           </h1>
         </div>
       </div>

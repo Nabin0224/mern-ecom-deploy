@@ -41,6 +41,8 @@ const registerUser = async (req, res) => {
     res.json({
       success: true,
       message: "Registration Successful",
+      user: { email, password }
+      
     });
   } catch (e) {
     console.error("Error during registration:", e); // Log the actual error
@@ -60,6 +62,8 @@ const getRegister = async (req, res) => {
 const loginUser = async (req, res) => {
   try {
     const { email, password, userName} = req.body;
+    console.log("req body in login", req.body)
+   
     const existingUser = await User.findOne({ email });
     if (!existingUser)
       return res.json({
