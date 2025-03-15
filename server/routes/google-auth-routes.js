@@ -100,6 +100,8 @@ router.get(
           res.cookie("googleUserId", user._id.toString(), {
             httpOnly: true,
             secure: true,
+            sameSite : "None",
+            domain: ".stylemeofficial.com"
             
           })
   
