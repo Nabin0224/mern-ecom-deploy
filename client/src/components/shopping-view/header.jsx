@@ -143,6 +143,7 @@ function HeaderRightContent({
   const dispatch = useDispatch();
   const [openCartSheet, setOpenCartSheet] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
+  console.log("user in header", user)
   
 
 

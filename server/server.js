@@ -12,9 +12,13 @@ const shopEsewaOrderRouter = require("./routes/shop/esewa-order-routes");
 const adminOrderRouter = require("./routes/admin/order-routes");
 const searchRouter = require("./routes/shop/search-routes");
 const commonFeatureRouter = require("./routes/common/feature");
+const googleauthRouter = require("./routes/google-auth-routes")
 const app = express();
 const authRouter = require("./routes/auth-routes");
 const PORT = process.env.PORT;
+const passport = require("passport");
+const session = require("express-session");
+
 
 const mongoose = require("mongoose");
 
@@ -31,9 +35,11 @@ mongoose
 app.use(cookieParser());
 app.use(bodyParser.json());
 
+
 app.use(
   cors({
     origin: process.env.CLIENT_BASE_URL,
+    credentials: true,
     methods: ["GET", "POST", "DELETE", "PUT"],
     allowedHeaders: [
       "Content-Type",
@@ -42,9 +48,16 @@ app.use(
       "Expires",
       "Pragma",
     ],
-    credentials: true,
+    
   })
 );
+
+app.use(
+  session({ secret: "secret", resave: false, saveUninitialized: true })
+);
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(express.json())
 
 app.use("/api/auth", authRouter);
 app.use("/", authRouter);
@@ -58,7 +71,10 @@ app.use("/api/shop/esewaorder", shopEsewaOrderRouter);
 app.use("/api/admin/orders", adminOrderRouter);
 app.use("/api/shop/search", searchRouter);
 app.use("/api/common/feature", commonFeatureRouter);
+app.use("/api/google", googleauthRouter);
 
 app.listen(PORT, () => {
   console.log(`Server running successfully at ${PORT}`);
 });
+
+

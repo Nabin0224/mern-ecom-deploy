@@ -61,6 +61,15 @@ const logOut = createAsyncThunk("auth/logout", async () => {
   return response.data;
 });
 
+
+export const checkGoogleAuth = createAsyncThunk("auth/checkAuth", async () => {
+  const response = await axios.get(
+    `${import.meta.env.VITE_API_URL}/api/google/checkGoogleAuth`,
+    { withCredentials: true }
+  );
+  return response.data
+});
+
 //Slicing and reducers with extra reducers
 
 const authSlice = createSlice({
@@ -119,6 +128,20 @@ const authSlice = createSlice({
         state.isAuthenticated = false;
       })
       .addCase(logOut.rejected, (state) => {
+        state.isLoading = false;
+        state.user = null;
+        state.isAuthenticated = false;
+      })
+      .addCase(checkGoogleAuth.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(checkGoogleAuth.fulfilled, (state, action) => {
+        console.log("payload in checkauth google", action.payload)
+        state.isLoading = false;
+        state.user = action.payload.success ? action.payload.user : null;
+        state.isAuthenticated = true
+      })
+      .addCase(checkGoogleAuth.rejected, (state) => {
         state.isLoading = false;
         state.user = null;
         state.isAuthenticated = false;

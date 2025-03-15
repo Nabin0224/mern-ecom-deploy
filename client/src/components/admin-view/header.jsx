@@ -22,7 +22,7 @@ const AdminHeader = ({setOpen}) => {
     await dispatch(logOut());
 
     // Redirect to the login or register page
-    navigate("/auth/login");
+    navigate("/");
   };
 
   

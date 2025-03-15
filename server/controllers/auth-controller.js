@@ -9,15 +9,7 @@ const registerUser = async (req, res) => {
 
   try {
     // Check if user already exists by email
-    
-    const checkDatabaseCreation = async () => {
-      const testUser = await User.findOne();
-      if (!testUser) {
-        console.log("No users found, inserting test user...");
-        await new User({ username: "Test", email: "test@test.com", password: "test" }).save();
-      }
-    };
-    checkDatabaseCreation();
+ 
    
     
     const existingUser = await User.findOne({ email });
@@ -41,7 +33,7 @@ const registerUser = async (req, res) => {
     res.json({
       success: true,
       message: "Registration Successful",
-      user: { email, password }
+      user: { email }
       
     });
   } catch (e) {
@@ -86,10 +78,11 @@ const loginUser = async (req, res) => {
         email: existingUser.email, 
         userName : existingUser.username
       },
-      "CLIENT_SECRET_KEY",
+      process.env.JWT_SECRET_KEY,
       { expiresIn: "60m" }
     );
-    res.cookie('token', token, { httpOnly: true, secure: false }).json({
+
+    res.cookie('token', token, { httpOnly: true, secure: true }).json({
       success: true,
       message: "Loggined in successfully",
       user: {
@@ -112,7 +105,10 @@ const loginUser = async (req, res) => {
 //logout
 
 const logoutUser = ( req, res )=> {
-    res.clearCookie('token').status(200).json({
+  res.clearCookie("googleUserId")
+  res.clearCookie("connect.sid")
+    res.clearCookie('token');
+    res.status(200).json({
         success: true,
         message: "Loggout out successfully"
     })
@@ -129,7 +125,7 @@ const authMiddleware = async ( req, res, next )=> {
     })
 
     try {
-        const decoded = jwt.verify(token, "CLIENT_SECRET_KEY")
+        const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY)
         req.user = decoded;
         next();
         
@@ -137,7 +133,8 @@ const authMiddleware = async ( req, res, next )=> {
     } catch (error) {
         return res.json({
         success: false,
-        message: "Unauthorized user!"
+        message: "Unauthorized user!",
+        error : error.message,
     })
 }
 

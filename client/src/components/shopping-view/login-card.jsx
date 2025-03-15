@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,14 +11,37 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "@/hooks/use-toast";
-import { loginUser, registerUser } from "../../../store/auth-slice/index";
+import { checkGoogleAuth, loginUser, registerUser } from "../../../store/auth-slice/index";
+// import { checkAuth,  } from "../../../store/google-auth/index";
+
 
 export default function AuthPopup({isLogin, setIsLogin}) {
-
-
+  // const { user } = useSelector(state => state.auth)
+  const [isStart, setIsStart] = useState(false)
   const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(false);
+
+
+
+useEffect(() => {
+  if (localStorage.getItem("oauthStarted")) {
+    console.log("OAuth detected, checking Google Auth...");
+    dispatch(checkGoogleAuth());
+    localStorage.removeItem("oauthStarted"); // Cleanup after check
+  }
+}, [dispatch]);
+ 
+  
+  // };
+  function handleGoogleLogin() {
+    localStorage.setItem("oauthStarted", "true"); // Mark that OAuth started
+    window.location.href = `${import.meta.env.VITE_API_URL}/api/google/google`;
+  }
+
+  
+  // custom login 
   const {
     register,
     handleSubmit,
@@ -89,6 +112,7 @@ export default function AuthPopup({isLogin, setIsLogin}) {
           <Button
             variant="outline"
             className="w-full flex items-center justify-center gap-2 mb-4 border-b-2"
+            onClick={()=> handleGoogleLogin()}
           >
             <FcGoogle size={20} /> Continue with Google
           </Button>

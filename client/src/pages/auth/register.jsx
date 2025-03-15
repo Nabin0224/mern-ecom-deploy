@@ -40,21 +40,6 @@ const AuthRegister = () => {
         })
         }
     
-  
-    
-       
-    
-
-      // Handle success (e.g., show a message, navigate to login page, etc.)
-      // console.log("Response:", response);
-   
-
-
-
-  // Redirect if the user is already authenticated
-  // if (isAuthenticated) {
-  //   return <Navigate to="/" />; // Or any other page you want to redirect to
-  // }
 
   return (
     <div className="regForm w-1/2 mx-auto text-center">
