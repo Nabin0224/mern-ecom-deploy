@@ -68,7 +68,7 @@ router.get(
 // Google OAuth Callback Route
 router.get(
   "/google/callback",
-  passport.authenticate("google", { failureRedirect: "/login", session: true}),
+  passport.authenticate("google", { failureRedirect: process.env.FRONTEND_URL, session: true}),
   async(req, res) => {
     
     try {
@@ -100,7 +100,7 @@ router.get(
           res.cookie("googleUserId", user._id.toString(), {
             httpOnly: true,
             secure: true,
-            sameSite: "None"
+            
           })
   
        
