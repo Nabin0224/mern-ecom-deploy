@@ -1,13 +1,37 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 // import { saveFormData } from "../../../store/form-slice/index";
-import {registerUser} from "../../../store/auth-slice/index";
+import {checkGoogleAuth, registerUser} from "../../../store/auth-slice/index";
 import { useToast } from "@/hooks/use-toast";
+import { FcGoogle } from "react-icons/fc";
+import { Button } from "@/components/ui/button";
 
 
 const AuthRegister = () => {
+const [isStart, setIsStart] = useState(false)
+  
+  const [isLoading, setIsLoading] = useState(false);
+  
+  const dispatch = useDispatch();
+
+
+useEffect(() => {
+  if (localStorage.getItem("oauthStarted")) {
+    console.log("OAuth detected, checking Google Auth...");
+    dispatch(checkGoogleAuth());
+    localStorage.removeItem("oauthStarted"); // Cleanup after check
+  }
+}, [dispatch]);
+ 
+  
+  // };
+  function handleGoogleLogin() {
+    localStorage.setItem("oauthStarted", "true"); // Mark that OAuth started
+    window.location.href = `${import.meta.env.VITE_API_URL}/api/google/google`;
+  }
+
   const {
     register,
     handleSubmit,
@@ -15,7 +39,7 @@ const AuthRegister = () => {
   } = useForm();
   
   const {toast} = useToast();
-  const dispatch = useDispatch();
+
   const navigate = useNavigate();
   // const isAuthenticated = useSelector((state) => state.auth.isAuthenticated); 
 
@@ -46,17 +70,33 @@ const AuthRegister = () => {
       <h1 className="text-3xl font-bold tracking-tight text-center">
         Sign up for an account
       </h1>
-      <p className="mb-2 mt-1 font-light">
-        Already have an account?{" "}
-        <Link className="font-medium hover:underline" to="/auth/login">
-          Login
-        </Link>
-      </p>
-
+<p className="mb-2 mt-1 text-sm text-gray-800">
+  Already have an account?{" "}
+  <Link
+    className="font-semibold underline text-slate-500 transition-all duration-300 hover:text-slate-800 hover:underline"
+    to="/auth/login"
+  >
+    Login
+  </Link>
+</p>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="flex flex-col gap-5">
+        <div className="flex flex-col gap-2">
+                      <Button
+                                  variant="outline"
+                                  className="w-full flex items-center justify-center gap-2 mt-6 border-b-2"
+                                  onClick={(e)=>{
+                                    e.preventDefault();
+                                    handleGoogleLogin()
+                                  }}
+                                >
+                                  <FcGoogle size={20} /> Continue with Google
+                                </Button>
+                      
+                                <div className="relative text-center">
+                                  <span className=" bg-white px-2 text-sm text-gray-500 ">or</span>
+                                </div>
           <input
-            className="border-2 border-black rounded-md"
+            className="border-2 border-black/75 rounded-md"
             type="text"
             placeholder="Username"
             {...register("username", {
@@ -67,7 +107,7 @@ const AuthRegister = () => {
           {errors.username && <span>{errors.username.message}</span>}
 
           <input
-            className="border-2 border-black rounded-md"
+            className="border-2 border-black/75 rounded-md"
             type="text"
             placeholder="Email"
             {...register("email", {
@@ -78,7 +118,7 @@ const AuthRegister = () => {
           {errors.email && <span>{errors.email.message}</span>}
 
           <input
-            className="border-2 border-black rounded-md"
+            className="border-2 border-black/75 rounded-md"
             type="password"
             placeholder="Password"
             {...register("password", {
