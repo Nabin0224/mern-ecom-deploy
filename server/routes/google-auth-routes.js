@@ -17,7 +17,7 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: `${process.env.SERVER_BASE_URL}`,
+      callbackURL: process.env.SERVER_BASE_URL,
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
@@ -101,7 +101,7 @@ router.get(
             httpOnly: true,
             secure: true,
             sameSite : "None",
-            domain: ".stylemeofficial.com"
+            // domain: ".stylemeofficial.com"
             
           })
   
