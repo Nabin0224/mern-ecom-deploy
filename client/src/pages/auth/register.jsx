@@ -66,7 +66,7 @@ useEffect(() => {
     
 
   return (
-    <div className="regForm w-2/3 mx-auto text-center">
+    <div className="regForm w-2/3 mx-auto text-center max-h-screen">
       <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-center">
         Sign up for an account
       </h1>

@@ -183,6 +183,7 @@ const user = await GoogleUser.findById(userId);
             role: user.role || "user",
             id: user._id,
             userName: user.username,
+            avatar: user.avatar,
         },    
       });  
 
