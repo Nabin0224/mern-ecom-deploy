@@ -59,9 +59,9 @@ useEffect(() => {
   
 
   return (
-    <div className="logForm w-1/2 mx-auto">
+    <div className="logForm w-2/3 mx-auto max-h-screen">
       <div className="text-center">
-        <h1 className="text-slate-800 text-3xl font-bold tracking-tight text-center">
+        <h1 className="text-slate-800 text-2xl md:text-3xl font-bold tracking-tight text-center">
           Create a New Account
         </h1>
         <p className="mb-2 mt-1 text-sm text-gray-800">
