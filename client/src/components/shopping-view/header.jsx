@@ -175,7 +175,7 @@ function HeaderRightContent({
         <DropdownMenuTrigger asChild>
           <Avatar className="cursor-pointer">
             <AvatarFallback className=" bg-black text-white font-extrabold">
-              {user ? <img src={user?.avatar} alt="avatar"/> : null}
+             {user?.avatar ? <img src={user.avatar} alt="Avatar"/>: user?.userName ? (user.userName[0]) : null } 
             </AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>

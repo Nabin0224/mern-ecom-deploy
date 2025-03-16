@@ -9,6 +9,12 @@ import { useToast } from "@/hooks/use-toast";
 import { createEsewaOrder } from "../../../store/shop/esewa-slice/createorder";
 import axios from "axios";
 import { Separator } from "@/components/ui/separator";
+import { Accordion } from "@radix-ui/react-accordion";
+import {
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 const ShoppingCheckout = () => {
   const { toast } = useToast();
@@ -221,50 +227,72 @@ const ShoppingCheckout = () => {
 
   return (
     <div className="flex flex-col">
-      <div className="relative h-[200px] w-full overflow-hidden bg-black flex flex-col">
-        <h1 className="text-white h-[25%] w-1/2 mx-auto text-center text-4xl mt-4">Checkout Page</h1>
-        <Separator className="w-[35%] mx-auto opacity-55"/>
-        <p className="text-xs text-white/70 tracking-widest w-1/2 mx-auto text-center mt-2">Please review your item details carefully</p>
-      
+      <div className="relative h-[150px] md:h-[200px] w-full overflow-hidden bg-black flex flex-col">
+        <h1 className="text-white md:h-[25%] md:w-1/2 mx-auto text-center text-3xl md:text-4xl mt-4">
+          Checkout Page
+        </h1>
+        <Separator className=" w-[50%] md:w-[35%] mx-auto opacity-55" />
+        <p className="text-xs text-white/70 tracking-widest md:w-1/2 mx-auto text-center mt-2">
+          Please review your item details carefully
+        </p>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-5 p-5">
+      <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-5 mt-5 p-5">
+        <Accordion type="single" collapsible>
+          <AccordionItem value="item-1">
+            <AccordionTrigger className="bg-[#F0F0F0] text-2xl md:text-3xl tracking-wide font-thin m-2 px-4">
+              Cart Items
+            </AccordionTrigger>
+            <AccordionContent>
+              <div className="flex flex-col gap-4 bg-[#F0F0F0] m-2 px-4">
+                {cartItems && cartItems.items
+                  ? cartItems?.items?.map((item) => (
+                      <UserCartItemsContent key={item.id} cartItem={item} />
+                    ))
+                  : null}
+                <div className="mt-8 space-y-4">
+                  <div className="flex justify-between">
+                    <span className="font-bold">Total</span>
+                    <span className="font-semibold">Rs{totalCartAmount}</span>
+                  </div>
+                </div>
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+
         <Address
           setCurrentSelectedAddressInfo={setCurrentSelectedAddressInfo}
           selectedId={currentSelectedAddressInfo}
         />
-        <div className="flex flex-col gap-4">
-          {cartItems && cartItems.items
-            ? cartItems?.items?.map((item) => (
-                <UserCartItemsContent key={item.id} cartItem={item} />
-              ))
-            : null}
-          <div className="mt-8 space-y-4">
-            <div className="flex justify-between">
-              <span className="font-bold">Total</span>
-              <span className="font-semibold">Rs{totalCartAmount}</span>
-            </div>
-          </div>
-          <div className="flex mt-4 w-full justify-around">
-            <Button
-              onClick={handleInitiatePaypalPayment}
-              className={` w-1/2 {${isPayPalPaymentStart} ? "opacity-50" : "opacity-100"}`}
-              disabled={isPayPalPaymentStart}
-            >
-              {isPayPalPaymentStart
-                ? "Payment Processing..."
-                : " Checkout with Paypal"}
-            </Button>
-            <Button
-              onClick={handleInitiateEsewaPayment}
-              className={` w-1/2 {${isEsewaPaymentStart} ? "opacity-50" : "opacity-100"}`}
-              disabled={isEsewaPaymentStart}
-            >
-              {isEsewaPaymentStart
-                ? "Payment Processing..."
-                : "Checkout with eSewa"}
-            </Button>
-          </div>
-        </div>
+        <Accordion type="single" collapsible>
+          <AccordionItem value="item-1">
+            <AccordionTrigger className="bg-[#F0F0F0] text-2xl md:text-3xl tracking-wide font-thin m-2 px-4">
+              Payment Methods
+            </AccordionTrigger>
+            <AccordionContent>
+              <div className="flex mt-4 w-full justify-around">
+                <Button
+                  onClick={handleInitiatePaypalPayment}
+                  className={` w-1/2 {${isPayPalPaymentStart} ? "opacity-50" : "opacity-100"}`}
+                  disabled={isPayPalPaymentStart}
+                >
+                  {isPayPalPaymentStart
+                    ? "Payment Processing..."
+                    : " Checkout with Paypal"}
+                </Button>
+                <Button
+                  onClick={handleInitiateEsewaPayment}
+                  className={` w-1/2 {${isEsewaPaymentStart} ? "opacity-50" : "opacity-100"}`}
+                  disabled={isEsewaPaymentStart}
+                >
+                  {isEsewaPaymentStart
+                    ? "Payment Processing..."
+                    : "Checkout with eSewa"}
+                </Button>
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
       </div>
     </div>
   );
