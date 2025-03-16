@@ -16,6 +16,7 @@ import { useToast } from "@/hooks/use-toast";
 const Address = ({setCurrentSelectedAddressInfo, selectedId}) => {
  
   const initialAddressFormData = {
+    fullName: "",
     address: "",
     city: "",
     nearest_landmark: "",
@@ -84,6 +85,7 @@ const Address = ({setCurrentSelectedAddressInfo, selectedId}) => {
     SetCurrentEditedId(getCurrentAddressId?._id);
     setFormData({
       ...formData,
+      fullName: getCurrentAddressId?.fullName,
       address: getCurrentAddressId?.address,
       city: getCurrentAddressId?.city,
       nearest_landmark: getCurrentAddressId?.nearest_landmark,
@@ -97,7 +99,7 @@ const Address = ({setCurrentSelectedAddressInfo, selectedId}) => {
 
   return (
     <Card>
-      <div className="mb-5 p-3 grid grid-cols-1 sm:grid-cols-2 md:grid grid- cols-3 gap-2">
+      <div className="p-2 grid grid-cols-1 sm:grid-cols-2 md:grid grid- cols-3 gap-2">
         {addressList && addressList.length > 0
           ? addressList.map((addressItem) => (
               <AddressCard
@@ -112,8 +114,8 @@ const Address = ({setCurrentSelectedAddressInfo, selectedId}) => {
       </div>
       <CardHeader>
         <CardTitle>
-          {" "}
-          {currentEditedId !== null ? "Edit Address" : "Add New Address"}
+          {/* {" "}
+          {currentEditedId !== null ? "Edit Address" : "Add New Address"} */}
         </CardTitle>
       </CardHeader>
       <CardContent className="">

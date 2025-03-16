@@ -28,6 +28,8 @@ const ShoppingCheckout = () => {
   const dispatch = useDispatch();
   const { formData } = useSelector((state) => state.esewaOrders);
   console.log(formData, " Form data from selector");
+  const alwaysOpenItems = ["item-1"]
+  const [openItems, setOpenItems] = useState(alwaysOpenItems);
 
   //logic for total amount in cart
 
@@ -259,21 +261,31 @@ const ShoppingCheckout = () => {
             </AccordionContent>
           </AccordionItem>
         </Accordion>
-
-        <Address
+        <div className="flex-col">
+        <Accordion type="multiple" value={["item-1"]} >
+  <AccordionItem value="item-1">
+    <AccordionTrigger className="bg-[#F0F0F0] text-2xl md:text-3xl tracking-widest font-thin m-2 px-2">Billing Details</AccordionTrigger>
+    <AccordionContent className="px-2">
+    <Address
           setCurrentSelectedAddressInfo={setCurrentSelectedAddressInfo}
           selectedId={currentSelectedAddressInfo}
         />
+    </AccordionContent>
+  </AccordionItem>
+</Accordion>
+
+
+
         <Accordion type="single" collapsible>
           <AccordionItem value="item-1">
             <AccordionTrigger className="bg-[#F0F0F0] text-2xl md:text-3xl tracking-wide font-thin m-2 px-4">
               Payment Methods
             </AccordionTrigger>
             <AccordionContent>
-              <div className="flex mt-4 w-full justify-around">
+              <div className="mt-4 w-full flex flex-col gap-1">
                 <Button
                   onClick={handleInitiatePaypalPayment}
-                  className={` w-1/2 {${isPayPalPaymentStart} ? "opacity-50" : "opacity-100"}`}
+                  className={` w-full bg-[#F0F0F0]/50 text-black {${isPayPalPaymentStart} ? "opacity-50" : "opacity-100"}`}
                   disabled={isPayPalPaymentStart}
                 >
                   {isPayPalPaymentStart
@@ -282,7 +294,7 @@ const ShoppingCheckout = () => {
                 </Button>
                 <Button
                   onClick={handleInitiateEsewaPayment}
-                  className={` w-1/2 {${isEsewaPaymentStart} ? "opacity-50" : "opacity-100"}`}
+                  className={` w-full  bg-[#F0F0F0]/50 text-black {${isEsewaPaymentStart} ? "opacity-50" : "opacity-100"}`}
                   disabled={isEsewaPaymentStart}
                 >
                   {isEsewaPaymentStart
@@ -293,6 +305,7 @@ const ShoppingCheckout = () => {
             </AccordionContent>
           </AccordionItem>
         </Accordion>
+      </div>
       </div>
     </div>
   );

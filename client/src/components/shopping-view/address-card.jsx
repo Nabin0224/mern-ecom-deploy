@@ -21,6 +21,7 @@ const AddressCard = ({
     className={`cursor-pointer ${selectedId?._id === addressInfo?._id ? 'border-blue-600 border-[2px]' : 'border-black' } `}
     >
       <CardContent className="grid gap-4 mt-2">
+        <Label>Address: {addressInfo?.userName}</Label>
         <Label>Address: {addressInfo?.address}</Label>
         <Label>City: {addressInfo?.city}</Label>
         <Label>Nearest Landmark: {addressInfo?.nearest_landmark}</Label>
