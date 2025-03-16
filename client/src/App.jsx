@@ -71,10 +71,10 @@ const App = () => {
 
           <Route
             path="/"
-            element={<CheckAuth isAuthenticated={isAuthenticated} user={user}>
+            element={
             
                 <ShoppingLayout />
-                </CheckAuth>
+                
               
             }
           >

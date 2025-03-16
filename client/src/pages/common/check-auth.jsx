@@ -6,7 +6,7 @@ function CheckAuth({ isAuthenticated, user, children }) {
   const isAdminPath = location.pathname.startsWith("/admin");
   const isAuthPath =
     location.pathname.includes("/login") ||
-    location.pathname.includes("/register");
+    location.pathname.includes("/register")
 
   console.log(location.pathname, isAuthenticated);
 
