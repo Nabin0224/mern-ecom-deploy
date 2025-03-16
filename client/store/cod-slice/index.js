@@ -20,7 +20,7 @@ export const createCodOrder = createAsyncThunk(
         orderData
       );
       console.log(response.data, "API response in createCode");
-      return response.data.data;
+      return response.data
     }
   );
 
@@ -51,6 +51,9 @@ const codOrderSlice = createSlice({
     name: "codOrderSlice",
     initialState,
     reducers: {
+      resetOrderDetailsOfCod: (state)=> {
+        state.orderDetailsOfEsewa = null
+    }
 
     },
     extraReducers: 
@@ -80,12 +83,12 @@ const codOrderSlice = createSlice({
             }).addCase(getOrderDetailsOfCod.fulfilled, (state, action) => {
                 state.isLoading= false,
                 state.orderDetailsOfCod = action.payload.data
-            }).addCase(getOrderDetailsOfCod.rejected, (state)=>{
+            }).addCase(getOrderDetailsOfCod.rejected, (state,action)=>{
                 state.isLoading= false,
                 state.orderDetailsOfCod = null
             })
         }
     
     })
-
+export const { resetOrderDetailsOfCod} = codOrderSlice.actions;
     export default codOrderSlice.reducer;

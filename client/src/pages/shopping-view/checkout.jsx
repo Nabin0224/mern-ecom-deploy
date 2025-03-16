@@ -16,8 +16,11 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { createCodOrder } from "../../../store/cod-slice/index";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const ShoppingCheckout = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const { cartItems } = useSelector((state) => state.shoppingCart);
   const { user } = useSelector((state) => state.auth);
@@ -31,6 +34,16 @@ const ShoppingCheckout = () => {
   console.log(formData, " Form data from selector");
   const alwaysOpenItems = ["item-1"]
   const [openItems, setOpenItems] = useState(alwaysOpenItems);
+  const navigate = useNavigate();
+  
+  const[isOpen, setIsOpen] = useState("");
+  useEffect(() => {
+    // Open the accordion when the component mounts (first render)
+    setIsOpen("item-1");
+  }, );
+  
+  
+  
 
   //logic for total amount in cart
 
@@ -246,7 +259,7 @@ const ShoppingCheckout = () => {
     });
     return
   }
-
+ setIsLoading(true);
   const orderData = {
     cartItem: cartItems?.items?.map((singleCartItem) => ({
       productId: singleCartItem?.productId,
@@ -275,19 +288,25 @@ const ShoppingCheckout = () => {
     paymentStatus: "pending",
     totalAmount: totalCartAmount.toString(),
   };
+  setTimeout(() => {
+    console.log("This runs after 2 seconds.");
+    
+    dispatch(createCodOrder(orderData))
+    navigate("/payment-success")
+    setIsLoading(false);
+}, 3000); 
 
-  dispatch(createCodOrder(orderData)).then((data) => {
-    if(data?.payload?.success) {
-      console.log("data in dispatch of cod", data.payload);
-    }
-  })
+  
 
 
  }
 
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col relative">
+          {/* Show Skeleton if isLoading is true */}
+ 
+    
       <div className="relative h-[150px] md:h-[200px] w-full overflow-hidden bg-black flex flex-col">
         <h1 className="text-white md:h-[25%] md:w-1/2 mx-auto text-center text-3xl md:text-4xl mt-4">
           Checkout Page
@@ -299,7 +318,7 @@ const ShoppingCheckout = () => {
       </div>
       <div className="grid sm:grid-cols-1 md:grid-cols-[4fr_5fr] gap-5 mt-5 p-5 h-full">
       <div className=" sticky top-0 h-fit">
-        <Accordion type="single" collapsible>
+        <Accordion type="single" collapsible value={isOpen}>
           <AccordionItem value="item-1">
             <AccordionTrigger className="bg-[#F0F0F0] text-2xl md:text-3xl tracking-wide font-thin m-2 px-4">
               Cart Items
@@ -346,28 +365,37 @@ const ShoppingCheckout = () => {
               <div className="mt-4 w-full flex flex-col gap-1">
                 <Button
                   onClick={handleInitiatePaypalPayment}
-                  className={` w-full bg-[#F0F0F0]/50 text-black {${isPayPalPaymentStart} ? "opacity-50" : "opacity-100"}`}
+                  className={` w-full bg-[#F0F0F0]/80 text-black {${isPayPalPaymentStart} ? bg-[#F0F0F0]/50 :  bg-[#F0F0F0]}`}
                   disabled={isPayPalPaymentStart}
                 >
                   {isPayPalPaymentStart
                     ? "Payment Processing..."
                     : " Checkout with Paypal"}
                 </Button>
+                
                 <Button
+               
                   onClick={handleInitiateEsewaPayment}
-                  className={` w-full  bg-[#F0F0F0]/50 text-black {${isEsewaPaymentStart} ? "opacity-50" : "opacity-100"}`}
+                  className={` w-full  bg-[#F0F0F0]/80 text-black {${isEsewaPaymentStart} ? bg-[#F0F0F0]/20 :  bg-[#F0F0F0] text-muted-foreground}`}
                   disabled={isEsewaPaymentStart}
+                  
                 >
+                  
                   {isEsewaPaymentStart
                     ? "Payment Processing..."
                     : "Checkout with eSewa"}
                 </Button>
                 <Button
-                onClick={handleCodPayment}
-                className=" w-full  bg-[#F0F0F0]/50 text-black"
-                >
-                  Cash on Delivery
-                </Button>
+  onClick={handleCodPayment}
+  className={`w-full bg-[#F0F0F0]/80 text-black ${isLoading ? "bg-[#F0F0F0]/90" : "bg-[#F0F0F0]"} relative`}
+  disabled={isLoading}
+>
+  {isLoading ? (
+    <Skeleton className="absolute inset-0 h-full w-full rounded-full" />
+  ) : (
+    "Cash on Delivery"
+  )}
+</Button>
               </div>
             </AccordionContent>
           </AccordionItem>

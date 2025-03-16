@@ -118,7 +118,7 @@ const AdminProducts = () => {
           setFormData(initialFormData);
         }}
       >
-        <SheetContent side={"right"} className="overflow-auto ">
+        <SheetContent side={"right"} className="overflow-auto">
           <SheetTitle>
             {currentEditedId !== null ? "Edit Product" : "Add New Product"}
           </SheetTitle>

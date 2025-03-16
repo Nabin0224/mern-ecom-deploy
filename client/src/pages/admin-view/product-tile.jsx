@@ -4,15 +4,15 @@ import  { Card, CardContent, CardFooter }  from "@/components/ui/card";
 
 function AdminProductTile({ product, setFormData, setCurrentEditedId, setOpenCreateProductDialog , handleDelete }) {
   return (
-    <Card>
+    <Card className="h-[15px]">
       <div className="">
         <img
           src= {product.image}
           alt={product.title} 
-          className="w-full h-[300px] object-cover rounded-t-lg"
+          className="w-full h-[150px] object-cover rounded-t-lg"
         />
       </div>
-      <CardContent>
+      <CardContent >
         <h2 className="text-xl font-bold mb-2">{product.title}</h2>
         <div className="flex justify-between mb-2 items-center">
           <span

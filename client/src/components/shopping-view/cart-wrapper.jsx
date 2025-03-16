@@ -3,6 +3,7 @@ import { SheetContent, SheetHeader, SheetTitle } from '../ui/sheet';
 import { Button } from '../ui/button';
 import UserCartItemsContent from './cart-items-content';
 import { useNavigate } from 'react-router-dom';
+import { Separator } from '@radix-ui/react-dropdown-menu';
 
 const UserCartWrapper = ({cartItems, setOpenCartSheet, setOpenMobileCartSheet}) => {
     const  navigate = useNavigate();
@@ -18,7 +19,7 @@ const UserCartWrapper = ({cartItems, setOpenCartSheet, setOpenMobileCartSheet}) 
     : 0
 
 
-  return <SheetContent className = "w-1/2" >
+  return <SheetContent className = "w-3/5" >
         <SheetHeader>
             <SheetTitle>
                 Your Cart
@@ -30,6 +31,7 @@ const UserCartWrapper = ({cartItems, setOpenCartSheet, setOpenMobileCartSheet}) 
             cartItems?.map((item) => <UserCartItemsContent  cartItem= {item}/> ) : null
         }
         </div>
+        <Separator className=" h-[1px] bg-black/35 mt-14"/>
         <div className="mt-8 space-y-4">
             <div className="flex justify-between">
             <span className='font-bold'>Total</span>

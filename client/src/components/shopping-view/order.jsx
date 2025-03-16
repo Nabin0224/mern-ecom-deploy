@@ -20,12 +20,14 @@ import {
 } from "../../../store/shop/order-slice/index";
 import { Badge } from "../ui/badge";
 import { getAllOrdersByUserOfEsewa, getOrderDetailsOfEsewa, resetOrderDetailsOfEsewa } from "../../../store/shop/esewa-slice/createorder";
+import { getAllOrdersByUserOfCod, getOrderDetailsOfCod } from "../../../store/cod-slice/index";
 
 const ShoppingOrders = () => {
   const { orderList, orderDetails } = useSelector(
     (state) => state.shoppingOrders
   );
   const { orderListOfEsewa, orderDetailsOfEsewa} = useSelector(state => state.esewaOrders) //eSewa
+  const { orderListOfCod, orderDetailsOfCod } = useSelector(state => state.codOrders)
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
   const { user } = useSelector(state => state.auth);
   const dispatch = useDispatch();
@@ -36,19 +38,25 @@ const ShoppingOrders = () => {
   }
 
   function handleFetchOrderDetailsOfEsewa(getId) {
-    console.log(getId, "ui")
+    // console.log(getId, "ui")
     // dispatch(getAllOrdersByUserOfEsewa(user?.id)); 
     dispatch(getOrderDetailsOfEsewa(getId))
     
   }
+  function handleFetchOrderDetailsOfCod(getId) {
+    console.log(getId, "getid in handle ordr detisl in cod")
+    // dispatch(getAllOrdersByUserOfEsewa(user?.id)); 
+    dispatch(getOrderDetailsOfCod(getId))
+    
+  }
 
   useEffect(() => {
-    if (orderDetails || orderDetailsOfEsewa) {
+    if (orderDetails || orderDetailsOfEsewa || orderDetailsOfCod) {
       setOpenDetailsDialog(true);
     } else {
       setOpenDetailsDialog(false);
     }
-  }, [orderDetails, orderDetailsOfEsewa]);
+  }, [orderDetails, orderDetailsOfEsewa, orderDetailsOfCod]);
 
   useEffect(() => {
     if(user?.id)
@@ -57,7 +65,13 @@ const ShoppingOrders = () => {
 
   useEffect(() => {
     if(user?.id)
+      console.log("reached in orders of cod")
     dispatch(getAllOrdersByUserOfEsewa(user?.id));
+  }, [user?.id, dispatch]);
+
+  useEffect(() => {
+    if(user?.id)
+    dispatch(getAllOrdersByUserOfCod(user?.id));
   }, [user?.id, dispatch]);
 
   
@@ -65,10 +79,10 @@ const ShoppingOrders = () => {
 
   console.log(orderList, "order list");
 
-  const orders = [...orderList, ...orderListOfEsewa]
+  const orders = [...orderList, ...orderListOfEsewa, ...orderListOfCod]
   console.log(orders, "orders")
 
-  const AllOrderDetials = orderDetails || orderDetailsOfEsewa
+  const AllOrderDetials = orderDetails || orderDetailsOfEsewa || orderDetailsOfCod
 
 
   return (
@@ -122,7 +136,7 @@ const ShoppingOrders = () => {
                           onClick={
                           
                             
-                            () => { item?.paymentMethod === "eSewa" ?  handleFetchOrderDetailsOfEsewa(item?._id) : handleFetchOrderDetails(item?._id) } 
+                            () => { item?.paymentMethod === "eSewa" ?  handleFetchOrderDetailsOfEsewa(item?._id) :   item?.paymentMethod === "Cod" ? handleFetchOrderDetailsOfCod(item?._id)   : handleFetchOrderDetails(item?._id) } 
                           
                         }
                         >

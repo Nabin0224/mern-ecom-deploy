@@ -1,4 +1,5 @@
 const CodOrder = require("../../models/CodOrder");
+const Cart = require("../../models/Cart")
 
 
 const createCodOrder = async(req, res)=> {
@@ -14,8 +15,14 @@ const createCodOrder = async(req, res)=> {
         console.log("formData in createCodOrder", formData);
 
         const order = await new CodOrder(formData);
+        //deleting cartItem 
+
+        const getCartId = order.cartId
+        await Cart.findByIdAndDelete(getCartId)
 
         await order.save();
+
+    
         
         res.status(200).json({
             success: true,
@@ -35,7 +42,7 @@ const createCodOrder = async(req, res)=> {
 
 const getAllOrdersByUser = async(req, res) => {
     try {
-        const userId = req.params;
+        const {userId} = req.params;
         if(!userId) {
             return res.status(401).json({
                 success: false,
@@ -81,7 +88,7 @@ const getOrderDetails = async(req, res)=> {
             })
         }
 
-        const order = await CodOrder.findById({id});
+        const order = await CodOrder.findById(id);
         if(!order) {
             return res.status(404).json({
                 success: false,

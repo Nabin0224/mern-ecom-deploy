@@ -62,11 +62,11 @@ const UserCartItemsContent = ({ cartItem }) => {
   }
 
   return (
-    <div className="flex items-center space-x-4">
+    <div className="flex gap-1 items-center md:space-x-4">
       <img
         src={cartItem?.image}
         alt={cartItem?.title}
-        className="w-20 h-20 rounded-md object-cover"
+        className=" w-24 h-16  rounded-md object-cover"
       />
       <div className="flex-1">
         <h3 className="font-extrabold">{cartItem?.title}</h3>
