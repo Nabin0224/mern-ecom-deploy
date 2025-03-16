@@ -71,9 +71,10 @@ const App = () => {
 
           <Route
             path="/"
-            element={
-             
+            element={<CheckAuth isAuthenticated={isAuthenticated} user={user}>
+            
                 <ShoppingLayout />
+                </CheckAuth>
               
             }
           >

@@ -9,6 +9,7 @@ const EsewaOrderSchema = new mongoose.Schema({
         unique: true,
     },
     addressInfo: {
+        fullName: String,
         addressId: String,
         address: String,
         city: String,

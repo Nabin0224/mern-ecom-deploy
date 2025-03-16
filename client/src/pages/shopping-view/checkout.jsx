@@ -15,6 +15,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { createCodOrder } from "../../../store/cod-slice/index";
 
 const ShoppingCheckout = () => {
   const { toast } = useToast();
@@ -81,6 +82,7 @@ const ShoppingCheckout = () => {
         quantity: singleCartItem?.quantity,
       })),
       addressInfo: {
+        fullName: currentSelectedAddressInfo?.fullName,
         addressId: currentSelectedAddressInfo?._id,
         address: currentSelectedAddressInfo?.address,
         city: currentSelectedAddressInfo?.city,
@@ -149,6 +151,7 @@ const ShoppingCheckout = () => {
         orderDate: new Date(),
         orderUpdateDate: new Date(),
         addressInfo: {
+          fullName: currentSelectedAddressInfo?.fullName,
           addressId: currentSelectedAddressInfo?._id,
           address: currentSelectedAddressInfo?.address,
           city: currentSelectedAddressInfo?.city,
@@ -227,6 +230,62 @@ const ShoppingCheckout = () => {
     form.submit();
   };
 
+  // cod initialization 
+ function handleCodPayment() {
+  if (cartItems.length == 0) {
+    toast({
+      title: "Your cart is empty. Please add items to proceed",
+      variant: "destructive",
+    });
+    return;
+  }
+  if (currentSelectedAddressInfo === null) {
+    toast({
+      title: "Please select one address to proceed!",
+      variant: "destructive",
+    });
+    return
+  }
+
+  const orderData = {
+    cartItem: cartItems?.items?.map((singleCartItem) => ({
+      productId: singleCartItem?.productId,
+      price:
+        singleCartItem?.salePrice > 0
+          ? singleCartItem.salePrice
+          : singleCartItem?.price,
+      title: singleCartItem?.title,
+      image: singleCartItem?.image,
+      quantity: singleCartItem?.quantity,
+    })),
+    userId: user.id,
+    cartId: cartItems?._id,
+    orderDate: new Date(),
+    orderUpdateDate: new Date(),
+    addressInfo: {
+      fullName: currentSelectedAddressInfo?.fullName,
+      addressId: currentSelectedAddressInfo?._id,
+      address: currentSelectedAddressInfo?.address,
+      city: currentSelectedAddressInfo?.city,
+      nearest_landmark: currentSelectedAddressInfo?.nearest_landmark,
+      phone: currentSelectedAddressInfo?.phone,
+    },
+    orderStatus: "pending",
+    paymentMethod: "Cod",
+    paymentStatus: "pending",
+    totalAmount: totalCartAmount.toString(),
+  };
+
+  dispatch(createCodOrder(orderData)).then((data) => {
+    if(data?.payload?.success) {
+      console.log("data in dispatch of cod", data.payload);
+    }
+  })
+
+
+ }
+
+
   return (
     <div className="flex flex-col">
       <div className="relative h-[150px] md:h-[200px] w-full overflow-hidden bg-black flex flex-col">
@@ -238,7 +297,8 @@ const ShoppingCheckout = () => {
           Please review your item details carefully
         </p>
       </div>
-      <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-5 mt-5 p-5">
+      <div className="grid sm:grid-cols-1 md:grid-cols-[4fr_5fr] gap-5 mt-5 p-5 h-full">
+      <div className=" sticky top-0 h-fit">
         <Accordion type="single" collapsible>
           <AccordionItem value="item-1">
             <AccordionTrigger className="bg-[#F0F0F0] text-2xl md:text-3xl tracking-wide font-thin m-2 px-4">
@@ -261,6 +321,7 @@ const ShoppingCheckout = () => {
             </AccordionContent>
           </AccordionItem>
         </Accordion>
+        </div>
         <div className="flex-col">
         <Accordion type="multiple" value={["item-1"]} >
   <AccordionItem value="item-1">
@@ -300,6 +361,12 @@ const ShoppingCheckout = () => {
                   {isEsewaPaymentStart
                     ? "Payment Processing..."
                     : "Checkout with eSewa"}
+                </Button>
+                <Button
+                onClick={handleCodPayment}
+                className=" w-full  bg-[#F0F0F0]/50 text-black"
+                >
+                  Cash on Delivery
                 </Button>
               </div>
             </AccordionContent>

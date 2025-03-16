@@ -1,43 +1,44 @@
-import React from "react";
 import { Navigate, useLocation } from "react-router-dom";
 
- 
-
-const CheckAuth = ({isAuthenticated, user, children}) => {
+function CheckAuth({ isAuthenticated, user, children }) {
   const location = useLocation();
+  const isAdmin = isAuthenticated && user?.role === "admin";
+  const isAdminPath = location.pathname.startsWith("/admin");
+  const isAuthPath =
+    location.pathname.includes("/login") ||
+    location.pathname.includes("/register");
 
-  if (!isAuthenticated && !location.pathname.includes("/auth")
-  ) {
+  console.log(location.pathname, isAuthenticated);
+
+  // Allow everyone on root ("/")
+  if (location.pathname === "/") {
+    if (isAdmin) {
+      return <Navigate to="/admin/dashboard" />;
+    }
+    return <>{children}</>;
+  }
+
+  // If not authenticated, redirect to login (except auth pages)
+  if (!isAuthenticated && !isAuthPath) {
     return <Navigate to="/auth/login" />;
   }
 
-  if (
-    isAuthenticated && 
-    (location.pathname.includes("/login") ||
-    location.pathname.includes("/register"))
-  ) { 
-    if (user?.role === "admin") {
-      return <Navigate to="/admin/dashboard" />;
-    } else {
-      return <Navigate to="/" />;
-    }
+  // If authenticated, prevent access to login/register
+  if (isAuthenticated && isAuthPath) {
+    return isAdmin ? <Navigate to="/admin/dashboard" /> : <Navigate to="/" />;
   }
 
-  if (isAuthenticated && location.pathname.includes("admin")) {
-    if (user?.role !== "admin") {
-      return <Navigate to="/unauth" />;
-    }
+  // Admins should only access admin routes
+  if (isAdmin && !isAdminPath) {
+    return <Navigate to="/admin/dashboard" />;
   }
 
-  if (
-    isAuthenticated &&
-    (user?.role === "admin" &&
-    location.pathname.includes("/login"))
-  ) {
-    return <Navigate to="/admin/dashboard"  replace={true} />;
+  // Non-admin users should not access admin routes
+  if (!isAdmin && isAdminPath) {
+    return <Navigate to="/unauth-page" />;
   }
- 
-  return children;
-};
+
+  return <>{children}</>;
+}
 
 export default CheckAuth;
