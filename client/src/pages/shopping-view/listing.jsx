@@ -115,6 +115,7 @@ function ShoppingListing() {
           toast({
             title: `Only ${getQuantity} items can be added for this product`,
             variant: "destructive",
+            duration: 2000,
           })
           return;
         }

@@ -63,6 +63,7 @@ const adminOrderSlice = createSlice({
       .addCase(getOrderDetailsForAdmin.fulfilled, (state, action) => {
         state.isLoading = false;
         state.orderDetails = action.payload.data;
+        console.log("REdux fullfull in admin details", action.payload)
       })
       .addCase(getOrderDetailsForAdmin.rejected, (state, action) => {
         state.isLoading = false;

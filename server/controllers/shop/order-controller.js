@@ -186,7 +186,7 @@ const getOrderDetails = async(req, res)=> {
        message: "No order found!"
     })
   }
-  console.log(order, "order details")
+  console.log("order details in shop")
     return res.status(200).json({
       success: true,
       data: order

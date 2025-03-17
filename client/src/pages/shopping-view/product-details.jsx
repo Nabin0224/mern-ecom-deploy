@@ -32,6 +32,7 @@ const ProductDetailsDialogue = ({ open, setOpen, productDetails }) => {
           toast({
             title: `Only ${getQuantity} items can be added for this product`,
             variant: 'destructive',
+            duration: 2000,
           })
           return;
         }
@@ -47,7 +48,8 @@ const ProductDetailsDialogue = ({ open, setOpen, productDetails }) => {
       if (data?.payload?.success) {
         dispatch(fetchCartItems(user?.id))
         toast({
-          title : "Product Added to the Cart"
+          title : "Product Added to the Cart",
+          duration: 2000,
         })
       }
     });

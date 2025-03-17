@@ -15,13 +15,13 @@ const PaymentSuccessPage = () => {
 
   return (
     <>
-      <Card className="h-auto w-1/3 mx-auto border-2 border-gray-300 mt-8 p-6 rounded-lg shadow-lg bg-white relative mb-1">
+      <Card className="h-auto w-4/5 md:w-1/3 mx-auto border-2 border-gray-300 mt-4 md:mt-8 p-6   md:rounded-lg shadow-lg bg-white relative mb-2">
         <CardContent className="flex flex-col items-center gap-3">
-          <div className="text-3xl font-semibold text-green-600 mb-4">Payment Successful!</div>
-          <div className="text-lg text-gray-600 mb-6">
+          <div className="text-2xl md:text-3xl font-semibold text-green-600 mb-4">Payment Successful!</div>
+          <div className="text-md md:text-lg font-light text-gray-600 mb-4 md:mb-6 px-2">
             Thank you for your purchase. Your payment was successfully processed.
           </div>
-          <div className="text-sm text-gray-500 mb-4 ">
+          <div className="text-sm text-gray-500 mb-4 font-extralight ">
             <strong>Order Summary:</strong><br />
             
             { formData?.formData?.cartItem && formData?.formData?.cartItem.length > 0  
@@ -36,9 +36,9 @@ const PaymentSuccessPage = () => {
             null
           }<br />
             
-            - Delivery Time: 2-5 business days
+            <span className='font-light' >- Delivery Time: 2-5 business days</span>
           </div>
-          <div className="text-sm tracking-tighter text-gray-500 mb-4 w-full mt-6">
+          <div className="text-sm tracking-tighter text-gray-500 mb-4 w-full px-4 mt-6">
             Need help? Customer support at stylemeofficial.np@gmail.com
           </div>
           <Button 

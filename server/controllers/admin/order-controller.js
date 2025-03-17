@@ -1,27 +1,35 @@
 const  Order  = require('../../models/Order')
 const EsewaOrder = require('../../models/EsewaOrder')
+const CodOrder = require("../../models/CodOrder")
 
 const getAllOrdersofAllUser = async(req, res)=> {
 try {
   
   const paypalorders = await Order.find({})
-  const esewaorders = await EsewaOrder.find({});  // returns array of orders present in the database 
+  const esewaorders = await EsewaOrder.find({});
+  const codorders = await CodOrder.find({})   // returns array of orders present in the database 
 
-  if(paypalorders.length === 0 ) {
-    return res.status(404).json({
+  if(paypalorders.length === 0 && esewaorders.length === 0 && codorders.length === 0 ) {
+     return res.status(404).json({
       success: false,
-      message: "No paypal orders found!"
+      message: "No admin orders found!"
     })
   }
-  if(esewaorders.length === 0 ) {
-    return res.status(404).json({
-      success: false,
-      message: "No esewa orders found!"
-    })
-  }
+  // if(esewaorders.length === 0 ) {
+  //    return res.status(404).json({
+  //     success: false,
+  //     message: "No esewa orders found!"
+  //   })
+  // }
+  // if(codorders.length === 0 ) {
+  //    return res.status(404).json({
+  //     success: false,
+  //     message: "No cod orders found!"
+  //   })
+  // }
 
-  const orders = [...paypalorders, ...esewaorders]
-  res.status(200).json({
+  const orders = [...paypalorders, ...esewaorders, ...codorders]
+  return res.status(200).json({
     success: true,
     data: orders,
   })
@@ -37,15 +45,17 @@ try {
 const getOrderDetailsForAdmin = async(req, res)=> {
   try{
   const {id} = req.params;
+  console.log("id in admin detials ok ", id)
 
-  const order = await Order.findById(id)
+  const order = await Order.findById(id) || await EsewaOrder.findById(id) || await CodOrder.findById(id);
   if(!order){
     return res.status(404).json({
       success: false,
-       message: "No order found!"
+       message: "No order details found in paypal!"
     })
   }
-  console.log(order, "order details")
+  console.log("order details in admin")
+  console.log("real order detials in admin", order)
     return res.status(200).json({
       success: true,
       data: order

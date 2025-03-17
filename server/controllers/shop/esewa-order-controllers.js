@@ -206,7 +206,7 @@ const getAllOrdersByUser = async(req, res)=> {
   if(order.length === 0) {
     return res.status(404).json({
       success: false,
-      message: "Order not found in getAllOrdersByUser!",
+      message: "Order not found in getAllOrdersByUser of esewa!",
     })
   }
   console.log(order, "allordersbyuser")
@@ -237,7 +237,7 @@ const getOrderDetails = async(req,res) => {
   if(!order){
     return res.status(400).json({
       success: false,
-      message: "No order found for Details!"
+      message: "No order found for Details of esewa !"
     })
   }
   console.log(order, "orderdetailsofuser")

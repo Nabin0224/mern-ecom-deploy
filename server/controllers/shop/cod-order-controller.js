@@ -56,7 +56,7 @@ const getAllOrdersByUser = async(req, res) => {
         if(order.length == 0) {
             return res.status(404).json({
                 success:false,
-                message: "order not in getAllOrdersByUser!"
+                message: "order not in getAllOrdersByUser of cod !"
             })
             
         }
@@ -84,7 +84,7 @@ const getOrderDetails = async(req, res)=> {
         if(!id) {
             return res.status(401).json({
                 success: false,
-                message: "id not received in getOrderDetails!"
+                message: "id not received in getOrderDetails of cod!"
             })
         }
 
