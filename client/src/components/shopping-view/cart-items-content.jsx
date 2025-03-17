@@ -62,51 +62,53 @@ const UserCartItemsContent = ({ cartItem }) => {
   }
 
   return (
-    <div className="flex gap-1 items-center md:space-x-4">
+    <div className="flex md:gap-1 items-center space-x-2 md:space-x-4">
       <img
         src={cartItem?.image}
         alt={cartItem?.title}
-        className=" w-24 h-16  rounded-md object-cover"
+        className=" w-24 h-[68px]  rounded-sm object-cover"
       />
       <div className="flex-1">
-        <h3 className="font-extrabold">{cartItem?.title}</h3>
+        <h3 className="font-normal md:font-bold">{cartItem?.title}</h3>
         <div className="flex items-center gap-2 mt-2">
           <Button
             onClick={() => handleCartQuantity(cartItem, "minus")}
             variant="outline"
-            className="h-8 w-8 rounded-md"
+            className="h-6 w-6 rounded-sm"
             size="icon"
             disabled={cartItem?.quantity === 1}
           >
-            <Minus className="w-4 h-4" />
+            <Minus className="w-4 h-4"  strokeWidth={0.8}/>
             <span className="sr-only">Decrease</span>
           </Button>
-          <span className="font-semibold text-sm mt-1">
+          <span className=" font-extralight md:font-semibold text-sm mt-1">
             {cartItem?.quantity}
           </span>
           <Button
             onClick={() => handleCartQuantity(cartItem, "plus")}
             variant="outline"
-            className="h-8 w-8 rounded-md"
+            className="h-6 w-6 rounded-sm"
             size="icon"
           >
-            <Plus className="w-4 h-4" />
+            <Plus  style={{width: "12px", height: "12px"}} 
+            strokeWidth={0.8}/>
             <span className="sr-only">Increase</span>
           </Button>
         </div>
       </div>
-      <div className="flex flex-col items-end">
-        <p>
+      <div className="flex flex-col items-end gap-1">
+        <p className="text-sm md:text-md font-extralight">
           Rs
           {(
             (cartItem?.salePrice > 0
               ? cartItem?.salePrice
               : cartItem?.price) * cartItem?.quantity
-          ).toFixed(2)}
+          ).toFixed(0)}
         </p>
-        <Trash
+        <Trash  
           onClick={() => handleDeleteCartItem(cartItem)}
-          className="mt-1 cursor-pointer w-6 h-6"
+          className="mt-1 cursor-pointer w-5 "
+          strokeWidth={0.9}
         />
       </div>
     </div>

@@ -19,13 +19,15 @@ const UserCartWrapper = ({cartItems, setOpenCartSheet, setOpenMobileCartSheet}) 
     : 0
 
 
-  return <SheetContent className = "w-3/5" >
+  return <SheetContent className = "w-2/3" >
         <SheetHeader>
+            
             <SheetTitle>
                 Your Cart
             </SheetTitle>
         </SheetHeader>
         <div className="mt-8 space-y-4">
+        <Separator className=" h-[1px] bg-black/35 mt-10"/>
         {
             cartItems && cartItems?.length > 0 ? 
             cartItems?.map((item) => <UserCartItemsContent  cartItem= {item}/> ) : null
