@@ -132,6 +132,7 @@ function ShoppingListing() {
         dispatch(fetchCartItems(user?.id));
         toast({
           title: "Product Added to the Cart!",
+          duration: 1500
         });
       }
     });

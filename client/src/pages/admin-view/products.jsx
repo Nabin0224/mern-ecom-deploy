@@ -79,6 +79,7 @@ const AdminProducts = () => {
 
             toast({
               title: "Successfully added",
+              duration: 2000,
             });
           }
         });

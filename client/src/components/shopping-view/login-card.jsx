@@ -56,16 +56,17 @@ useEffect(() => {
         if (data?.payload?.success) {
           toast({
             title: data?.payload?.message,
+            duration: 2000,
           });
           setTimeout(() => {
             dispatch(
               loginUser({email:data?.payload?.user?.email, password:data?.payload?.user?.password}),
             ).then((data) => {
               if (data?.payload?.success) {
-                toast({ title: data.payload.message });
+                toast({ title: data.payload.message, duration: 2000, });
               } 
               else {
-                toast({ title: "Auto login failed!", variant: "destructive" });
+                toast({ title: "Auto login failed!", variant: "destructive", duration: 2000, });
               }
             });
           }, 1500);
@@ -74,6 +75,7 @@ useEffect(() => {
             toast({
               title: data?.payload?.message,
               variant: "destructive",
+              duration: 2000,
             });
           }
         })
@@ -81,12 +83,14 @@ useEffect(() => {
           if (data?.payload?.success) {
             toast({
               title: data?.payload?.message,
+              duration: 2000,
             });
            
           } else {
             toast({
               title: data?.payload?.message,
               variant: "destructive",
+              duration: 2000,
             });
           }
         });

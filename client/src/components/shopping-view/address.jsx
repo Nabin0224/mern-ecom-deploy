@@ -33,7 +33,8 @@ const Address = ({setCurrentSelectedAddressInfo, selectedId}) => {
     if( addressList.length >= 2 ){
       toast({
         title: "Max 2 addresses can be added!",
-        variant: "destructive"
+        variant: "destructive",
+        duration: 2000,
       })
       return;
     }

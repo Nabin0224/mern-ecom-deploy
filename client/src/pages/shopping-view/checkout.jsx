@@ -70,6 +70,7 @@ const ShoppingCheckout = () => {
       toast({
         title: "Your cart is empty. Please add items to proceed",
         variant: "destructive",
+        duration: 2000,
       });
       return;
     }
@@ -77,6 +78,7 @@ const ShoppingCheckout = () => {
       toast({
         title: "Please select one address to proceed!",
         variant: "destructive",
+        duration: 2000,
       });
       return;
     }
@@ -135,6 +137,7 @@ const ShoppingCheckout = () => {
       toast({
         title: "Your cart is empty. Please add items to proceed",
         variant: "destructive",
+        duration: 2000,
       });
       return;
     }
@@ -142,6 +145,7 @@ const ShoppingCheckout = () => {
       toast({
         title: "Please select one address to proceed!",
         variant: "destructive",
+        duration: 2000,
       });
       return;
     }
@@ -249,6 +253,7 @@ const ShoppingCheckout = () => {
     toast({
       title: "Your cart is empty. Please add items to proceed",
       variant: "destructive",
+      duration: 2000,
     });
     return;
   }
@@ -256,6 +261,7 @@ const ShoppingCheckout = () => {
     toast({
       title: "Please select one address to proceed!",
       variant: "destructive",
+      duration: 2000,
     });
     return
   }

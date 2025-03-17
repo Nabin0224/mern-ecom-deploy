@@ -24,6 +24,7 @@ const UserCartItemsContent = ({ cartItem }) => {
       if (data?.payload?.success) {
         toast({
           title: "Cart item deleted successfully",
+          // duration: 1500,
         });
       }
     });
@@ -46,6 +47,7 @@ const UserCartItemsContent = ({ cartItem }) => {
           toast({
             title: `Only ${getTotalStock} items can be added`,
             variant: "destructive",
+            duration: 2000,
           });
           return;
         }

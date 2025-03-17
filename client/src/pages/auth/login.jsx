@@ -46,11 +46,13 @@ useEffect(() => {
       if (data?.payload?.success) {
         toast({
           title: data?.payload?.message,
+          duration: 2000,
         });
       } else {
         toast({
           title: data?.payload?.message,
           variant: "destructive",
+          duration: 2000,
         });
       }
     }

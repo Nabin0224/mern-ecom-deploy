@@ -51,6 +51,7 @@ const SearchPage = () => {
             toast({
               title: `Only ${getQuantity} items can be added for this product`,
               variant: "destructive",
+              duration: 2000,
             })
             return;
           }
@@ -68,6 +69,7 @@ const SearchPage = () => {
           dispatch(fetchCartItems(user?.id));
           toast({
             title: "Product Added to the Cart!",
+            duration: 2000,
           });
         }
       });
