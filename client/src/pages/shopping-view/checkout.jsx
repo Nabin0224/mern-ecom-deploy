@@ -317,13 +317,13 @@ const ShoppingCheckout = () => {
         <h1 className="text-white md:h-[25%] md:w-1/2 mx-auto text-center text-3xl md:text-4xl mt-4">
           Checkout Page
         </h1>
-        <Separator className=" w-[50%] md:w-[35%] mx-auto opacity-55" />
+        <Separator className=" w-[50%] md:w-[35%] mx-auto opacity-65" />
         <p className="text-xs text-white/70 tracking-widest md:w-1/2 mx-auto text-center mt-2">
           Please review your item details carefully
         </p>
       </div>
       <div className="grid sm:grid-cols-1 md:grid-cols-[4fr_5fr] gap-5 mt-5 p-5 h-full">
-      <div className=" sticky top-0 h-fit">
+      <div className=" md:sticky md:top-0 md:h-fit">
         <Accordion type="single" collapsible value={isOpen}>
           <AccordionItem value="item-1">
             <AccordionTrigger className="bg-[#F0F0F0] text-2xl md:text-3xl tracking-wide font-thin m-2 px-4">
@@ -350,7 +350,7 @@ const ShoppingCheckout = () => {
         <div className="flex-col">
         <Accordion type="multiple" value={["item-1"]} >
   <AccordionItem value="item-1">
-    <AccordionTrigger className="bg-[#F0F0F0] text-2xl md:text-3xl tracking-widest font-thin m-2 px-2">Billing Details</AccordionTrigger>
+    <AccordionTrigger className=" bg-[#D0D0D0]  text-2xl md:text-3xl tracking-widest font-thin m-2 px-2">Billing Details</AccordionTrigger>
     <AccordionContent className="px-2">
     <Address
           setCurrentSelectedAddressInfo={setCurrentSelectedAddressInfo}
@@ -364,7 +364,7 @@ const ShoppingCheckout = () => {
 
         <Accordion type="single" collapsible>
           <AccordionItem value="item-1">
-            <AccordionTrigger className="bg-[#F0F0F0] text-2xl md:text-3xl tracking-wide font-thin m-2 px-4">
+            <AccordionTrigger className="bg-[#D0D0D0] text-2xl md:text-3xl tracking-wide font-thin m-2 px-4">
               Payment Methods
             </AccordionTrigger>
             <AccordionContent>

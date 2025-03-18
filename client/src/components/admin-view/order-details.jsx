@@ -7,21 +7,24 @@ import { Badge } from "../ui/badge";
 import { useDispatch, useSelector } from "react-redux";
 
 
+
 import { getUpdatedOrderStatus,  getAllOrdersForAdmin,
     getOrderDetailsForAdmin, } from "../../../store/admin/order-slice/index";
 import { useToast } from "@/hooks/use-toast";
+import { Button } from "../ui/button";
 
 const initialFormData = {
   status: "",
 };
 
-function AdminOrderDetailsView({ orderDetails }) {
+const  AdminOrderDetailsView = ({ orderDetails , contentRef}) => {
   const [formData, setFormData] = useState(initialFormData);
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const { toast } = useToast();
 
   console.log(orderDetails, "orderDetailsorderDetails");
+
 
   function handleUpdateStatus(event) {
     event.preventDefault();
@@ -41,12 +44,13 @@ function AdminOrderDetailsView({ orderDetails }) {
         });
       }
     });
-  }
+}
 
   return (
-    <DialogContent className="sm:max-w-[600px]">
+    <div ref={contentRef}  >
+    <DialogContent className="sm:max-w-[600px]" >
       <div className="grid gap-6">
-        <div className="grid gap-2">
+        <div className="grid gap-2"  >
           <div className="flex mt-6 items-center justify-between">
             <p className="font-medium">Order ID</p>
             <Label>{orderDetails?._id}</Label>
@@ -137,9 +141,14 @@ function AdminOrderDetailsView({ orderDetails }) {
             onSubmit={handleUpdateStatus}
           />
         </div>
+        <div>
+    </div>
       </div>
     </DialogContent>
+   
+    </div>
   );
 }
+
 
 export default AdminOrderDetailsView;

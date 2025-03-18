@@ -172,14 +172,16 @@ function ShoppingListing() {
   console.log(cartItems, "CartItems");
   return (
     <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-6 p-4 md:p-6">
-      <ProductFilter filters={filters} handleFilter={handleFilter} />
+     <div className="hidden md:block">
+     <ProductFilter  filters={filters} handleFilter={handleFilter} />
+     </div>
       <div className="bg-background w-full rounded-lg shadow-lg">
         <div className="p-4 border-b flex item-center justify-between">
-          <h2 className="text-lg font-extrabold">All Products</h2>
+          <h2 className="text-sm  md:text-lg font-extrabold">All Products</h2>
           <div className="flex item-center gap-4 justify-center">
-            <span className="text-sm font-extralight text-muted-foreground content-center">
+            <div className="hidden md:block text-sm font-extralight text-muted-foreground content-center">
               {productList.length} Products
-            </span>
+            </div>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -205,7 +207,7 @@ function ShoppingListing() {
             </DropdownMenu>
           </div>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4  gap-4 p-4">
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-4 p-2 md:p-4">
           {productList && productList.length > 0
             ? productList.map((productItem) => (
                 <ShoppingProducttile
@@ -219,11 +221,14 @@ function ShoppingListing() {
             : null}
         </div>
       </div>
+      <div className="">
       <ProductDetailsDialogue
         open={openDetailsDialouge}
         setOpen={setOpenDetailsDialouge}
         productDetails={productDetails}
       />
+      </div>
+     
     </div>
   );
 }
