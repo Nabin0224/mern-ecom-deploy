@@ -26,8 +26,9 @@ const AdminOrdersView = () => {
     (state) => state.adminOrders
   );
 
+  
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
-  // const [selectedOrders, setSelectedOrders] = useState([]); // For bulk print
+  const [selectedOrders, setSelectedOrders] = useState([])  // For bulk print
   const dispatch = useDispatch();
 
   // useEffect(() => {
@@ -42,104 +43,213 @@ const AdminOrdersView = () => {
     [dispatch]
   );
 
-  const handleFetchOrderDetails = (getId) => {
+  useEffect(() => {
+  dispatch(getAllOrdersForAdmin())
+  }, [])
+  
+
+  const handleFetchOrderDetails = async(getId) => {
     sessionStorage.setItem("orderDetailsId", getId);
-    dispatch(getOrderDetailsForAdmin(getId));
+    await dispatch(getOrderDetailsForAdmin(getId));
   };
 
   const contentRef = useRef(null);
   console.log("ref,", contentRef);
+
   const handlePrint = useReactToPrint({
     contentRef,
   });
 
-  const PrintableContent = () => {
-    const orderId = sessionStorage.getItem("orderDetailsId");
-    console.log(orderId, "orderID");
-    sessionStorage.clear("orderDetailsId");
+  // Bulk Print using reactToPrint
+const handleBulkPrint = useReactToPrint({
+  contentRef
+})
 
+  //Single Print using reactToPrint
+  // const PrintableContent = () => {
+  //   const orderId = sessionStorage.getItem("orderDetailsId");
+  //   console.log(orderId, "orderID");
+  //   sessionStorage.clear("orderDetailsId");
+
+  //   return (
+  //     <div ref={contentRef}>
+  //       <div className="grid gap-6">
+  //         <div className="grid gap-2">
+  //           <div className="flex mt-6 items-center justify-between">
+  //             <p className="font-medium">Order ID</p>
+  //             <Label>{orderDetails?._id}</Label>
+  //           </div>
+  //           <div className="flex mt-2 items-center justify-between">
+  //             <p className="font-medium">Order Date</p>
+  //             <Label>{orderDetails?.orderDate.split("T")[0]}</Label>
+  //           </div>
+  //           <div className="flex mt-2 items-center justify-between">
+  //             <p className="font-medium">Order Price</p>
+  //             <Label>${orderDetails?.totalAmount}</Label>
+  //           </div>
+  //           <div className="flex mt-2 items-center justify-between">
+  //             <p className="font-medium">Payment method</p>
+  //             <Label>{orderDetails?.paymentMethod}</Label>
+  //           </div>
+  //           <div className="flex mt-2 items-center justify-between">
+  //             <p className="font-medium">Payment Status</p>
+  //             <Label>{orderDetails?.paymentStatus}</Label>
+  //           </div>
+  //           <div className="flex mt-2 items-center justify-between">
+  //             <p className="font-medium">Order Status</p>
+  //             <Label>
+  //               <Badge
+  //                 className={`py-1 px-3 ${
+  //                   orderDetails?.orderStatus === "confirmed"
+  //                     ? "bg-green-500"
+  //                     : orderDetails?.orderStatus === "rejected"
+  //                     ? "bg-red-600"
+  //                     : "bg-black"
+  //                 }`}
+  //               >
+  //                 {orderDetails?.orderStatus}
+  //               </Badge>
+  //             </Label>
+  //           </div>
+  //         </div>
+  //         <Separator />
+  //         <div className="grid gap-4">
+  //           <div className="grid gap-2">
+  //             <div className="font-medium">Order Details</div>
+  //             <ul className="grid gap-3">
+  //               {orderDetails?.cartItem && orderDetails?.cartItem.length > 0
+  //                 ? orderDetails?.cartItem.map((item) => (
+  //                     <li className="flex items-center justify-between">
+  //                       <span>Title: {item.title}</span>
+  //                       <span>Quantity: {item.quantity}</span>
+  //                       <span>Price: ${item.price}</span>
+  //                     </li>
+  //                   ))
+  //                 : null}
+  //             </ul>
+  //           </div>
+  //         </div>
+  //         <div className="grid gap-4">
+  //           <div className="grid gap-2">
+  //             <div className="font-medium">Shipping Info</div>
+  //             <div className="grid gap-0.5 text-muted-foreground">
+  //               <span>{orderDetails?.addressInfo?.fullName}</span>
+  //               <span>{orderDetails?.addressInfo?.address}</span>
+  //               <span>{orderDetails?.addressInfo?.city}</span>
+  //               <span>{orderDetails?.addressInfo?.pincode}</span>
+  //               <span>{orderDetails?.addressInfo?.phone}</span>
+  //               <span>{orderDetails?.addressInfo?.notes}</span>
+  //             </div>
+  //           </div>
+  //         </div>
+  //       </div>
+  //       <Button
+  //         onClick={() => {
+  //           handleFetchOrderDetails(orderId), handlePrint();
+  //         }}
+  //       >
+  //         Print
+  //       </Button>
+  //     </div>
+  //   );
+  // };
+  const BulkPrintableContent = ({selectedOrders, orderList }, ref) => {
+    
+    const selectedOrderDetails = orderList.filter((order) => 
+      selectedOrders.includes(order._id)
+    );
+  
     return (
       <div ref={contentRef}>
-        <div className="grid gap-6">
-          <div className="grid gap-2">
-            <div className="flex mt-6 items-center justify-between">
-              <p className="font-medium">Order ID</p>
-              <Label>{orderDetails?._id}</Label>
-            </div>
-            <div className="flex mt-2 items-center justify-between">
-              <p className="font-medium">Order Date</p>
-              <Label>{orderDetails?.orderDate.split("T")[0]}</Label>
-            </div>
-            <div className="flex mt-2 items-center justify-between">
-              <p className="font-medium">Order Price</p>
-              <Label>${orderDetails?.totalAmount}</Label>
-            </div>
-            <div className="flex mt-2 items-center justify-between">
-              <p className="font-medium">Payment method</p>
-              <Label>{orderDetails?.paymentMethod}</Label>
-            </div>
-            <div className="flex mt-2 items-center justify-between">
-              <p className="font-medium">Payment Status</p>
-              <Label>{orderDetails?.paymentStatus}</Label>
-            </div>
-            <div className="flex mt-2 items-center justify-between">
-              <p className="font-medium">Order Status</p>
-              <Label>
-                <Badge
-                  className={`py-1 px-3 ${
-                    orderDetails?.orderStatus === "confirmed"
-                      ? "bg-green-500"
-                      : orderDetails?.orderStatus === "rejected"
-                      ? "bg-red-600"
-                      : "bg-black"
-                  }`}
-                >
-                  {orderDetails?.orderStatus}
-                </Badge>
-              </Label>
-            </div>
-          </div>
-          <Separator />
-          <div className="grid gap-4">
-            <div className="grid gap-2">
-              <div className="font-medium">Order Details</div>
-              <ul className="grid gap-3">
-                {orderDetails?.cartItem && orderDetails?.cartItem.length > 0
-                  ? orderDetails?.cartItem.map((item) => (
-                      <li className="flex items-center justify-between">
-                        <span>Title: {item.title}</span>
-                        <span>Quantity: {item.quantity}</span>
-                        <span>Price: ${item.price}</span>
-                      </li>
-                    ))
-                  : null}
-              </ul>
-            </div>
-          </div>
-          <div className="grid gap-4">
-            <div className="grid gap-2">
-              <div className="font-medium">Shipping Info</div>
-              <div className="grid gap-0.5 text-muted-foreground">
-                <span>{orderDetails?.addressInfo?.fullName}</span>
-                <span>{orderDetails?.addressInfo?.address}</span>
-                <span>{orderDetails?.addressInfo?.city}</span>
-                <span>{orderDetails?.addressInfo?.pincode}</span>
-                <span>{orderDetails?.addressInfo?.phone}</span>
-                <span>{orderDetails?.addressInfo?.notes}</span>
+        {selectedOrderDetails.length > 0 ? (
+          selectedOrderDetails.map((order) => (
+            <div key={order._id} className="grid gap-6 mb-6 border-b pb-6">
+              <div className="grid gap-2">
+                <div className="flex mt-6 items-center justify-between">
+                  <p className="font-medium">Order ID</p>
+                  <Label>{order._id}</Label>
+                </div>
+                <div className="flex mt-2 items-center justify-between">
+                  <p className="font-medium">Order Date</p>
+                  <Label>{order.orderDate.split("T")[0]}</Label>
+                </div>
+                <div className="flex mt-2 items-center justify-between">
+                  <p className="font-medium">Order Price</p>
+                  <Label>${order.totalAmount}</Label>
+                </div>
+                <div className="flex mt-2 items-center justify-between">
+                  <p className="font-medium">Payment method</p>
+                  <Label>{order.paymentMethod}</Label>
+                </div>
+                <div className="flex mt-2 items-center justify-between">
+                  <p className="font-medium">Payment Status</p>
+                  <Label>{order.paymentStatus}</Label>
+                </div>
+                <div className="flex mt-2 items-center justify-between">
+                  <p className="font-medium">Order Status</p>
+                  <Label>
+                    <Badge
+                      className={`py-1 px-3 ${
+                        order.orderStatus === "confirmed"
+                          ? "bg-green-500"
+                          : order.orderStatus === "rejected"
+                          ? "bg-red-600"
+                          : "bg-black"
+                      }`}
+                    >
+                      {order.orderStatus}
+                    </Badge>
+                  </Label>
+                </div>
+              </div>
+              <Separator />
+              <div className="grid gap-4">
+                <div className="grid gap-2">
+                  <div className="font-medium">Order Details</div>
+                  <ul className="grid gap-3">
+                    {order.cartItem && order.cartItem.length > 0
+                      ? order.cartItem.map((item) => (
+                          <li
+                            key={item.title}
+                            className="flex items-center justify-between"
+                          >
+                            <span>Title: {item.title}</span>
+                            <span>Quantity: {item.quantity}</span>
+                            <span>Price: ${item.price}</span>
+                          </li>
+                        ))
+                      : null}
+                  </ul>
+                </div>
+              </div>
+              <div className="grid gap-4">
+                <div className="grid gap-2">
+                  <div className="font-medium">Shipping Info</div>
+                  <div className="grid gap-0.5 text-muted-foreground">
+                    <span>{order.addressInfo?.fullName}</span>
+                    <span>{order.addressInfo?.address}</span>
+                    <span>{order.addressInfo?.city}</span>
+                    <span>{order.addressInfo?.pincode}</span>
+                    <span>{order.addressInfo?.phone}</span>
+                    <span>{order.addressInfo?.notes}</span>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-        <Button
-          onClick={() => {
-            handleFetchOrderDetails(orderId), handlePrint();
-          }}
-        >
-          Print
-        </Button>
+          ))
+        ) : (
+          <p>No orders selected for printing.</p>
+        )}
       </div>
     );
   };
+
+  const handleCheckboxChange = (getId) => {
+    setSelectedOrders((prev) => 
+    prev.includes(getId) ? prev.filter((id) => id !== getId) : [...prev, getId]
+  );
+  };
+  console.log(selectedOrders, "selectedOrdersId")
 
   return (
     <div>
@@ -151,6 +261,7 @@ const AdminOrdersView = () => {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead></TableHead>
                 <TableHead>Order Id</TableHead>
                 <TableHead>Order Date</TableHead>
                 <TableHead>Order Status</TableHead>
@@ -162,6 +273,13 @@ const AdminOrdersView = () => {
               {orderList && orderList.length > 0
                 ? orderList.map((item) => (
                     <TableRow key={item._id}>
+                      <TableCell>
+                        <input 
+                        type="checkbox"
+                        checked={selectedOrders.includes(item._id)}
+                        onChange={()=> handleCheckboxChange(item._id)}
+                        />
+                      </TableCell>
                       <TableCell>{item._id}</TableCell>
                       <TableCell>{item.orderDate.split("T")[0]}</TableCell>
                       <TableCell>
@@ -218,11 +336,20 @@ const AdminOrdersView = () => {
                 : null}
             </TableBody>
           </Table>
+          <Button 
+          onClick={handleBulkPrint}
+          >
+            Print All
+          </Button>
         </CardContent>
       </Card>
-      <div className="hidden">
+      {/* <div className="hidden">
         <PrintableContent contentRef={contentRef} />
+      </div> */}
+      <div className="hidden">
+        <BulkPrintableContent contentRef={contentRef} selectedOrders={selectedOrders} orderList={orderList}/>
       </div>
+    
     </div>
   );
 };

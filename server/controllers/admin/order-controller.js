@@ -74,7 +74,8 @@ const updateOrderStatus = async(req, res) => {
 try {
     const { id } = req.params;
     const { orderStatus } = req.body;
-    const order = await Order.findById(id);
+    console.log(id, orderStatus, "order update info")
+    const order = await Order.findById(id) || await EsewaOrder.findById(id) || await CodOrder.findById(id)
     
      
     if(!order) {
@@ -83,7 +84,7 @@ try {
             message: "Order not found!",
         })
     }
-    await Order.findByIdAndUpdate(id, {orderStatus})
+    await Order.findByIdAndUpdate(id, {orderStatus}) ||  await CodOrder.findByIdAndUpdate(id, {orderStatus}) ||  await EsewaOrder.findByIdAndUpdate(id, {orderStatus})
     res.status(200).json({
         success: true,
         message: "Order status updated successfully",

@@ -19,13 +19,14 @@ import {
 } from "../../../store/shop/product-slice/index";
 import { useDispatch, useSelector } from "react-redux";
 import ShoppingProducttile from "./product-tile";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import ProductDetailsDialogue from "./product-details";
 import {
   addToCart,
   fetchCartItems,
 } from "../../../store/shop/cart-slice/index";
 import { useToast } from "@/hooks/use-toast";
+import ProductDetailsPage from "./product-details";
 
 
 
@@ -170,6 +171,8 @@ function ShoppingListing() {
   console.log(productList, "productlist stock")
 
   console.log(cartItems, "CartItems");
+
+  const navigate = useNavigate();
   return (
     <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-6 p-4 md:p-6">
      <div className="hidden md:block">
@@ -208,26 +211,33 @@ function ShoppingListing() {
           </div>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-4 p-4 md:p-4">
+
           {productList && productList.length > 0
             ? productList.map((productItem) => (
+              <>
                 <ShoppingProducttile
                   handleGetProductDetails={handleGetProductDetails}
                   key={productItem.title}
                   setOpen={setOpenDetailsDialouge}
                   product={productItem}
                   handleAddtoCart={handleAddtoCart}
+                  
                 />
+                <div className=" hidden ">
+                <ProductDetailsPage
+                  // open={openDetailsDialouge}
+                  // setOpen={setOpenDetailsDialouge}
+                  handleGetProductDetails
+                  productDetails={productDetails}
+                />
+                </div>
+                </>
               ))
             : null}
+         
         </div>
       </div>
-      <div className="">
-      <ProductDetailsDialogue
-        open={openDetailsDialouge}
-        setOpen={setOpenDetailsDialouge}
-        productDetails={productDetails}
-      />
-      </div>
+
      
     </div>
   );

@@ -2,12 +2,18 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import ProductDetailsPage from "./product-details";
  
 const ShoppingProducttile = ({ product, handleGetProductDetails, handleAddtoCart, setOpen }) => {
+  const navigate = useNavigate();
   return (
     <>
       <Card className="w-full max-w-sm mx-auto">
         <div onClick={()=>{handleGetProductDetails(product?._id) 
+       navigate(`/product-detail/${product._id}`)
+
+       
           setOpen(true)
         } } >
         <div  className="relative">
@@ -73,6 +79,14 @@ const ShoppingProducttile = ({ product, handleGetProductDetails, handleAddtoCart
         
         </CardFooter>
       </Card>
+      {/* <div className=" hidden ">
+      <ProductDetailsPage
+        // open={openDetailsDialouge}
+        // setOpen={setOpenDetailsDialouge}
+        handleGetProductDetails
+        productDetails={product}
+      />
+      </div> */}
     </>
   );
 };

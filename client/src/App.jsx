@@ -24,6 +24,7 @@ import PaypalCancelPage from "./pages/shopping-view/payment-cancel";
 import PaymentCancelPage from "./pages/shopping-view/payment-cancel";
 import SearchPage from "./pages/shopping-view/search";
 import ScrollToTop from "./config/scroll";
+import ProductDetailsPage from "./pages/shopping-view/product-details";
 
 const App = () => {
   const { isAuthenticated, isLoading, user } = useSelector(
@@ -70,28 +71,20 @@ const App = () => {
           </Route>
 
           <Route
-            path="/"
-            element={
+  path="/"
+  element={<ShoppingLayout />}
+>
+  <Route path="account" element={ <CheckAuth isAuthenticated={isAuthenticated} user={user}><ShoppingAccount /></CheckAuth>} />
+  <Route path="checkout" element={ <CheckAuth isAuthenticated={isAuthenticated} user={user}><ShoppingCheckout /></CheckAuth>} />
+  <Route path="listing" element={<ShoppingListing />} />
+  <Route path="product-detail/:id" element={<ProductDetailsPage />} />
+  <Route path="paypal-return" element={<PayPalReturnPage />} />
+  <Route path="esewa-return" element={<EsewaReturnPage />} />
+  <Route path="payment-success" element={<PaymentSuccessPage />} />
+  <Route path="payment-cancel" element={<PaymentCancelPage />} />
+  <Route path="search" element={<SearchPage />} />
+</Route>
             
-                <ShoppingLayout />
-                
-              
-            }
-          >
-            <Route path="account" element={ <CheckAuth isAuthenticated={isAuthenticated} user={user}>
-            <ShoppingAccount />
-              </CheckAuth>} />
-            <Route path="checkout" element={ <CheckAuth isAuthenticated={isAuthenticated} user={user}>
-            <ShoppingCheckout />
-              </CheckAuth>} />
-            <Route path="listing" element={<ShoppingListing />} />
-            <Route path="/" element={<ShoppingHome />} />
-            <Route path="paypal-return" element={<PayPalReturnPage />} />
-            <Route path="esewa-return" element={<EsewaReturnPage />} />
-            <Route path="payment-success" element={<PaymentSuccessPage />} />
-            <Route path="payment-cancel" element={<PaymentCancelPage />} />
-            <Route path="search" element={<SearchPage  />} />
-          </Route>
           <Route path="/unauth" element={<UnAuthPage />} />
         </Routes>
       </div>
