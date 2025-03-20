@@ -75,8 +75,9 @@ const App = () => {
   element={<ShoppingLayout />}
 >
   <Route path="account" element={ <CheckAuth isAuthenticated={isAuthenticated} user={user}><ShoppingAccount /></CheckAuth>} />
-  <Route path="checkout" element={ <CheckAuth isAuthenticated={isAuthenticated} user={user}><ShoppingCheckout /></CheckAuth>} />
+  <Route path="checkout" element={ <CheckAuth isAuthenticated={isAuthenticated} user={user}><ShoppingCheckout /></CheckAuth>} /> 
   <Route path="listing" element={<ShoppingListing />} />
+  <Route path="/" element={<ShoppingHome />} />
   <Route path="product-detail/:id" element={<ProductDetailsPage />} />
   <Route path="paypal-return" element={<PayPalReturnPage />} />
   <Route path="esewa-return" element={<EsewaReturnPage />} />

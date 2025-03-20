@@ -10,7 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 
 const UserCartItemsContent = ({ cartItem }) => {
   const { user } = useSelector((state) => state.auth);
-  const { cartItems } = useSelector(state => state.shoppingCart);
+  // const { cartItem } = useSelector(state => state.shoppingCart);
   const { productList } = useSelector((state) => state.shoppingProducts);
   const dispatch = useDispatch();
   const { toast } = useToast();

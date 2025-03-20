@@ -28,33 +28,27 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import ProductDetailsPage from "./product-details";
 
-
-
-
-
-
-
 function ShoppingListing() {
   const { productList, productDetails } = useSelector(
     (state) => state.shoppingProducts
   );
-  
+
   const dispatch = useDispatch();
   const [filters, setFilters] = useState({});
   const [sort, setSort] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const [openDetailsDialouge, setOpenDetailsDialouge] = useState(false);
   const { user } = useSelector((state) => state.auth);
-  const {cartItems} = useSelector((state) => state.shoppingCart);
+  const { cartItems } = useSelector((state) => state.shoppingCart);
   console.log(cartItems, "CartItems");
   const { toast } = useToast();
-
-  const categorySearchParams = searchParams.get('category')
+ 
+  const categorySearchParams = searchParams.get("category");
 
   function handleGetProductDetails(getCurrentProductId) {
     dispatch(fetchProductDetails(getCurrentProductId));
   }
- 
+
   function createSearchParamsHelper(filterParams) {
     const queryParams = [];
 
@@ -102,22 +96,27 @@ function ShoppingListing() {
   }
 
   function handleAddtoCart(getCurrentProductId, getTotalStock) {
-   
-    
-   
-
+    if(!user) {
+      toast({
+        title: "Please Login to procedd",
+        variant: "destructive"
+      })
+      return;
+    }
     let getCartItems = cartItems.items || [];
-    if(getCartItems.length) {
-      const indexOfCurrentItem = getCartItems.findIndex((item) => item.productId === getCurrentProductId);
-       
-      if(indexOfCurrentItem > -1) {
+    if (getCartItems.length) {
+      const indexOfCurrentItem = getCartItems.findIndex(
+        (item) => item.productId === getCurrentProductId
+      );
+
+      if (indexOfCurrentItem > -1) {
         const getQuantity = getCartItems[indexOfCurrentItem].quantity;
-        if(getQuantity +1 > getTotalStock){
+        if (getQuantity + 1 > getTotalStock) {
           toast({
             title: `Only ${getQuantity} items can be added for this product`,
             variant: "destructive",
             duration: 2000,
-          })
+          });
           return;
         }
       }
@@ -134,7 +133,7 @@ function ShoppingListing() {
         dispatch(fetchCartItems(user?.id));
         toast({
           title: "Product Added to the Cart!",
-          duration: 1500
+          duration: 1500,
         });
       }
     });
@@ -168,16 +167,16 @@ function ShoppingListing() {
     }
   }, [dispatch, sort, filters]);
 
-  console.log(productList, "productlist stock")
+  console.log(productList, "productlist stock");
 
   console.log(cartItems, "CartItems");
 
   const navigate = useNavigate();
   return (
     <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-6 p-4 md:p-6">
-     <div className="hidden md:block">
-     <ProductFilter  filters={filters} handleFilter={handleFilter} />
-     </div>
+      <div className="hidden md:block">
+        <ProductFilter filters={filters} handleFilter={handleFilter} />
+      </div>
       <div className="bg-background w-full rounded-lg shadow-lg">
         <div className="p-4 border-b flex item-center justify-between">
           <h2 className="text-sm  md:text-lg font-extrabold">All Products</h2>
@@ -211,34 +210,19 @@ function ShoppingListing() {
           </div>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-4 p-4 md:p-4">
-
           {productList && productList.length > 0
             ? productList.map((productItem) => (
-              <>
                 <ShoppingProducttile
                   handleGetProductDetails={handleGetProductDetails}
                   key={productItem.title}
                   setOpen={setOpenDetailsDialouge}
                   product={productItem}
                   handleAddtoCart={handleAddtoCart}
-                  
                 />
-                <div className=" hidden ">
-                <ProductDetailsPage
-                  // open={openDetailsDialouge}
-                  // setOpen={setOpenDetailsDialouge}
-                  handleGetProductDetails
-                  productDetails={productDetails}
-                />
-                </div>
-                </>
               ))
             : null}
-         
         </div>
       </div>
-
-     
     </div>
   );
 }
