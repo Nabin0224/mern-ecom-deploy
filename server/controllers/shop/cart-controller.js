@@ -50,7 +50,7 @@ const fetchCartItems = async (req, res) => {
   try {
     const { userId } = req.params;
     
-    console.log(userId, "Received UserId")
+   
 
     if (!userId || userId === "undefined") {
       return res.status(404).json({

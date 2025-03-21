@@ -29,6 +29,7 @@ const EsewaReturnPage = () => {
           }).then(()=>{
             dispatch(verifyEsewaPayment()).then((data)=>{
                if(data?.payload?.success){
+                console.log(data?.payload)
                 console.log(data, "final sucess")
                }
             })

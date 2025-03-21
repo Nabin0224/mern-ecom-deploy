@@ -7,6 +7,7 @@ const crypto = require("crypto"); // from hashing
 const { v4: uuidv4 } = require("uuid"); // for unique transaction_uuid
 const axios = require("axios");
 const Cart = require('../../models/Cart')
+const Product = require("../../models/products")
 
 const ESEWA_SECRET_KEY = process.env.ESEWA_SECRET_KEY;
 const SUCCESS_URL =  process.env.SUCCESS_URL;
@@ -38,7 +39,7 @@ const createEsewaOrder = async (req, res) => {
       cartId,
       
      } = req.body;
-     console.log(req.body," body before saving")
+     
 
     let transaction_uuid = uuidv4();
 
@@ -57,7 +58,7 @@ const createEsewaOrder = async (req, res) => {
           transaction_uuid : transaction_uuid
                 })
               
-    console.log(order ," body parts")
+   
     await order.save();
 
     const signed_field_names = "total_amount,transaction_uuid,product_code";
@@ -147,7 +148,7 @@ const captureEsewaOrder = async (req, res) => {
 const verifyEsewaPayment = async (req, res) => {
   try {
     const transaction = await EsewaOrder.findOne().sort({ _id: -1 }); // finding the lastest created document in the collection
-    
+    console.log("reached in verify ok")
     if (!transaction) {
       return res.status(400).json({
         success: false,
@@ -155,9 +156,13 @@ const verifyEsewaPayment = async (req, res) => {
       });
     }
 
-    // deleting the cart item after order is placed 
-    const getCart = transaction.cartId;
-    await Cart.findByIdAndDelete(getCart);
+    //managing out of stock and cart quantity decrease
+ console.log("transaction in verify", transaction)
+    for(let item of transaction.cartItem) {
+    let product = await Product.findById(item.productId)
+    }
+
+
     const transaction_uuid = transaction?.transaction_uuid;
     
     // eSewa API call 
@@ -178,6 +183,25 @@ const verifyEsewaPayment = async (req, res) => {
     transaction.ref_id = ref_id;
     transaction.orderStatus = status;
     transaction.paymentStatus = "paid"
+
+
+
+    for(let item of transaction.cartItem) {
+      let product = await Product.findById(item.productId)
+
+      if(!product) {
+        return res.status(404).json({
+          success: false,
+          messsage:  ` Not enough stock for this product ${product.title}`,
+      })
+        
+      }
+      product.totalStock -= item.quantity
+      await product.save();
+    }
+        // deleting the cart item after order is placed 
+        const getCart = transaction.cartId;
+        await Cart.findByIdAndDelete(getCart);
     
     //Saving the updated document
     await transaction.save()
@@ -199,8 +223,8 @@ const getAllOrdersByUser = async(req, res)=> {
  try {
   const { userId } = req.params;
   const order = await EsewaOrder.find({userId});
-  console.log(req.params, "params");
-  console.log(order)
+
+
 
  
   if(order.length === 0) {
@@ -209,7 +233,7 @@ const getAllOrdersByUser = async(req, res)=> {
       message: "Order not found in getAllOrdersByUser of esewa!",
     })
   }
-  console.log(order, "allordersbyuser")
+
   return res.status(200).json({
     success: true,
     data: order

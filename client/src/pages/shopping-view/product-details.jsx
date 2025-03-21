@@ -28,61 +28,205 @@ const ProductDetailsPage = () => {
   const { productList, productDetails } = useSelector(
     (state) => state.shoppingProducts
   );
-  const [count , setCount] = useState(1)
+  const [count, setCount] = useState(1);
+  console.log(count,"count")
 
   console.log(productId);
+  const cartItemDetails =
+  cartItems?.items?.find((item) => item?.productId == productDetails?._id) ?? null;
 
   useEffect(() => {
     dispatch(fetchCartItems(user?.id));
-  }, []);
+  }, [user, productId]);
 
   useEffect(() => {
     dispatch(fetchProductDetails(productId.id));
-  }, []);
+  }, [user, productId]);
+  useEffect(() => {
+    if (cartItemDetails) {
+      setCount(cartItemDetails.quantity);
+    }
+  }, [cartItemDetails]);
 
- 
 
-    
-  const cartItemDetails =
-  cartItems && cartItems?.items
-  ? cartItems?.items.find((item) => item?.productId == productDetails?._id)
-  : null;
-  
-  
   // const cartItem = cartItems?.items?.find((item) => item?.productId === productDetails?._id);
-  
+
   console.log("All cart items  ", cartItems);
   console.log("product details ok  ", productDetails);
-  console.log("one cart item ok  ",cartItemDetails );
+  console.log("one cart item ok  ", cartItemDetails);
 
-  function handleAddtoCart(getCurrentProductId, getTotalStock) {
-    console.log(formData, "form data from another comp");
+//   function handleAddtoCart(getCurrentProductId, getTotalStock) {
+//     // console.log(formData, "form data from another comp");
 
-    let finalQuantity = count > 0 ? count : 1
-    let getCartItems = cartItems.items || [];
+//     let finalQuantity = count > 1 ? count : 1;
+//     let getCartItems = cartItems.items || [];
+//     console.log(getCartItems, "getCartItems")
 
-    if (getCartItems.length) {
-      const indexOfCurrentItem = getCartItems.findIndex(
-        (item) => item.productId === getCurrentProductId
-      );
+//     if (getCartItems.length) {
+//       const indexOfCurrentItem = getCartItems.findIndex(
+//         (item) => item.productId === getCurrentProductId
+//       );
+//  console.log(indexOfCurrentItem,"indexOfCurrentItem")
+//  console.log(getTotalStock,"totalstock")
+ 
+//       if (indexOfCurrentItem > -1) {
+//         const getQuantity = getCartItems[indexOfCurrentItem].quantity;
+//         console.log(getQuantity,"getQuantity")
+//         if (getQuantity + 1 > getTotalStock) {
+//           toast({
+//             title: `Only ${getQuantity} items can be added for this product`,
+//             variant: "destructive",
+//             duration: 2000,
+//           });
+//           return;
+//         }
+//       }
+//     }
+//     dispatch(
+//       addToCart({
+//         userId: user?.id,
+//         productId: getCurrentProductId,
+//         quantity: finalQuantity,
+//       })
+//     ).then((data) => {
+//       if (data?.payload?.success) {
+//         dispatch(fetchCartItems(user?.id));
+//         toast({
+//           title: "Product Added to the Cart",
+//           duration: 2000,
+//         });
+//       }
+//     });
+//   }
+// function handleAddtoCart(getCurrentProductId, getTotalStock) {
+//   let finalQuantity = count > 1 ? count : 1;
+//   let getCartItems = cartItems?.items || [];
 
-      if (indexOfCurrentItem > -1) {
-        const getQuantity = getCartItems[indexOfCurrentItem].quantity;
-        if (getQuantity + 1 > getTotalStock) {
-          toast({
-            title: `Only ${getQuantity} items can be added for this product`,
-            variant: "destructive",
-            duration: 2000,
-          });
-          return;
-        }
-      }
+//   // Check if the product is already in the cart
+//   const existingCartItem = getCartItems.find(
+//     (item) => item.productId === getCurrentProductId
+//   );
+
+//   console.log(existingCartItem, "Existing Cart Item");
+
+//   if (existingCartItem) {
+//     // If the item exists, update the quantity instead of adding a new one
+//     const updatedQuantity = existingCartItem.quantity + finalQuantity;
+
+//     if (updatedQuantity > getTotalStock) {
+//       toast({
+//         title: `Only ${getTotalStock} items can be added for this product`,
+//         variant: "destructive",
+//         duration: 2000,
+//       });
+//       return;
+//     }
+
+//     dispatch(
+//       updateCartQuantity({
+//         userId: user?.id,
+//         productId: getCurrentProductId,
+//         quantity: updatedQuantity,
+//       })
+//     ).then(() => {
+//       dispatch(fetchCartItems(user?.id));
+//       toast({
+//         title: "Cart updated successfully",
+//         duration: 2000,
+//       });
+//     });
+//   } else {
+//     // If the item does not exist, add it normally
+//     dispatch(
+//       addToCart({
+//         userId: user?.id,
+//         productId: getCurrentProductId,
+//         quantity: finalQuantity,
+//       })
+//     ).then((data) => {
+//       if (data?.payload?.success) {
+//         dispatch(fetchCartItems(user?.id));
+//         toast({
+//           title: "Product Added to the Cart",
+//           duration: 2000,
+//         });
+//       }
+//     });
+//   }
+// }
+
+
+function handleAddtoCart(getCurrentProductId, getTotalStock) {
+  let finalQuantity = count > 1 ? count : 1;
+  let getCartItems = cartItems?.items || [];
+
+  // Check if the product is already in the cart
+  const existingCartItem = getCartItems.find(
+    (item) => item.productId === getCurrentProductId
+  );
+
+  console.log(existingCartItem, "Existing Cart Item");
+
+  if (existingCartItem) {
+    // If the item exists, update the quantity instead of adding a new one
+    // const updatedQuantity = existingCartItem.quantity + finalQuantity;
+
+    // If the item exists, update the quantity instead of adding a new one
+const updatedQuantity = finalQuantity; // Instead of adding, directly replace it
+
+if (updatedQuantity > getTotalStock) {
+  toast({
+    title: `Only ${getTotalStock} items can be added for this product`,
+    variant: "destructive",
+    duration: 2000,
+  });
+  return;
+}
+
+dispatch(
+  updateCartQuantity({
+    userId: user?.id,
+    productId: getCurrentProductId,
+    quantity: updatedQuantity, // Directly set the new quantity
+  })
+).then(() => {
+  dispatch(fetchCartItems(user?.id));
+  toast({
+    title: "Cart updated successfully",
+    duration: 2000,
+  });
+});
+
+    dispatch(
+      updateCartQuantity({
+        userId: user?.id,
+        productId: getCurrentProductId,
+        quantity: updatedQuantity,
+      })
+    ).then(() => {
+      dispatch(fetchCartItems(user?.id));
+      toast({
+        title: "Cart updated successfully",
+        duration: 2000,
+      });
+    });
+  } else {
+    // **NEW ENTRY CHECK**: Ensure quantity does not exceed stock
+    if (finalQuantity > getTotalStock) {
+      toast({
+        title: `Only ${getTotalStock} items are available in stock`,
+        variant: "destructive",
+        duration: 2000,
+      });
+      return;
     }
+
+    // If the item does not exist, add it normally
     dispatch(
       addToCart({
         userId: user?.id,
         productId: getCurrentProductId,
-        quantity : finalQuantity
+        quantity: finalQuantity,
       })
     ).then((data) => {
       if (data?.payload?.success) {
@@ -94,45 +238,45 @@ const ProductDetailsPage = () => {
       }
     });
   }
+}
+  function handleCartQuantity(getCartItem, typeofAction) {
+    if (!getCartItem) return;
+    if (getCartItem) {
+      const updatedQuantity =
+        typeofAction === "plus"
+          ? getCartItem?.quantity + 1
+          : getCartItem?.quantity - 1;
 
-  function handleCartQuantity(getCartItem, productItem,  typeofAction) {
-    if(!getCartItem) return;
-   if(getCartItem) {
-    const updatedQuantity =
-      typeofAction === "plus"
-        ? getCartItem?.quantity + 1
-        : getCartItem?.quantity - 1;
-
-
-    // If the action is "plus", make sure there's enough stock
-    if (typeofAction === "plus") {
-      const getCurrentProductIndex = productList.findIndex(
-        (item) => item._id === getCartItem?.productId
-      );
-      if (getCurrentProductIndex !== -1) {
-        const getTotalStock = productList[getCurrentProductIndex].totalStock;
-        if (updatedQuantity > getTotalStock) {
-          toast({
-            title: `Only ${getTotalStock} items can be added`,
-            variant: "destructive",
-            duration: 2000,
-          });
-          return;
+      // If the action is "plus", make sure there's enough stock
+      if (typeofAction === "plus") {
+        const getCurrentProductIndex = productList.findIndex(
+          (item) => item._id === getCartItem?.productId
+        );
+        if (getCurrentProductIndex !== -1) {
+          const getTotalStock = productList[getCurrentProductIndex].totalStock;
+          if (updatedQuantity > getTotalStock) {
+            toast({
+              title: `Only ${getTotalStock} items can be added`,
+              variant: "destructive",
+              duration: 2000,
+            });
+            return;
+          }
         }
+      } else {
       }
-    }
-    else{
-      
-    }
 
-    dispatch(
-      updateCartQuantity({
-        userId: user?.id,
-        productId: getCartItem?.productId,
-        quantity: updatedQuantity,
-      })
-    );
-  }
+      dispatch(
+        updateCartQuantity({
+          userId: user?.id,
+          productId: getCartItem?.productId,
+          quantity: updatedQuantity,
+        })
+      ).then(() => {
+        // Ensure cart is refetched after update
+        dispatch(fetchCartItems(user?.id));
+      });
+    }
   }
 
   return (
@@ -177,12 +321,21 @@ const ProductDetailsPage = () => {
           <h2>Quantity :</h2>
         </div>
         <div className="flex items-center gap-2 mt-2">
+          {/* Minus button */}
+
           <Button
-            onClick={() => handleCartQuantity(cartItemDetails, productDetails, "minus")}
+            onClick={() => {
+              if (!cartItemDetails) {
+                setCount(count - 1);
+              } else {
+                handleCartQuantity(cartItemDetails, "minus");
+              }
+            }}
             variant="outline"
             className="h-6 w-6 rounded-sm"
             size="icon"
-            disabled={cartItems?.quantity === 1}
+            // disabled={ cartItemDetails?.quantity ===1  || count === 1}
+            disabled={cartItemDetails?.quantity <= 1 || (!cartItemDetails && count <= 1)}
           >
             <Minus className="w-4 h-4" strokeWidth={0.8} />
             <span className="sr-only">Decrease</span>
@@ -190,18 +343,16 @@ const ProductDetailsPage = () => {
           <span className=" font-extralight md:font-semibold text-sm mt-1">
             {cartItemDetails?.quantity ?? count}
           </span>
+
+          {/* Plus button?\ */}
           <Button
             onClick={() => {
-
-             if(!cartItemDetails) {
-              setCount(count +1)
-             }else{
-              handleAddtoCart(cartItemDetails, "plus");
-             }
-            
-}
-
-            }
+              if (!cartItemDetails) {
+                setCount(count + 1);
+              } else {
+                handleCartQuantity(cartItemDetails, "plus");
+              }
+            }}
             variant="outline"
             className="h-6 w-6 rounded-sm"
             size="icon"
@@ -211,32 +362,6 @@ const ProductDetailsPage = () => {
           </Button>
         </div>
 
-        {/* <Accordion type="single" collapsible className="w-full mt-6">
-          <AccordionItem value="item-1">
-            <AccordionTrigger className="font-thin text-md md:text-2xl text-black/60 tracking-wide hover:no-underline focus:no-underline">
-              Exchange Policy
-            </AccordionTrigger>
-            <AccordionContent>
-              <p className="font-extraligh text-muted-foreground text-md md:text-lg">
-                This is a exchange and return policy compiling to our store
-              </p>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
-        <Separator className="w-full bg-black/20" />
-        <Accordion type="single" collapsible className="w-full mt-6">
-          <AccordionItem value="item-1">
-            <AccordionTrigger className="font-thin text-md md:text-2xl text-black/60 tracking-wide hover:no-underline focus:no-underline">
-              Return and Refund Policy
-            </AccordionTrigger>
-            <AccordionContent>
-              <p className="font-extraligh text-muted-foreground text-md md:text-lg">
-                This is a exchange and return policy compiling to our store
-              </p>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
-        <Separator className="w-full bg-black/20" /> */}
         <Accordion type="single" collapsible className="w-full mt-6 mb-4">
           <AccordionItem value="item-1">
             <AccordionTrigger className="font-thin text-md md:text-2xl text-black/60 tracking-wide  hover:no-underline focus:no-underline">

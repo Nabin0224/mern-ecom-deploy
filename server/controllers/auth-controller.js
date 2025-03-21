@@ -54,7 +54,7 @@ const getRegister = async (req, res) => {
 const loginUser = async (req, res) => {
   try {
     const { email, password, userName} = req.body;
-    console.log("req body in login", req.body)
+   
    
     const existingUser = await User.findOne({ email });
     if (!existingUser)

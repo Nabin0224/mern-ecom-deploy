@@ -1,5 +1,7 @@
 const CodOrder = require("../../models/CodOrder");
-const Cart = require("../../models/Cart")
+const Cart = require("../../models/Cart");
+const EsewaOrder = require("../../models/EsewaOrder");
+const Product = require("../../models/products")
 
 
 const createCodOrder = async(req, res)=> {
@@ -12,9 +14,28 @@ const createCodOrder = async(req, res)=> {
                 message: "Form Data should be vaild and not be empty!"
             })
         }
-        console.log("formData in createCodOrder", formData);
+        
 
         const order = await new CodOrder(formData);
+
+
+
+
+        //managing out of stock feature 
+
+        for(let item of order.cartItem) {
+            let product = await Product.findById(item.productId)
+            
+            if(!product) {
+                return res.status(404).json({
+                    success: false,
+                    messsage:  ` Not enough stock for this product ${product.title}`,
+                })
+            }
+            product.totalStock -= item.quantity
+            await product.save() 
+        }
+
         //deleting cartItem 
 
         const getCartId = order.cartId
@@ -49,7 +70,7 @@ const getAllOrdersByUser = async(req, res) => {
                 message: "UserId not received!"
             })
         }
-        console.log("userId in getAllOrdersByUser in Cod", userId)
+        ("userId in getAllOrdersByUser in Cod", userId)
 
         const order = await CodOrder.find({userId});
         
@@ -60,7 +81,7 @@ const getAllOrdersByUser = async(req, res) => {
             })
             
         }
-        console.log("All orders by user in cod", order)
+        
 
         return res.status(200).json({
             success: true,
@@ -96,7 +117,7 @@ const getOrderDetails = async(req, res)=> {
             })
         }
 
-        console.log("order details in cod", order)
+        
         
         res.status(200).json({
             success: true,

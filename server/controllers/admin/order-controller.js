@@ -45,7 +45,7 @@ try {
 const getOrderDetailsForAdmin = async(req, res)=> {
   try{
   const {id} = req.params;
-  console.log("id in admin detials ok ", id)
+  
 
   const order = await Order.findById(id) || await EsewaOrder.findById(id) || await CodOrder.findById(id);
   if(!order){
@@ -54,8 +54,7 @@ const getOrderDetailsForAdmin = async(req, res)=> {
        message: "No order details found in paypal!"
     })
   }
-  console.log("order details in admin")
-  console.log("real order detials in admin", order)
+  
     return res.status(200).json({
       success: true,
       data: order

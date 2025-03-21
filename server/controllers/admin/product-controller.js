@@ -34,7 +34,7 @@ const addProduct = async (req, res) => {
         salePrice,
         totalStock,
       } = req.body;
-    console.log(req.body)
+    
       const newlyCreatedProduct = new Product({
         image,
         title,
@@ -85,7 +85,7 @@ const editProduct = async (req, res) => {
   try {
 
     const {id} =req.params
-    console.log(id, "id")
+    
 
     const findProduct = await Product.findById(id);
 
