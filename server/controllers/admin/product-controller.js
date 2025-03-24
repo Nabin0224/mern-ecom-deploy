@@ -33,6 +33,7 @@ const addProduct = async (req, res) => {
         price,
         salePrice,
         totalStock,
+        colors
       } = req.body;
     
       const newlyCreatedProduct = new Product({
@@ -44,6 +45,7 @@ const addProduct = async (req, res) => {
         price,
         salePrice,
         totalStock,
+        colors,
       });
 
       await newlyCreatedProduct.save();

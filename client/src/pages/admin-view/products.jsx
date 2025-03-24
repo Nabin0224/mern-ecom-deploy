@@ -26,6 +26,7 @@ const initialFormData = {
   price: "",
   salePrice: "",
   totalStock: "",
+  colors:[],
 };
 
 const AdminProducts = () => {
@@ -69,6 +70,7 @@ const AdminProducts = () => {
           addNewProduct({
             ...formData,
             image: uploadedImageUrl,
+            totalStock: formData.colors.reduce((sum, item) => sum + item.quantity, 0)
           })
         ).then((data) => {
           if (data?.payload?.success) {

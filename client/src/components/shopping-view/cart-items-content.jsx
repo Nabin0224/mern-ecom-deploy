@@ -72,6 +72,7 @@ const UserCartItemsContent = ({ cartItem }) => {
       />
       <div className="flex-1">
         <h3 className="font-normal md:font-bold">{cartItem?.title}</h3>
+        
         <div className="flex items-center gap-2 mt-2">
           <Button
             onClick={() => handleCartQuantity(cartItem, "minus")}
@@ -99,6 +100,13 @@ const UserCartItemsContent = ({ cartItem }) => {
         </div>
       </div>
       <div className="flex flex-col items-end gap-1">
+        <div className="flex items-center">
+        <p className="font-extralight text-xs">Color:</p>
+      
+        <div className='w-3 h-3 rounded-full' style ={{backgroundColor: cartItem?.color }}>
+        </div>
+        </div>
+      
         <p className="text-sm md:text-md font-extralight">
           Rs
           {(

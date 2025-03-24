@@ -1,5 +1,5 @@
 import { Input } from "../../components/ui/input";
-import { Label } from "../../components/ui/label"
+import { Label } from "../../components/ui/label";
 import {
   Select,
   SelectContent,
@@ -39,8 +39,8 @@ function CommonForm({
             }
           />
         );
-
         break;
+
       case "select":
         element = (
           <Select
@@ -56,18 +56,16 @@ function CommonForm({
               <SelectValue placeholder={getControlItem.label} />
             </SelectTrigger>
             <SelectContent>
-              {getControlItem.options && getControlItem.options.length > 0
-                ? getControlItem.options.map((optionItem) => (
-                    <SelectItem key={optionItem.id} value={optionItem.id}>
-                      {optionItem.label}
-                    </SelectItem>
-                  ))
-                : null}
+              {getControlItem.options.map((optionItem) => (
+                <SelectItem key={optionItem.id} value={optionItem.id}>
+                  {optionItem.label}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         );
-
         break;
+
       case "textarea":
         element = (
           <Textarea
@@ -83,7 +81,95 @@ function CommonForm({
             }
           />
         );
+        break;
 
+      case "color-quantity":
+        element = (
+          <div className="flex flex-col gap-2">
+            {/* Dropdown to Select Colors */}
+            <Select
+              onValueChange={(selectedColorId) => {
+                const selectedColor = getControlItem.options.find(
+                  (color) => color.id === selectedColorId
+                );
+
+                if (
+                  selectedColor &&
+                  !formData.colors.some((c) => c.colorName === selectedColor.label)
+                ) {
+                  setFormData({
+                    ...formData,
+                    colors: [
+                      ...(formData.colors || []),
+                      {
+                        colorName: selectedColor.label,
+                        code: selectedColor.code,
+                        quantity: 0,
+                      },
+                    ],
+                  });
+                }
+              }}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select Color" />
+              </SelectTrigger>
+              <SelectContent>
+                {getControlItem.options.map((color) => (
+                  <SelectItem key={color.id} value={color.id}>
+                    <div className="flex items-center gap-2">
+                      <span
+                        className="w-4 h-4 rounded-full border border-gray-300"
+                        style={{ backgroundColor: color.code }}
+                      ></span>
+                      {color.label}
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            {/* List of Selected Colors with Quantity Input */}
+            {formData.colors.length > 0 &&
+              formData.colors.map((color, index) => (
+                <div
+                  key={index}
+                  className="flex items-center gap-3 border p-2 rounded-lg"
+                >
+                  <div className="flex items-center gap-2">
+                    <span
+                      className="w-4 h-4 rounded-full border border-gray-300"
+                      style={{ backgroundColor: color.code }}
+                    ></span>
+                    <span className="font-semibold">{color.colorName}</span>
+                  </div>
+                  <Input
+                    type="number"
+                    placeholder="Quantity"
+                    value={color.quantity}
+                    onChange={(event) => {
+                      const newColors = [...formData.colors];
+                      newColors[index].quantity =
+                        parseInt(event.target.value, 10) || 0;
+                      setFormData({ ...formData, colors: newColors });
+                    }}
+                  />
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    onClick={() => {
+                      setFormData({
+                        ...formData,
+                        colors: formData.colors.filter((_, i) => i !== index),
+                      });
+                    }}
+                  >
+                    Remove
+                  </Button>
+                </div>
+              ))}
+          </div>
+        );
         break;
 
       default:

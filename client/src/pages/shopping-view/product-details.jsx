@@ -25,20 +25,22 @@ const ProductDetailsPage = () => {
   const { user } = useSelector((state) => state.auth);
   const { formData } = useSelector((state) => state.esewaOrders);
   const { cartItems } = useSelector((state) => state.shoppingCart);
+  const [ cartColor, setCartColor ] = useState("")
+  
   const { productList, productDetails } = useSelector(
     (state) => state.shoppingProducts
   );
   const [count, setCount] = useState(1);
   console.log(count,"count")
-
+  
   console.log(productId);
   const cartItemDetails =
   cartItems?.items?.find((item) => item?.productId == productDetails?._id) ?? null;
-
+  
   useEffect(() => {
     dispatch(fetchCartItems(user?.id));
   }, [user, productId]);
-
+  
   useEffect(() => {
     dispatch(fetchProductDetails(productId.id));
   }, [user, productId]);
@@ -47,115 +49,15 @@ const ProductDetailsPage = () => {
       setCount(cartItemDetails.quantity);
     }
   }, [cartItemDetails]);
-
-
+  
+  
   // const cartItem = cartItems?.items?.find((item) => item?.productId === productDetails?._id);
-
+  
   console.log("All cart items  ", cartItems);
   console.log("product details ok  ", productDetails);
   console.log("one cart item ok  ", cartItemDetails);
-
-//   function handleAddtoCart(getCurrentProductId, getTotalStock) {
-//     // console.log(formData, "form data from another comp");
-
-//     let finalQuantity = count > 1 ? count : 1;
-//     let getCartItems = cartItems.items || [];
-//     console.log(getCartItems, "getCartItems")
-
-//     if (getCartItems.length) {
-//       const indexOfCurrentItem = getCartItems.findIndex(
-//         (item) => item.productId === getCurrentProductId
-//       );
-//  console.log(indexOfCurrentItem,"indexOfCurrentItem")
-//  console.log(getTotalStock,"totalstock")
- 
-//       if (indexOfCurrentItem > -1) {
-//         const getQuantity = getCartItems[indexOfCurrentItem].quantity;
-//         console.log(getQuantity,"getQuantity")
-//         if (getQuantity + 1 > getTotalStock) {
-//           toast({
-//             title: `Only ${getQuantity} items can be added for this product`,
-//             variant: "destructive",
-//             duration: 2000,
-//           });
-//           return;
-//         }
-//       }
-//     }
-//     dispatch(
-//       addToCart({
-//         userId: user?.id,
-//         productId: getCurrentProductId,
-//         quantity: finalQuantity,
-//       })
-//     ).then((data) => {
-//       if (data?.payload?.success) {
-//         dispatch(fetchCartItems(user?.id));
-//         toast({
-//           title: "Product Added to the Cart",
-//           duration: 2000,
-//         });
-//       }
-//     });
-//   }
-// function handleAddtoCart(getCurrentProductId, getTotalStock) {
-//   let finalQuantity = count > 1 ? count : 1;
-//   let getCartItems = cartItems?.items || [];
-
-//   // Check if the product is already in the cart
-//   const existingCartItem = getCartItems.find(
-//     (item) => item.productId === getCurrentProductId
-//   );
-
-//   console.log(existingCartItem, "Existing Cart Item");
-
-//   if (existingCartItem) {
-//     // If the item exists, update the quantity instead of adding a new one
-//     const updatedQuantity = existingCartItem.quantity + finalQuantity;
-
-//     if (updatedQuantity > getTotalStock) {
-//       toast({
-//         title: `Only ${getTotalStock} items can be added for this product`,
-//         variant: "destructive",
-//         duration: 2000,
-//       });
-//       return;
-//     }
-
-//     dispatch(
-//       updateCartQuantity({
-//         userId: user?.id,
-//         productId: getCurrentProductId,
-//         quantity: updatedQuantity,
-//       })
-//     ).then(() => {
-//       dispatch(fetchCartItems(user?.id));
-//       toast({
-//         title: "Cart updated successfully",
-//         duration: 2000,
-//       });
-//     });
-//   } else {
-//     // If the item does not exist, add it normally
-//     dispatch(
-//       addToCart({
-//         userId: user?.id,
-//         productId: getCurrentProductId,
-//         quantity: finalQuantity,
-//       })
-//     ).then((data) => {
-//       if (data?.payload?.success) {
-//         dispatch(fetchCartItems(user?.id));
-//         toast({
-//           title: "Product Added to the Cart",
-//           duration: 2000,
-//         });
-//       }
-//     });
-//   }
-// }
-
-
+  const [selectedColor, setSelectedColor] = useState(productDetails?.colors[0]?.code);
+  
 function handleAddtoCart(getCurrentProductId, getTotalStock) {
   let finalQuantity = count > 1 ? count : 1;
   let getCartItems = cartItems?.items || [];
@@ -227,6 +129,8 @@ dispatch(
         userId: user?.id,
         productId: getCurrentProductId,
         quantity: finalQuantity,
+        color:  selectedColor
+        
       })
     ).then((data) => {
       if (data?.payload?.success) {
@@ -316,6 +220,23 @@ dispatch(
         </div>
         <div className="Color mb-6 md:mb-6">
           <h2>Color : </h2>
+           <div>
+           <div className="flex gap-2 mt-3">
+        {productDetails?.colors?.map((color) => (
+          <button
+            key={color.colorName}
+            className={`w-6 h-6 rounded-full border-2 ${
+              selectedColor === color.code ? "border-black" : "border-gray-300"
+            }`}
+            style={{ backgroundColor: color.code }}
+            onClick={() => {setSelectedColor(color.code)
+
+              
+            }}
+          />
+        ))}
+      </div>
+           </div>
         </div>
         <div className="Quantity  md:mb-6">
           <h2>Quantity :</h2>

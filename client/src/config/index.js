@@ -94,29 +94,20 @@ export const addProductFormElements = [
     placeholder: "Enter sale price (optional)",
   },
   {
-    label: "Total Stock",
-    name: "totalStock",
-    componentType: "input",
-    type: "number",
-    placeholder: "Enter total stock",
+    label: "Colors",
+    name: "colors",
+    componentType: "color-quantity",
+     options : [
+      { id: "red", label: "Red", code: "#FF0000" },
+      { id: "blue", label: "Blue", code: "#0000FF" },
+      { id: "green", label: "Green", code: "#008000" },
+      { id: "black", label: "Black", code: "#000000" },
+      { id: "white", label: "White", code: "#FFFFFF" },
+      { id: "pink", label: "Pink", code: "#FFC0CB" },
+      { id: "brown", label: "Brown", code: "#8B4513" },
+      { id: "light-brown", label: "Light Brown", code: "#D2B48C" },
+    ],
   },
-
-  // {
-  //   label: "Colors",
-  //   name: "colors",
-  //   componentType: "multi-select",
-  //   options: [
-  //     { id: "red", label: "Red" },
-  //     { id: "blue", label: "Blue" },
-  //     { id: "green", label: "Green" },
-  //     { id: "black", label: "Black" },
-  //     { id: "white", label: "White" },
-  //     { id: "pink", label: "Pink" },
-  //     { id: "brown", label: "Brown" },
-  //     { id: "light brown", label: "Light Brown" },
-      
-  //   ]
-  // }
 ];
 
 export const shoppingViewHeaderMenuItems = [

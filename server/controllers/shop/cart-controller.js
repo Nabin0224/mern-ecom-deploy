@@ -3,9 +3,10 @@ const Product = require("../../models/products");
 
 const addToCart = async (req, res) => {
   try {
-    const { userId, productId, quantity } = req.body;
+    const { userId, productId, quantity, color } = req.body;
+    console.log("cartItem",req.body)
 
-    if (!userId || !productId || quantity <= 0)
+    if (!userId || !productId || !color || quantity <= 0)
       return res.status(400).json({
         success: false,
         message: "Invalid data provided!",
@@ -27,7 +28,7 @@ const addToCart = async (req, res) => {
       (item) => item.productId.toString() === productId
     );
     if (findCurrentProductIndex === -1) {
-      cart.items.push({ productId, quantity });
+      cart.items.push({ productId, quantity, color });
     } else {
       cart.items[findCurrentProductIndex].quantity += quantity;
     }
@@ -86,6 +87,7 @@ const fetchCartItems = async (req, res) => {
       price: item.productId.price,
       salePrice: item.productId.salePrice,
       quantity: item.quantity,
+      color: item.color
     }));
     res.status(200).json({
       success: true,
@@ -147,6 +149,7 @@ const updateCartItems = async (req, res) => {
       price: item.productId ? item.productId.price : null,
       salePrice: item.productId ? item.productId.salePrice : null,
       quantity: item.quantity,
+      color: item.color
     }));
     res.status(200).json({
       data: {

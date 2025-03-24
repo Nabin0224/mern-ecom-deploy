@@ -9,6 +9,7 @@ import { Dialog } from "@radix-ui/react-dialog";
 import CustomProduct from "../../components/admin-view/custom-product";
 import { fetchAllFilteredProducts } from "../../../store/shop/product-slice/index";
 
+
 const CreateCustomOrder = () => {
   const { productList } = useSelector(state => state.shoppingProducts)
   const dispatch = useDispatch();
@@ -19,6 +20,7 @@ const CreateCustomOrder = () => {
 function handleFetchProducts() {
   dispatch(fetchAllFilteredProducts({ filterParams: {}, sortParams: {} }));
   console.log("Product List",  productList)
+  console.log("setItems",items)
 }
   const {
     register,
@@ -45,12 +47,12 @@ function handleFetchProducts() {
       paymentMethod: "cod",
       paymentStatus: data.paymentStatus,
       totalAmount: data.delivery_charge,
-      orderData: new Date(),
+      orderDate:  new Date(),
     };
   
 
     console.log("formattedData", formattedData);
-    
+    setItems([])
     dispatch(createOrder(formattedData)).then((data)=> {
       if(data.payload) {
         console.log("Custom order successfully created")

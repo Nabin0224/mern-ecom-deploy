@@ -2,7 +2,7 @@ const CustomerOrder = require("../../models/CustomOrder");
 
 const createOrder = async(req, res) => {
 try {
-    const formData  = req.body;
+    const {formData}  = req.body;
     if(!formData) {
         return res.status(404).json({
             success: false,

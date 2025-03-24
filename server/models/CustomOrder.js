@@ -17,14 +17,18 @@ const CustomOrderSchema = new mongoose.Schema({
             title: String,
             image: String,
             price: String,
-            quantity: String,
+            quantity: Number,
+            color: String
         }
     ],
     orderStatus: String,
     paymentMethod: String,
     paymentStatus: String,
     totalAmount: String,
-    orderDate: Date,
-})
+    orderDate: {
+        type: Date
+    },
+},
+{timestamps: true})
 
 module.exports = mongoose.model("CustomOrder", CustomOrderSchema);

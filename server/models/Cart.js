@@ -17,6 +17,9 @@ items : [
         type : Number,
         required : true, 
         min : 1
+    },
+    color: {
+        type: String
     }
 }
 ]
