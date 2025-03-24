@@ -100,6 +100,23 @@ export const addProductFormElements = [
     type: "number",
     placeholder: "Enter total stock",
   },
+
+  // {
+  //   label: "Colors",
+  //   name: "colors",
+  //   componentType: "multi-select",
+  //   options: [
+  //     { id: "red", label: "Red" },
+  //     { id: "blue", label: "Blue" },
+  //     { id: "green", label: "Green" },
+  //     { id: "black", label: "Black" },
+  //     { id: "white", label: "White" },
+  //     { id: "pink", label: "Pink" },
+  //     { id: "brown", label: "Brown" },
+  //     { id: "light brown", label: "Light Brown" },
+      
+  //   ]
+  // }
 ];
 
 export const shoppingViewHeaderMenuItems = [

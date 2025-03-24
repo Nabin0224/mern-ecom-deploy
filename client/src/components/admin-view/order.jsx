@@ -20,6 +20,8 @@ import AdminOrderDetailsView from "./order-details";
 import { useReactToPrint } from "react-to-print";
 import { Label } from "../ui/label";
 import { Separator } from "../ui/separator";
+import { Navigate, useNavigate } from "react-router-dom";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 
 const AdminOrdersView = () => {
   const { orderList, orderDetails, resetOrderDetails } = useSelector(
@@ -30,6 +32,7 @@ const AdminOrdersView = () => {
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
   const [selectedOrders, setSelectedOrders] = useState([])  // For bulk print
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   // useEffect(() => {
   //   if (orderDetails !== null) setOpenDetailsDialog(true);
@@ -65,94 +68,6 @@ const handleBulkPrint = useReactToPrint({
   contentRef
 })
 
-  //Single Print using reactToPrint
-  // const PrintableContent = () => {
-  //   const orderId = sessionStorage.getItem("orderDetailsId");
-  //   console.log(orderId, "orderID");
-  //   sessionStorage.clear("orderDetailsId");
-
-  //   return (
-  //     <div ref={contentRef}>
-  //       <div className="grid gap-6">
-  //         <div className="grid gap-2">
-  //           <div className="flex mt-6 items-center justify-between">
-  //             <p className="font-medium">Order ID</p>
-  //             <Label>{orderDetails?._id}</Label>
-  //           </div>
-  //           <div className="flex mt-2 items-center justify-between">
-  //             <p className="font-medium">Order Date</p>
-  //             <Label>{orderDetails?.orderDate.split("T")[0]}</Label>
-  //           </div>
-  //           <div className="flex mt-2 items-center justify-between">
-  //             <p className="font-medium">Order Price</p>
-  //             <Label>${orderDetails?.totalAmount}</Label>
-  //           </div>
-  //           <div className="flex mt-2 items-center justify-between">
-  //             <p className="font-medium">Payment method</p>
-  //             <Label>{orderDetails?.paymentMethod}</Label>
-  //           </div>
-  //           <div className="flex mt-2 items-center justify-between">
-  //             <p className="font-medium">Payment Status</p>
-  //             <Label>{orderDetails?.paymentStatus}</Label>
-  //           </div>
-  //           <div className="flex mt-2 items-center justify-between">
-  //             <p className="font-medium">Order Status</p>
-  //             <Label>
-  //               <Badge
-  //                 className={`py-1 px-3 ${
-  //                   orderDetails?.orderStatus === "confirmed"
-  //                     ? "bg-green-500"
-  //                     : orderDetails?.orderStatus === "rejected"
-  //                     ? "bg-red-600"
-  //                     : "bg-black"
-  //                 }`}
-  //               >
-  //                 {orderDetails?.orderStatus}
-  //               </Badge>
-  //             </Label>
-  //           </div>
-  //         </div>
-  //         <Separator />
-  //         <div className="grid gap-4">
-  //           <div className="grid gap-2">
-  //             <div className="font-medium">Order Details</div>
-  //             <ul className="grid gap-3">
-  //               {orderDetails?.cartItem && orderDetails?.cartItem.length > 0
-  //                 ? orderDetails?.cartItem.map((item) => (
-  //                     <li className="flex items-center justify-between">
-  //                       <span>Title: {item.title}</span>
-  //                       <span>Quantity: {item.quantity}</span>
-  //                       <span>Price: ${item.price}</span>
-  //                     </li>
-  //                   ))
-  //                 : null}
-  //             </ul>
-  //           </div>
-  //         </div>
-  //         <div className="grid gap-4">
-  //           <div className="grid gap-2">
-  //             <div className="font-medium">Shipping Info</div>
-  //             <div className="grid gap-0.5 text-muted-foreground">
-  //               <span>{orderDetails?.addressInfo?.fullName}</span>
-  //               <span>{orderDetails?.addressInfo?.address}</span>
-  //               <span>{orderDetails?.addressInfo?.city}</span>
-  //               <span>{orderDetails?.addressInfo?.pincode}</span>
-  //               <span>{orderDetails?.addressInfo?.phone}</span>
-  //               <span>{orderDetails?.addressInfo?.notes}</span>
-  //             </div>
-  //           </div>
-  //         </div>
-  //       </div>
-  //       <Button
-  //         onClick={() => {
-  //           handleFetchOrderDetails(orderId), handlePrint();
-  //         }}
-  //       >
-  //         Print
-  //       </Button>
-  //     </div>
-  //   );
-  // };
   const BulkPrintableContent = ({selectedOrders, orderList }, ref) => {
     
     const selectedOrderDetails = orderList.filter((order) => 
@@ -171,7 +86,7 @@ const handleBulkPrint = useReactToPrint({
                 </div>
                 <div className="flex mt-2 items-center justify-between">
                   <p className="font-medium">Order Date</p>
-                  <Label>{order.orderDate.split("T")[0]}</Label>
+                  <Label>{order?.orderDate?.split("T")[0]}</Label>
                 </div>
                 <div className="flex mt-2 items-center justify-between">
                   <p className="font-medium">Order Price</p>
@@ -229,9 +144,8 @@ const handleBulkPrint = useReactToPrint({
                     <span>{order.addressInfo?.fullName}</span>
                     <span>{order.addressInfo?.address}</span>
                     <span>{order.addressInfo?.city}</span>
-                    <span>{order.addressInfo?.pincode}</span>
                     <span>{order.addressInfo?.phone}</span>
-                    <span>{order.addressInfo?.notes}</span>
+                    
                   </div>
                 </div>
               </div>
@@ -252,8 +166,19 @@ const handleBulkPrint = useReactToPrint({
   console.log(selectedOrders, "selectedOrdersId")
 
   return (
-    <div>
-      <Card>
+    <div className="flex flex-col gap-2">
+      <div className="createOrder"><Button variant="outline"
+      onClick={()=> navigate("/admin/createorder")}
+      >Create Order</Button></div>
+      
+      <Tabs defaultValue="Website Order">
+            <TabsList>
+              <TabsTrigger value="Website Order">Website Order</TabsTrigger>
+              <TabsTrigger value="Custom Order">Custom Order</TabsTrigger>
+            </TabsList>
+            <TabsContent value="Website Order">
+                 
+            <Card>
         <CardHeader className="flex justify-between items-center">
           <CardTitle>Order History</CardTitle>
         </CardHeader>
@@ -272,16 +197,16 @@ const handleBulkPrint = useReactToPrint({
             <TableBody>
               {orderList && orderList.length > 0
                 ? orderList.map((item) => (
-                    <TableRow key={item._id}>
+                    <TableRow key={item?._id}>
                       <TableCell>
                         <input 
                         type="checkbox"
-                        checked={selectedOrders.includes(item._id)}
-                        onChange={()=> handleCheckboxChange(item._id)}
+                        checked={selectedOrders.includes(item?._id)}
+                        onChange={()=> handleCheckboxChange(item?._id)}
                         />
                       </TableCell>
                       <TableCell>{item._id}</TableCell>
-                      <TableCell>{item.orderDate.split("T")[0]}</TableCell>
+                      <TableCell>{item?.orderDate?.split("T")[0]}</TableCell>
                       <TableCell>
                         <Badge
                           className={`py-1 px-3 ${
@@ -295,7 +220,7 @@ const handleBulkPrint = useReactToPrint({
                           {item?.orderStatus}
                         </Badge>
                       </TableCell>
-                      <TableCell>{item.totalAmount}</TableCell>
+                      <TableCell>{item?.totalAmount}</TableCell>
                       <TableCell className="flex gap-2">
                         <Button
                           onClick={() => {
@@ -349,6 +274,12 @@ const handleBulkPrint = useReactToPrint({
       <div className="hidden">
         <BulkPrintableContent contentRef={contentRef} selectedOrders={selectedOrders} orderList={orderList}/>
       </div>
+ 
+
+               </TabsContent>
+            <TabsContent value="Custom Order"> Blank </TabsContent>
+          </Tabs>
+     
     
     </div>
   );

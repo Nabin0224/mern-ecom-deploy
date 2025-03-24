@@ -14,6 +14,7 @@ const adminOrderRouter = require("./routes/admin/order-routes");
 const searchRouter = require("./routes/shop/search-routes");
 const commonFeatureRouter = require("./routes/common/feature");
 const googleauthRouter = require("./routes/google-auth-routes")
+const adminCustomOrderRouter = require('./routes/admin/custom-order-routes')
 const app = express();
 const authRouter = require("./routes/auth-routes");
 const PORT = process.env.PORT;
@@ -76,6 +77,7 @@ app.use("/api/shop/order", shopOrderRouter);
 app.use("/api/shop/esewaorder", shopEsewaOrderRouter);
 app.use("/api/shop/codorder", shopCodOrderRouter);
 app.use("/api/admin/orders", adminOrderRouter);
+app.use("/api/admin/customorders", adminCustomOrderRouter)
 app.use("/api/shop/search", searchRouter);
 app.use("/api/common/feature", commonFeatureRouter);
 app.use("/api/google", googleauthRouter);

@@ -1,15 +1,18 @@
 const  Order  = require('../../models/Order')
 const EsewaOrder = require('../../models/EsewaOrder')
 const CodOrder = require("../../models/CodOrder")
+const CustomerOrder = require("../../models/CustomOrder")
 
 const getAllOrdersofAllUser = async(req, res)=> {
 try {
   
   const paypalorders = await Order.find({})
   const esewaorders = await EsewaOrder.find({});
-  const codorders = await CodOrder.find({})   // returns array of orders present in the database 
+  const codorders = await CodOrder.find({})
+  const customorders = await CustomerOrder.find({})
+      // returns array of orders present in the database 
 
-  if(paypalorders.length === 0 && esewaorders.length === 0 && codorders.length === 0 ) {
+  if(paypalorders.length === 0 && esewaorders.length === 0 && codorders.length === 0 && customorders.length=== 0 ) {
      return res.status(404).json({
       success: false,
       message: "No admin orders found!"
@@ -28,7 +31,7 @@ try {
   //   })
   // }
 
-  const orders = [...paypalorders, ...esewaorders, ...codorders]
+  const orders = [...paypalorders, ...esewaorders, ...codorders, ...customorders]
   return res.status(200).json({
     success: true,
     data: orders,

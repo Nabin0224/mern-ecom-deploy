@@ -10,6 +10,7 @@ import shoppingSearchSlice from './shop/search-slice/index'
 import esewaOrderSlice from './shop/esewa-slice/createorder'
 import featureImageSlice from './common/index'
 import codOrderSlice from './cod-slice/index'
+import customOrderSlice from "./admin/order-slice/custom-order/index"
 // import googleAuthReducer from './google-auth/index'
 
 const store = configureStore({
@@ -23,8 +24,10 @@ const store = configureStore({
     esewaOrders : esewaOrderSlice,
     codOrders: codOrderSlice,
     adminOrders: adminOrderSlice,
+    adminCustomOrders: customOrderSlice,
     shoppingSearch: shoppingSearchSlice,
     featureImage : featureImageSlice,
+
 
     // googleAuth: googleAuthReducer
   },
