@@ -10,7 +10,7 @@ const AddressCard = ({
   setCurrentSelectedAddressInfo,
   selectedId,
 }) => {
-  console.log(selectedId, addressInfo?._id, "add")
+  
   return (
     <Card
     onClick={

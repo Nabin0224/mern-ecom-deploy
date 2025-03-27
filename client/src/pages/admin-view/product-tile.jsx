@@ -1,13 +1,15 @@
 import { Button } from "@/components/ui/button";
 
 import  { Card, CardContent, CardFooter }  from "@/components/ui/card";
+import { useNavigate } from "react-router-dom";
 
-function AdminProductTile({ product, setFormData, setCurrentEditedId, setOpenCreateProductDialog , handleDelete }) {
+function AdminProductTile({ product, handleDelete }) {
+  const navigate = useNavigate();
   return (
     <Card className="w-full max-w-sm mx-auto">
       <div className="">
         <img
-          src= {product.image}
+          src= {product.image[0]}
           alt={product.title} 
           className="w-full h-[300px] object-cover rounded-t-lg"
         />
@@ -28,11 +30,11 @@ function AdminProductTile({ product, setFormData, setCurrentEditedId, setOpenCre
         </div>
       </CardContent>
       <CardFooter className="flex items-center justify-between">
-        <Button onClick={()=>{
-          setCurrentEditedId(product?._id)
-          setFormData(product)
-          setOpenCreateProductDialog(true)
-        }}>Edit</Button>
+        <Button 
+        onClick={() =>
+          navigate(`/admin/addproduct/edit/${product._id}`, { state: { product } })
+        }
+        >Edit</Button>
         <Button onClick={()=>{
           handleDelete(product?._id)
         }}>Delete</Button>

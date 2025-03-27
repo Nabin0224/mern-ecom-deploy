@@ -26,6 +26,7 @@ import SearchPage from "./pages/shopping-view/search";
 import ScrollToTop from "./config/scroll";
 import ProductDetailsPage from "./pages/shopping-view/product-details";
 import CreateCustomOrder from "./pages/admin-view/createorder";
+import AddProduct from "./pages/admin-view/add-product";
 
 const App = () => {
   const { isAuthenticated, isLoading, user } = useSelector(
@@ -70,6 +71,8 @@ const App = () => {
             <Route path="products" element={<AdminProducts />} />
             <Route path="orders" element={<AdminOrders />} />
             <Route path="createorder" element={<CreateCustomOrder/>} />
+            <Route path="addproduct" element={<AddProduct/>} />
+            <Route path="addproduct/edit/:id" element={<AddProduct/>} />
             
           </Route>
 

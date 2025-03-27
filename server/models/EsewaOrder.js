@@ -21,7 +21,7 @@ const EsewaOrderSchema = new mongoose.Schema({
         {
             productId: String,
             title: String,
-            image: String,
+            image: [],
             price: String,
             quantity: Number,
         }

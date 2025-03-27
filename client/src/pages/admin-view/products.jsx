@@ -1,150 +1,105 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
-
-import CommonForm from "../common/form";
-import { addProductFormElements } from "@/config/index";
-import ProductTmageUpload from "./image-upload";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  addNewProduct,
   deleteProduct,
-  editProduct,
   fetchAllProducts,
 } from "../../../store/admin/product-slice/index";
-import { Toast } from "@/components/ui/toast";
-import { useToast } from "@/hooks/use-toast";
-import AdminProductTile from "./product-tile";
-import { v4 as uuidv4 } from "uuid";
-
-const initialFormData = {
-  image: null,
-  title: "",
-  description: "",
-  category: "",
-  brand: "",
-  price: "",
-  salePrice: "",
-  totalStock: "",
-  colors:[],
-};
+import { useNavigate } from "react-router-dom";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 const AdminProducts = () => {
-  const [formData, setFormData] = useState(initialFormData);
-  const [openCreateProductDialog, setOpenCreateProductDialog] = useState(false);
-  const [imageFile, setImageFile] = useState(null);
-  const [uploadedImageUrl, setUploadedImageUrl] = useState("");
-  const [imageLoadingState, setImageLoadingState] = useState(false);
-  const [currentEditedId, setCurrentEditedId] = useState(null);
+  const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { toast } = useToast();
-  // import {adminProducts}  from '../../../store/admin/product-slice'
-
   const { productList } = useSelector((state) => state.adminProducts);
 
-   function handleDelete(gethandleId) {
-    console.log(gethandleId)
-    dispatch(deleteProduct(gethandleId)).then((data)=>{
-      if(data?.payload?.success) {
-        dispatch(fetchAllProducts() )
+  function handleDelete(productId) {
+    dispatch(deleteProduct(productId)).then((data) => {
+      if (data?.payload?.success) {
+        dispatch(fetchAllProducts());
       }
-    })
-   }
-  function onSubmit() {
-    currentEditedId !== null
-      ?  dispatch(editProduct({ id: currentEditedId, formData }))
-      .then((data) => {
-        console.log(data, "Edit product response");
-        
-        if(data?.payload?.success) {
-          dispatch(fetchAllProducts())
-          setCurrentEditedId(null)
-          setOpenCreateProductDialog(false)
-          setFormData(initialFormData)
-          
-        }
-      })
-     
-        
-      : dispatch(
-          addNewProduct({
-            ...formData,
-            image: uploadedImageUrl,
-            totalStock: formData.colors.reduce((sum, item) => sum + item.quantity, 0)
-          })
-        ).then((data) => {
-          if (data?.payload?.success) {
-            dispatch(fetchAllProducts());
-            setOpenCreateProductDialog(false);
-            setImageFile(null);
-            setFormData(initialFormData);
-
-            toast({
-              title: "Successfully added",
-              duration: 2000,
-            });
-          }
-        });
+    });
   }
 
   useEffect(() => {
     dispatch(fetchAllProducts());
   }, [dispatch]);
 
-  console.log(productList, "product list ok ");
   return (
     <Fragment>
       <div className="mb-5 w-full flex justify-end">
-        <Button onClick={() => setOpenCreateProductDialog(true)} className="">
+        <Button onClick={() => navigate("/admin/addproduct")}>
           Add New Product
         </Button>
       </div>
-      <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4">
-        {productList && productList.length > 0
-          ? productList.map((productItem) => (
-              <AdminProductTile
-                key={uuidv4()}
-                product={productItem}
-                setOpenCreateProductDialog={setOpenCreateProductDialog}
-                setCurrentEditedId={setCurrentEditedId}
-                setFormData={setFormData}
-                handleDelete={handleDelete}
-              />
+
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>S.No</TableHead>
+            <TableHead>Image</TableHead>
+            <TableHead>Title</TableHead>
+            <TableHead>Price</TableHead>
+            <TableHead>Sale Price</TableHead>
+            <TableHead>Total Quantity</TableHead>
+            <TableHead>Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+
+        <TableBody className="text-left">
+          {productList && productList.length > 0 ? (
+            productList.map((productItem, index) => (
+              <TableRow key={productItem._id}>
+                <TableCell>{index + 1}</TableCell>
+                <TableCell>
+                  <img
+                    src={productItem?.image[0]}
+                    alt="Product"
+                    className="h-12 w-12 object-cover"
+                  />
+                </TableCell>
+                <TableCell>{productItem?.title}</TableCell>
+                <TableCell>{productItem?.price}</TableCell>
+                <TableCell>{productItem?.salePrice}</TableCell>
+                <TableCell>{productItem?.totalStock}</TableCell>
+                <TableCell>
+                  <div className="flex gap-2">
+                    <Button
+                    className="bg-blue-600"
+                      onClick={() =>
+                        navigate(`/admin/addproduct/edit/${productItem?._id}`, {
+                          state: { productItem },
+                        })
+                      }
+                    >
+                      Edit
+                    </Button>
+                    <Button
+                      variant="destructive"
+                      onClick={() => handleDelete(productItem._id)}
+                    >
+                      Delete
+                    </Button>
+                  </div>
+                </TableCell>
+              </TableRow>
             ))
-          : null}
-      </div>
-      <Sheet
-        open={openCreateProductDialog}
-        onOpenChange={() => {
-          setOpenCreateProductDialog(false);
-          setCurrentEditedId(null);
-          setFormData(initialFormData);
-        }}
-      >
-        <SheetContent side={"right"} className="overflow-auto">
-          <SheetTitle>
-            {currentEditedId !== null ? "Edit Product" : "Add New Product"}
-          </SheetTitle>
-          <ProductTmageUpload
-            imageFile={imageFile}
-            setImageFile={setImageFile}
-            uploadedImageUrl={uploadedImageUrl}
-            setUploadedImageUrl={setUploadedImageUrl}
-            imageLoadingState={imageLoadingState}
-            setImageLoadingState={setImageLoadingState}
-            currentEditedId={currentEditedId}
-          />
-          <div className="py-6">
-            <CommonForm
-              formData={formData}
-              setFormData={setFormData}
-              formControls={addProductFormElements}
-              buttonText={currentEditedId !== null ? "Save" : "Add"}
-              onSubmit={onSubmit}
-            />
-          </div>
-        </SheetContent>
-      </Sheet>
+          ) : (
+            <TableRow>
+              <TableCell colSpan="7" className="text-center">
+                No products found.
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
     </Fragment>
   );
 };

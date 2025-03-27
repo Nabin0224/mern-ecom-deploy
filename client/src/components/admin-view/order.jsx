@@ -57,7 +57,7 @@ const AdminOrdersView = () => {
   };
 
   const contentRef = useRef(null);
-  console.log("ref,", contentRef);
+  
 
   const handlePrint = useReactToPrint({
     contentRef,
@@ -130,6 +130,8 @@ const handleBulkPrint = useReactToPrint({
                           >
                             <span>Title: {item.title}</span>
                             <span>Quantity: {item.quantity}</span>
+                            <span>Color: {item.color}</span>
+                      
                             <span>Price: ${item.price}</span>
                           </li>
                         ))
@@ -163,7 +165,7 @@ const handleBulkPrint = useReactToPrint({
     prev.includes(getId) ? prev.filter((id) => id !== getId) : [...prev, getId]
   );
   };
-  console.log(selectedOrders, "selectedOrdersId")
+  
 
   return (
     <div className="flex flex-col gap-2">

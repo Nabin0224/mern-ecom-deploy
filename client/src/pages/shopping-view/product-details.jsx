@@ -15,8 +15,8 @@ import { fetchProductDetails } from "../../../store/shop/product-slice/index";
 import { Accordion, AccordionTrigger } from "@/components/ui/accordion";
 import { AccordionContent, AccordionItem } from "@radix-ui/react-accordion";
 import { Separator } from "@/components/ui/separator";
-import { Minus, Plus } from "lucide-react";
-import { qunit } from "globals";
+import { ChevronLeft, ChevronRight, Minus, Plus } from "lucide-react";
+
 
 const ProductDetailsPage = () => {
   const dispatch = useDispatch();
@@ -26,6 +26,24 @@ const ProductDetailsPage = () => {
   const { formData } = useSelector((state) => state.esewaOrders);
   const { cartItems } = useSelector((state) => state.shoppingCart);
   const [ cartColor, setCartColor ] = useState("")
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  
+
+  function handlePrevImage() {
+    if (!productDetails?.image || productDetails?.image.length === 0) return;
+  
+    setCurrentImageIndex((prevIndex) => 
+      prevIndex === 0 ? productDetails.image.length - 1 : prevIndex - 1
+    );
+  }
+  
+  function handleNextImage() {
+    if (!productDetails?.image || productDetails?.image.length === 0) return;
+  
+    setCurrentImageIndex((prevIndex) => 
+      prevIndex >= productDetails.image.length - 1 ? 0 : prevIndex + 1
+    );
+  }
   
   const { productList, productDetails } = useSelector(
     (state) => state.shoppingProducts
@@ -36,6 +54,13 @@ const ProductDetailsPage = () => {
   console.log(productId);
   const cartItemDetails =
   cartItems?.items?.find((item) => item?.productId == productDetails?._id) ?? null;
+  
+  useEffect(() => {
+    if (productDetails?.image && productDetails.image.length > 0) {
+      setCurrentImageIndex(0); // Reset index when product changes
+    }
+  }, [productDetails]);
+  
   
   useEffect(() => {
     dispatch(fetchCartItems(user?.id));
@@ -186,13 +211,33 @@ dispatch(
   return (
     <div className="grid grid-cols-1 md:grid-cols-2  gap-2 min-w-fit m-1 p-1 md:p-2 md:m-2 h-full">
       <div className="relative rounded-lg m-1 p-1  h-full  md:p-8">
+        { productDetails?.image && productDetails?.image.length > 0 && (
         <img
-          src={productDetails?.image}
+          src={productDetails?.image[currentImageIndex]}
           alt={productDetails?.title}
           width={600}
           height={600}
           className="aspect-square object-center object-cover"
         />
+        )
+
+}
+
+<button 
+onClick={handlePrevImage}
+className="absolute left-8 top-1/2 transform -translate-y-1/2 bg-gray-400 p-2 rounded-sm "
+>
+<ChevronLeft size={10}/>
+</button>
+
+<button 
+onClick={handleNextImage}
+className="absolute right-24 top-1/2 transform -translate-y-1/2 bg-gray-400 p-2 rounded-sm"
+>
+
+  <ChevronRight size={10}/>
+
+</button>
       </div>
       <div className=" m-1 p-1 Productdetails relative flex flex-col md:p-8">
         <div className="">

@@ -83,14 +83,14 @@ export const addProductFormElements = [
     label: "Price",
     name: "price",
     componentType: "input",
-    type: "number",
+    
     placeholder: "Enter product price",
   },
   {
     label: "Sale Price",
     name: "salePrice",
     componentType: "input",
-    type: "number",
+    
     placeholder: "Enter sale price (optional)",
   },
   {

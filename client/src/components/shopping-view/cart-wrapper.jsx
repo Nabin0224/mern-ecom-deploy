@@ -7,7 +7,7 @@ import { Separator } from '@radix-ui/react-dropdown-menu';
 
 const UserCartWrapper = ({cartItems, setOpenCartSheet, setOpenMobileCartSheet}) => {
     const  navigate = useNavigate();
-    console.log(cartItems, "cartItems from wrapper")
+    
     
     const totalCartAmount = 
     cartItems && cartItems.length > 0 ? 

@@ -19,8 +19,7 @@ const CreateCustomOrder = () => {
 
 function handleFetchProducts() {
   dispatch(fetchAllFilteredProducts({ filterParams: {}, sortParams: {} }));
-  console.log("Product List",  productList)
-  console.log("setItems",items)
+  
 }
   const {
     register,
@@ -70,7 +69,7 @@ function handleFetchProducts() {
             setOpenProductDialog(false)
           }}
           >
-            <CustomProduct productList={productList} setItems={setItems} items={items}/>
+            <CustomProduct productList={productList} setItems={setItems} items={items} setOpenProductDialog={setOpenProductDialog}/>
 
           </Dialog>
           <Button className="bg-purple-600 m-2 p-2"
@@ -81,7 +80,7 @@ function handleFetchProducts() {
           >Select Products</Button>
         </div>
       </div>
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
+      <form onSubmit={onSubmit} className="flex flex-col">
         <div className="form mb-4 border-b-2 relative bg-white/80 p-6 ">
           <h1 className="font-semibold text-2xl mt-2 mb-4 p-2">
             Customer Details

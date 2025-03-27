@@ -18,18 +18,6 @@ try {
       message: "No admin orders found!"
     })
   }
-  // if(esewaorders.length === 0 ) {
-  //    return res.status(404).json({
-  //     success: false,
-  //     message: "No esewa orders found!"
-  //   })
-  // }
-  // if(codorders.length === 0 ) {
-  //    return res.status(404).json({
-  //     success: false,
-  //     message: "No cod orders found!"
-  //   })
-  // }
 
   const orders = [...paypalorders, ...esewaorders, ...codorders, ...customorders]
   return res.status(200).json({

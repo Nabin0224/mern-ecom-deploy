@@ -20,6 +20,7 @@ const multer = require('multer');
   return result;
     };
 
-    const upload = multer({storage})
+    const upload = multer({ storage }).array("images", 5); // "images" should match frontend
+
 
     module.exports = { upload, handleImageUtils }
