@@ -14,7 +14,7 @@ const UserCartItemsContent = ({ cartItem }) => {
   const { productList } = useSelector((state) => state.shoppingProducts);
   const dispatch = useDispatch();
   const { toast } = useToast();
-  console.log(cartItem, "main cart item")
+  
 
   function handleDeleteCartItem(getCartItem) {
     

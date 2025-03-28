@@ -126,12 +126,12 @@ function HeaderRightContent({
   const dispatch = useDispatch();
   const [openCartSheet, setOpenCartSheet] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
-  console.log("user in header", user);
+
   
   useEffect(() => {
     dispatch(fetchCartItems(user?.id));
   }, [dispatch]);
-  console.log(cartItems, "sangam");
+  
   
   return (
     <div className="flex lg:flex-row lg:item-center flex-col gap-6">
@@ -211,7 +211,7 @@ const ShoppingHeader = () => {
   const { cartItems } = useSelector((state) => state.shoppingCart);
   const [openCartSheet, setOpenCartSheet] = useState(false);
   
-  console.log(user, "userInfo");
+ 
   return (
     <header className="top-0 z-50 w-full border-b bg-white backdrop-blur-md shadow-md transition-all duration-300">
       <div className="flex h-16 items-center justify-between px-4 md:px-6">

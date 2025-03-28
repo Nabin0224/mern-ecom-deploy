@@ -20,9 +20,7 @@ const ProductImageUpload = ({
   const location = useLocation();
   const product = location.state?.product;
   const { id } = useParams();
-  console.log(id, "id")
-  console.log("state products in edit", product);
-  console.log(imageFiles, "uploaded image urls in edits ");
+
 
   // Store initial images on edit 
   useEffect(()=> {
@@ -40,9 +38,9 @@ const ProductImageUpload = ({
       setImageFiles(selectedFiles); // Append new images
     
   }
-  console.log("Seclected images after edit", imageFiles)
+  
   }
-  console.log("setImageFiles in handleImageFile", imageFiles);
+  
   function handleDrag(event) {
     event.preventDefault();
   }
@@ -62,7 +60,7 @@ const ProductImageUpload = ({
 
   async function uploadImageToCloudinary() {
     if (imageFiles?.length === 0) return;
-    console.log("before upload uploadedUrls", uploadedImageUrls);
+    
     setImageLoadingState(true);
     const uploadedUrls = [];
 
@@ -70,18 +68,18 @@ const ProductImageUpload = ({
       const data = new FormData();
       data.append("images", file);
       try {
-        console.log("data in image", data);
+        
         const response = await axios.post(
           `${import.meta.env.VITE_API_URL}/api/admin/products/upload-image`,
           data
         );
-        console.log("response of cloudinary", response);
+        
         if (response.data?.success) {
           uploadedUrls.push(response.data.result);
         }
-        console.log("array of uploaded image", uploadedUrls);
+        
       } catch (error) {
-        console.error("Error uploading image:", error);
+        
       }
     }
 
@@ -96,7 +94,7 @@ const ProductImageUpload = ({
 
   return (
     <div className=" mx-auto mt-4 ">
-      <Label className="text-lg font-semibold mb-2 block">Upload Image</Label>
+      <Label className={`text-lg font-semibold mb-2 block ${location.pathname.includes("dashboard") && "hidden"}`}>Upload Image</Label>
 
       <div
         onDragOver={handleDrag}
@@ -120,7 +118,7 @@ const ProductImageUpload = ({
             className="flex flex-col items-center justify-center cursor-pointer h-32"
           >
             <UploadCloudIcon className="w-10 h-10 text-muted-foreground mb-2" />
-            <span>Drag and Drop or click to upload image</span>
+            <span className="font-thin">click to upload image</span>
           </Label>
         ) : imageLoadingState ? (
           <Skeleton className="h-10 bg-gray-200" />

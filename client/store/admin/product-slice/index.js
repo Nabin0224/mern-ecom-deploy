@@ -35,14 +35,14 @@ export const fetchAllProducts = createAsyncThunk(
 export const editProduct = createAsyncThunk(
   "products/adminProduct",
   async ({ id, formData} ) => {
-    console.log("formData in Slice", formData);
+    
     const response = await axios.put(
       `${import.meta.env.VITE_API_URL}/api/admin/products/edit/${id}`,
     
       formData
       
     );
-    console.log(response)
+    
     return response?.data
   }
 );

@@ -34,7 +34,7 @@ const SearchPage = () => {
     }
     
   }, [keyword]);
-  console.log(searchResults, "search result");
+  
 
   function handleAddtoCart(getCurrentProductId, getTotalStock) {
      
@@ -100,12 +100,7 @@ const SearchPage = () => {
             searchResults.map(item=> <ShoppingProducttile handleGetProductDetails={handleGetProductDetails} handleAddtoCart={handleAddtoCart} product={item} setOpen={setOpenDetailsDialouge} />)
         }
       </div>
-      <ProductDetailsDialogue
-        open={openDetailsDialouge}
-        setOpen={setOpenDetailsDialouge}
-        productDetails={productDetails}
-        
-      />
+     
     </div>
   );
 };

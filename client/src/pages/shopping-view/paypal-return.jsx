@@ -13,7 +13,7 @@ const PayPalReturnPage = () => {
     useEffect(() => {
       if(paymentId && payerId) {
         const orderId = JSON.parse(sessionStorage.getItem("currentOrderId"))
-        console.log(orderId, "orderIdcurrent")
+        
         dispatch(captureOrder({payerId, paymentId, orderId})).then((data)=> {
           if(data?.payload?.success){
             sessionStorage.removeItem('currentOrderId')

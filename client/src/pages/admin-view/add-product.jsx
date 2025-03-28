@@ -57,8 +57,8 @@ const AddProduct = () => {
         ),
       };
 
-      console.log(id, "id in onSubmit");
-      console.log(updatedFormData, "updatedFormData in edit");
+      
+      
 
        dispatch(editProduct({ id, formData: updatedFormData })).then((data) => {
         if (data?.payload?.success) {

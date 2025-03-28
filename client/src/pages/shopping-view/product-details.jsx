@@ -21,7 +21,7 @@ import { ChevronLeft, ChevronRight, Minus, Plus } from "lucide-react";
 const ProductDetailsPage = () => {
   const dispatch = useDispatch();
   const productId = useParams();
-  console.log("productId in product details section", productId);
+  
   const { user } = useSelector((state) => state.auth);
   const { formData } = useSelector((state) => state.esewaOrders);
   const { cartItems } = useSelector((state) => state.shoppingCart);
@@ -49,9 +49,8 @@ const ProductDetailsPage = () => {
     (state) => state.shoppingProducts
   );
   const [count, setCount] = useState(1);
-  console.log(count,"count")
   
-  console.log(productId);
+  
   const cartItemDetails =
   cartItems?.items?.find((item) => item?.productId == productDetails?._id) ?? null;
   
@@ -78,12 +77,11 @@ const ProductDetailsPage = () => {
   
   // const cartItem = cartItems?.items?.find((item) => item?.productId === productDetails?._id);
   
-  console.log("All cart items  ", cartItems);
-  console.log("product details ok  ", productDetails);
-  console.log("one cart item ok  ", cartItemDetails);
+  
   const [selectedColor, setSelectedColor] = useState(productDetails?.colors[0]?.code);
   
 function handleAddtoCart(getCurrentProductId, getTotalStock) {
+  
   let finalQuantity = count > 1 ? count : 1;
   let getCartItems = cartItems?.items || [];
 
@@ -92,13 +90,10 @@ function handleAddtoCart(getCurrentProductId, getTotalStock) {
     (item) => item.productId === getCurrentProductId
   );
 
-  console.log(existingCartItem, "Existing Cart Item");
+  
 
   if (existingCartItem) {
-    // If the item exists, update the quantity instead of adding a new one
-    // const updatedQuantity = existingCartItem.quantity + finalQuantity;
-
-    // If the item exists, update the quantity instead of adding a new one
+    
 const updatedQuantity = finalQuantity; // Instead of adding, directly replace it
 
 if (updatedQuantity > getTotalStock) {
@@ -149,6 +144,13 @@ dispatch(
     }
 
     // If the item does not exist, add it normally
+    if(!selectedColor) {
+      toast({
+        title: "Please choose a color!",
+        variant: "destructive",
+        duration: 1500
+      })
+    }
     dispatch(
       addToCart({
         userId: user?.id,

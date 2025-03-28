@@ -8,39 +8,43 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ShoppingProducttile from "./product-tile";
-import { fetchAllFilteredProducts, fetchProductDetails } from "../../../store/shop/product-slice/index";
+import {
+  fetchAllFilteredProducts,
+  fetchProductDetails,
+} from "../../../store/shop/product-slice/index";
 import { useNavigate } from "react-router-dom";
 import { getFeatureImages } from "../../../store/common/index";
 import ShoppingHeader from "@/components/shopping-view/header";
-import { addToCart, fetchCartItems } from "../../../store/shop/cart-slice/index";
+import {
+  addToCart,
+  fetchCartItems,
+} from "../../../store/shop/cart-slice/index";
 import { useToast } from "@/hooks/use-toast";
-
 
 export const ShoppingHome = () => {
   const { productList, productDetails } = useSelector(
-      (state) => state.shoppingProducts
-    );
-    const {cartItems} = useSelector((state) => state.shoppingCart);
-    const {toast} =  useToast()
-     const { user } = useSelector((state) => state.auth);
+    (state) => state.shoppingProducts
+  );
+  const { cartItems } = useSelector((state) => state.shoppingCart);
+  const { toast } = useToast();
+  const { user } = useSelector((state) => state.auth);
+  const { featureImagesList } = useSelector((state)=> state.featureImage)
 
   function handleAddtoCart(getCurrentProductId, getTotalStock) {
-   
-    
-   
-
     let getCartItems = cartItems.items || [];
-    if(getCartItems.length) {
-      const indexOfCurrentItem = getCartItems.findIndex((item) => item.productId === getCurrentProductId);
-       
-      if(indexOfCurrentItem > -1) {
+    if (getCartItems.length) {
+      const indexOfCurrentItem = getCartItems.findIndex(
+        (item) => item.productId === getCurrentProductId
+      );
+
+      if (indexOfCurrentItem > -1) {
         const getQuantity = getCartItems[indexOfCurrentItem].quantity;
-        if(getQuantity +1 > getTotalStock){
+        if (getQuantity + 1 > getTotalStock) {
           toast({
             title: `Only ${getQuantity} items can be added for this product`,
             variant: "destructive",
             duration: 2000,
-          })
+          });
           return;
         }
       }
@@ -57,19 +61,20 @@ export const ShoppingHome = () => {
         dispatch(fetchCartItems(user?.id));
         toast({
           title: "Product Added to the Cart!",
-          duration: 1500
+          duration: 1500,
         });
       }
     });
   }
-   function handleGetProductDetails(getCurrentProductId) {
-      dispatch(fetchProductDetails(getCurrentProductId));
-    }
+  function handleGetProductDetails(getCurrentProductId) {
+    dispatch(fetchProductDetails(getCurrentProductId));
+  }
 
-  // const { featureImagesList } = useSelector(state => state.featureImage)
-  const slides = [bannerOne, bannerFour];
-  const [currentIndex, setCurrentIndex] = useState(0);
+
   
+
+  const [currentIndex, setCurrentIndex] = useState(0);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -84,29 +89,30 @@ export const ShoppingHome = () => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % slides.length);
-    }, 3000);
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % featureImagesList.length);
+    }, 5000);
 
     return () => clearInterval(interval);
-  }, [slides]);
+  }, [featureImagesList.length]);
 
   useEffect(() => {
     dispatch(fetchAllFilteredProducts({ filterParams: {}, sortParams: {} }));
   }, []);
 
   console.log(productList);
-  //  useEffect(() => {
-  //       dispatch(getFeatureImages())
-  //     }, [])
+  useEffect(() => {
+    dispatch(getFeatureImages());
+  }, []);
+  console.log("featureImage List", featureImagesList)
 
   return (
     <div className="flex flex-col min-h-screen">
       {/* <ShoppingHeader/> */}
       <div className="relative w-full h-[700px] overflow-hidden">
-        {slides && slides.length > 0
-          ? slides.map((slide, index) => (
+        {featureImagesList && featureImagesList.length > 0
+          ? featureImagesList?.map((slide, index) => (
               <img
-                src={slide}
+                src={slide?.image}
                 key={index}
                 className={`absolute w-full object-cover h-full top-0 left-0 transition-opacity duration-1000 
               ${index === currentIndex ? "opacity-100" : "opacity-0"}`}
@@ -171,7 +177,11 @@ export const ShoppingHome = () => {
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 p-2 gap-6">
             {productList && productList.length > 0
               ? productList.map((item) => (
-                  <ShoppingProducttile product={item} handleGetProductDetails={handleGetProductDetails} handleAddtoCart={handleAddtoCart} />
+                  <ShoppingProducttile
+                    product={item}
+                    handleGetProductDetails={handleGetProductDetails}
+                    handleAddtoCart={handleAddtoCart}
+                  />
                 ))
               : null}
           </div>

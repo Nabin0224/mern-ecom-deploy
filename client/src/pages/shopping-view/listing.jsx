@@ -40,7 +40,6 @@ function ShoppingListing() {
   const [openDetailsDialouge, setOpenDetailsDialouge] = useState(false);
   const { user } = useSelector((state) => state.auth);
   const { cartItems } = useSelector((state) => state.shoppingCart);
-  console.log(cartItems, "CartItems");
   const { toast } = useToast();
  
   const categorySearchParams = searchParams.get("category");
@@ -167,9 +166,7 @@ function ShoppingListing() {
     }
   }, [dispatch, sort, filters]);
 
-  console.log(productList, "productlist stock");
-
-  console.log(cartItems, "CartItems");
+ 
 
   const navigate = useNavigate();
   return (

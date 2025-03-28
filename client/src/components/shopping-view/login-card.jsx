@@ -27,7 +27,7 @@ export default function AuthPopup({isLogin, setIsLogin}) {
 
 useEffect(() => {
   if (localStorage.getItem("oauthStarted")) {
-    console.log("OAuth detected, checking Google Auth...");
+    
     dispatch(checkGoogleAuth());
     localStorage.removeItem("oauthStarted"); // Cleanup after check
   }
@@ -52,7 +52,7 @@ useEffect(() => {
   const onSubmit = (data) => {
     !isLogin
       ? dispatch(registerUser(data)).then((data) => {
-        console.log("data in auto login", data);
+        
         if (data?.payload?.success) {
           toast({
             title: data?.payload?.message,

@@ -8,7 +8,7 @@ function CheckAuth({ isAuthenticated, user, children }) {
     location.pathname.includes("/login") ||
     location.pathname.includes("/register")
 
-  console.log(location.pathname, isAuthenticated);
+  
 
   // Allow everyone on root ("/")
   if (location.pathname === "/") {

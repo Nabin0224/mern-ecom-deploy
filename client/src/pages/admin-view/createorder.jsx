@@ -50,11 +50,10 @@ function handleFetchProducts() {
     };
   
 
-    console.log("formattedData", formattedData);
     setItems([])
     dispatch(createOrder(formattedData)).then((data)=> {
       if(data.payload) {
-        console.log("Custom order successfully created")
+  
       }
     })
   };

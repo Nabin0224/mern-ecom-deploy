@@ -31,7 +31,7 @@ const ShoppingCheckout = () => {
   const [isEsewaPaymentStart, setIsEsewaPaymentStart] = useState(false);
   const dispatch = useDispatch();
   const { formData } = useSelector((state) => state.esewaOrders);
-  console.log(formData, " Form data from selector");
+
   const alwaysOpenItems = ["item-1"]
   const [openItems, setOpenItems] = useState(alwaysOpenItems);
   const navigate = useNavigate();
@@ -60,9 +60,6 @@ const ShoppingCheckout = () => {
         )
       : 0;
 
-  console.log(totalCartAmount, "total amount in checkout");
-  console.log(cartItems?._id, "CartItems ok");
-  console.log(cartItems, "cart items in checkout");
 
   //function to handle paypal payment
   function handleInitiatePaypalPayment() {
@@ -115,7 +112,7 @@ const ShoppingCheckout = () => {
     };
 
     setIsPaypalPaymentStart(true);
-    console.log(orderData, "order data");
+  
     dispatch(createNewOrder(orderData)).then((data) => {
       if (data?.payload?.success) {
         setIsPaypalPaymentStart(false);
@@ -183,7 +180,7 @@ const ShoppingCheckout = () => {
       const { payload } = await dispatch(createEsewaOrder(orderData));
       setIsEsewaPaymentStart(false);
 
-      console.log(payload, " Data from createEsewaOrder");
+   
 
       if (payload) {
         sendEsewaPayment(payload); // Only call if payload exists
@@ -243,7 +240,7 @@ const ShoppingCheckout = () => {
 
     // Append the form to the document body and submit it
     document.body.appendChild(form);
-    console.log("submitting form to esewa");
+  
     form.submit();
   };
 
@@ -295,7 +292,7 @@ const ShoppingCheckout = () => {
     totalAmount: totalCartAmount.toString(),
   };
   setTimeout(() => {
-    console.log("This runs after 2 seconds.");
+   
     
     dispatch(createCodOrder(orderData))
     navigate("/payment-success")

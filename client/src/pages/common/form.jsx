@@ -26,6 +26,7 @@ function CommonForm({
       case "input":
         element = (
           <Input
+          className=" border-gray-600 focus:border-blue-400 focus:outline-none"
             name={getControlItem.name}
             placeholder={getControlItem.placeholder}
             id={getControlItem.name}
@@ -44,6 +45,7 @@ function CommonForm({
       case "select":
         element = (
           <Select
+          className=" border-gray-600 focus:border-blue-400 focus:outline-none"
             onValueChange={(value) =>
               setFormData({
                 ...formData,
@@ -69,6 +71,7 @@ function CommonForm({
       case "textarea":
         element = (
           <Textarea
+          className=" border-gray-600 focus:border-blue-400 focus:outline-none"
             name={getControlItem.name}
             placeholder={getControlItem.placeholder}
             id={getControlItem.id}
@@ -88,6 +91,7 @@ function CommonForm({
           <div className="flex flex-col gap-2">
             {/* Dropdown to Select Colors */}
             <Select
+            className=" border-gray-600 focus:border-blue-400 focus:outline-none"
               onValueChange={(selectedColorId) => {
                 const selectedColor = getControlItem.options.find(
                   (color) => color.id === selectedColorId

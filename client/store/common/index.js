@@ -28,6 +28,16 @@ export const addFeatureImages = createAsyncThunk(
     }
 )
 
+export const deleteFeatureImages = createAsyncThunk(
+    "/common/deleteFeatureImages"
+,
+async(id)=> {
+    const response = await axios.delete(`${import.meta.env.VITE_API_URL}/api/common/feature/delete/${id}`
+
+    )
+    return response.data
+}
+)
 
 const featureImageSlice = createSlice({
     name: "featureImageSlice",

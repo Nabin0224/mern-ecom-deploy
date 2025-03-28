@@ -44,7 +44,7 @@ const ShoppingOrders = () => {
     
   }
   function handleFetchOrderDetailsOfCod(getId) {
-    console.log(getId, "getid in handle ordr detisl in cod")
+    
     // dispatch(getAllOrdersByUserOfEsewa(user?.id)); 
     dispatch(getOrderDetailsOfCod(getId))
     
@@ -65,7 +65,7 @@ const ShoppingOrders = () => {
 
   useEffect(() => {
     if(user?.id)
-      console.log("reached in orders of cod")
+ 
     dispatch(getAllOrdersByUserOfEsewa(user?.id));
   }, [user?.id, dispatch]);
 
@@ -77,10 +77,10 @@ const ShoppingOrders = () => {
   
 
 
-  console.log(orderList, "order list");
+  
 
   const orders = [...orderList, ...orderListOfEsewa, ...orderListOfCod]
-  console.log(orders, "orders")
+  
 
   const AllOrderDetials = orderDetails || orderDetailsOfEsewa || orderDetailsOfCod
 

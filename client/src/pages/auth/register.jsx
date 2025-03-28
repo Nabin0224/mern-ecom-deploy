@@ -19,7 +19,7 @@ const [isStart, setIsStart] = useState(false)
 
 useEffect(() => {
   if (localStorage.getItem("oauthStarted")) {
-    console.log("OAuth detected, checking Google Auth...");
+    
     dispatch(checkGoogleAuth());
     localStorage.removeItem("oauthStarted"); // Cleanup after check
   }
@@ -47,7 +47,7 @@ useEffect(() => {
     
         dispatch(registerUser(data)).then((data) => {
 
-          console.log(data)
+          
           if(data?.payload?.success) 
             {
               toast({

@@ -25,6 +25,7 @@ const CodOrderSchema = new mongoose.Schema({
     paymentStatus: String,
     totalAmount: String,
     orderDate: String
-})
+},
+{timestamps: true})
 
 module.exports = mongoose.model("CodOrder", CodOrderSchema);

@@ -7,7 +7,6 @@ import { useNavigate } from 'react-router-dom'
 const PaymentSuccessPage = () => {
   const navigate = useNavigate();
   const formData  = useSelector(state => state.codOrders)
-  console.log("formData in success", formData)
   
   function handleViewDetails() {
     navigate("/account")

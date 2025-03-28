@@ -36,6 +36,8 @@ const EsewaOrderSchema = new mongoose.Schema({
     orderId: String,
     ref_id: String, // from esewa 
     
-})
+},
+{timestamps: true}
+)
 
 module.exports = mongoose.model("EsewaOrder", EsewaOrderSchema);

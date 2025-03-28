@@ -34,9 +34,7 @@ const AdminOrdersView = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   if (orderDetails !== null) setOpenDetailsDialog(true);
-  // }, [orderDetails]);
+
 
   useEffect(
     (getId) => {
@@ -75,7 +73,7 @@ const handleBulkPrint = useReactToPrint({
     );
   
     return (
-      <div ref={contentRef}>
+      <div ref={contentRef} className="m-4">
         {selectedOrderDetails.length > 0 ? (
           selectedOrderDetails.map((order) => (
             <div key={order._id} className="grid gap-6 mb-6 border-b pb-6">
