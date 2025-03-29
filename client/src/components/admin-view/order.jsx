@@ -1,6 +1,11 @@
 import React, { useEffect, useState, useRef, forwardRef } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "../ui/card";
-import barcode from "../../assets/barcode/barcode.jpg";
+
+import { QRCode } from "react-qr-code"; // Correct import
+
+
+
+
 import {
   Table,
   TableBody,
@@ -23,7 +28,7 @@ import { Label } from "../ui/label";
 import { Separator } from "../ui/separator";
 import { Navigate, useNavigate } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-import QrCode from "./generateqrcode";
+
 
 const AdminOrdersView = () => {
   const { orderList, orderDetails, resetOrderDetails } = useSelector(
@@ -105,7 +110,7 @@ const AdminOrdersView = () => {
                   </div>
                 </div>
                 <div className="barcode">
-                <QrCode value={`${window.location.origin}/admin/qrcodedetail`} size={200} />
+                <QRCode value={`${window.location.origin}/admin/qrcodedetail/${order._id}`} size={200} />
 
                 </div>
               </div>
