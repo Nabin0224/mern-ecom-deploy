@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import QrReader from "react-qr-scanner"
+import { useState } from "react";
+import {QrReader} from "react-qr-reader"; // Use this instead of react-qr-scanner
 import { useNavigate } from "react-router-dom";
 
 const QRCodeScanner = ({ onScan }) => {
@@ -7,13 +7,15 @@ const QRCodeScanner = ({ onScan }) => {
   const navigate = useNavigate();
 
   const handleScan = (data) => {
+    console.log("Scanned Data:", data);
     if (data) {
-      onScan(data); 
-      navigate(data); // Handle scanned data
+      onScan(data);
+      navigate(data);
     }
   };
 
   const handleError = (err) => {
+    console.error("QR Scanner Error:", err);
     setError(err);
   };
 
@@ -24,10 +26,7 @@ const QRCodeScanner = ({ onScan }) => {
         onError={handleError}
         onScan={handleScan}
         style={{ width: "100%" }}
-        constraints={{
-            video: { facingMode: "environment" }, // Use back camera
-          }}
-  
+        constraints={{ facingMode: "environment" }} // Back camera
       />
       {error && <p>Error: {error.message}</p>}
     </div>
