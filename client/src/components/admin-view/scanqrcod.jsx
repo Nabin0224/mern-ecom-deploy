@@ -12,7 +12,7 @@ const QRCodeScanner = ({ onScan }) => {
       const scannedURL = result.text;
 
       // Check if the scanned URL is valid
-      if (scannedURL && scannedURL.startsWith("http://localhost:5173")) {
+      if (scannedURL) {
         console.log("Navigating to: ", scannedURL);  // Log before navigating
         window.location.href = scannedURL // Navigate to the scanned URL
       } else {
