@@ -27,6 +27,9 @@ import ScrollToTop from "./config/scroll";
 import ProductDetailsPage from "./pages/shopping-view/product-details";
 import CreateCustomOrder from "./pages/admin-view/createorder";
 import AddProduct from "./pages/admin-view/add-product";
+import QrCode from "./components/admin-view/generateqrcode";
+import QRCodeScanner from "./components/admin-view/scanqrcod";
+import QrCodeDetails from "./components/admin-view/qrcodedetails";
 
 const App = () => {
   const { isAuthenticated, isLoading, user } = useSelector(
@@ -73,6 +76,9 @@ const App = () => {
             <Route path="createorder" element={<CreateCustomOrder/>} />
             <Route path="addproduct" element={<AddProduct/>} />
             <Route path="addproduct/edit/:id" element={<AddProduct/>} />
+            <Route path="qrcode" element={<QrCode/>} />
+            <Route path="scanqrcode" element={<QRCodeScanner/>} />
+            <Route path="qrcodedetail" element={<QrCodeDetails />} />
             
           </Route>
 

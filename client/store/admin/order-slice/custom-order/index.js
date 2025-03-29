@@ -27,8 +27,16 @@ const customOrderSlice = createSlice({
         }).addCase(createOrder.fulfilled, (state, action) => {
            state.isLoading = false,
            console.log("Redux custom order Fullfilled", action.payload)
+        
+        }).addCase(createOrder.rejected, (state) => {
+           state.isLoading = false
+         
+       
         })
-    }
-})
+}
+}
+)
+
+
 
 export default customOrderSlice.reducer;

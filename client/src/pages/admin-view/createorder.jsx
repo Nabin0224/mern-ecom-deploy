@@ -8,34 +8,42 @@ import { createOrder } from "../../../store/admin/order-slice/custom-order/index
 import { Dialog } from "@radix-ui/react-dialog";
 import CustomProduct from "../../components/admin-view/custom-product";
 import { fetchAllFilteredProducts } from "../../../store/shop/product-slice/index";
+import { Minus, Plus } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
+import { toast } from "@/hooks/use-toast";
 
 const CreateCustomOrder = () => {
-  const { productList } = useSelector(state => state.shoppingProducts)
+  const { productList } = useSelector((state) => state.shoppingProducts);
   const dispatch = useDispatch();
-  const [openProductDialog, setOpenProductDialog] = useState(false)
+  const [openProductDialog, setOpenProductDialog] = useState(false);
   const [items, setItems] = useState([]);
+  const navigate = useNavigate();
+  
+  
   
 
-function handleFetchProducts() {
-  dispatch(fetchAllFilteredProducts({ filterParams: {}, sortParams: {} }));
-  
-}
+  function handleFetchProducts() {
+    dispatch(fetchAllFilteredProducts({ filterParams: {}, sortParams: {} }));
+  }
   const {
     register,
     handleSubmit,
     setError,
+    
 
     formState: { errors },
+    
   } = useForm();
 
   const onSubmit = (data) => {
+    console.log("data on submit", data)
     const formattedData = {
       userId: "userId",
-      
+
       addressInfo: {
         fullName: data.fullName,
-        addressId: "address",
+        addressId: "",
         address: data.address,
         city: data.city,
         nearest_landmark: data.nearest_landmark,
@@ -46,40 +54,94 @@ function handleFetchProducts() {
       paymentMethod: "cod",
       paymentStatus: data.paymentStatus,
       totalAmount: data.delivery_charge,
-      orderDate:  new Date(),
+      orderDate: new Date(),
     };
-  
+    console.log("fomatted form data ", formattedData)
 
-    setItems([])
-    dispatch(createOrder(formattedData)).then((data)=> {
-      if(data.payload) {
-  
+    setItems([]);
+    dispatch(createOrder(formattedData)).then((data) => {
+      if (data?.payload?.success) {
+        navigate("/admin/orders")
+        toast({
+          title: "Order successfully created",
+          duration: 2000,
+        })
       }
-    })
+    });
   };
   return (
     <div className="flex flex-col h-[100vh] w-full border-b-4 gap-4">
       <div className="addproduct bg-white/80 mb-4 border-b-2 relative">
         <h1 className="font-semibold text-2xl mt-2 p-2">Products</h1>
         <div className="mt-4 p-4">
-          <Dialog 
-          open={openProductDialog}
-          onOpenChange={()=> {
-            setOpenProductDialog(false)
-          }}
+          <Dialog
+            open={openProductDialog}
+            onOpenChange={() => {
+              setOpenProductDialog(false);
+            }}
           >
-            <CustomProduct productList={productList} setItems={setItems} items={items} setOpenProductDialog={setOpenProductDialog}/>
-
+            <CustomProduct
+              productList={productList}
+              setItems={setItems}
+              items={items}
+              setOpenProductDialog={setOpenProductDialog}
+            />
           </Dialog>
-          <Button className="bg-purple-600 m-2 p-2"
-          onClick={() => {
-            setOpenProductDialog(true)
-            handleFetchProducts();
-          }}
-          >Select Products</Button>
+          <Button
+            className="bg-purple-600 m-2 p-2"
+            onClick={() => {
+              setOpenProductDialog(true);
+              handleFetchProducts();
+            }}
+          >
+            Select Products
+          </Button>
+        </div>
+        <div className="flex flex-col m-4 md:m-6 gap-2 md:gap-4">
+          {items && items.length > 0
+            ? items.map((item) => (
+                <div className="flex gap-8 md:gap-32">
+                  <img
+                    src={item?.image}
+                    alt={item?.title}
+                    height={70}
+                    width={70}
+                    className="object-cover outline-double "
+                  ></img>
+                  <div className="flex flex-col gap-2">
+                    <span className="text-muted-foreground">
+                      {" "}
+                      Color: {item?.color}
+                    </span>
+                    <span className="text-muted-foreground flex gap-2 ">
+                      {" "}
+                      Quantity:{" "}
+                      <Button
+                        className="rounded-sm"
+                        size={10}
+                        variant="outline"
+                        onClick={()=> setItems((prevItems)=> prevItems.map((i)=> i.id === item.id ? {...i, quantity: i.quantity -1 } : i))}
+                        disabled={item.quantity == 1}
+                      >
+                        <Minus size={20} />
+                      </Button>
+                      {item.quantity}
+                      <Button
+                        className="rounded-sm"
+                        size={10}
+                        variant="outline"
+                        onClick={() => setItems((prevItems)=> prevItems.map((i)=> i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i)) }
+                      >
+                        <Plus size={20} />
+                      </Button>
+                    </span>
+                  </div>
+                </div>
+              ))
+            : null}
         </div>
       </div>
-      <form onSubmit={onSubmit} className="flex flex-col">
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
         <div className="form mb-4 border-b-2 relative bg-white/80 p-6 ">
           <h1 className="font-semibold text-2xl mt-2 mb-4 p-2">
             Customer Details
