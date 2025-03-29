@@ -105,7 +105,7 @@ const AdminOrdersView = () => {
                   </div>
                 </div>
                 <div className="barcode">
-                <QrCode value={`${import.meta.env.VITE_API_URL}/admin/qrcodedetail`} size={200} />
+                <QrCode value={`${window.location.origin}/admin/qrcodedetail`} size={200} />
 
                 </div>
               </div>

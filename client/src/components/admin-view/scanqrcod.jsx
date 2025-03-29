@@ -6,17 +6,23 @@ const QRCodeScanner = ({ onScan }) => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  // Adjust to use onResult instead of onScan
   const handleScanResult = (result) => {
-    if (result) {
-      console.log("Scanned Data:", result);
-      onScan(result); // Handle scanned data
-      navigate(result); // Redirect to scanned URL
+    if (result && result.text) {  
+      console.log("Scanned Data:", result.text);  // Log the URL to the console
+      const scannedURL = result.text;
+
+      // Check if the scanned URL is valid
+      if (scannedURL && scannedURL.startsWith("http://localhost:5173")) {
+        console.log("Navigating to: ", scannedURL);  // Log before navigating
+        window.location.href = scannedURL // Navigate to the scanned URL
+      } else {
+        console.error("Invalid URL detected", scannedURL);
+      }
     }
   };
 
   const handleError = (err) => {
-    console.error("QR Scanner Error:", err); // Log error
+    console.error("QR Scanner Error:", err);
     setError(err);
   };
 
