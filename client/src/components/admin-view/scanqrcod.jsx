@@ -24,6 +24,10 @@ const QRCodeScanner = ({ onScan }) => {
         onError={handleError}
         onScan={handleScan}
         style={{ width: "100%" }}
+        constraints={{
+            video: { facingMode: "environment" }, // Use back camera
+          }}
+  
       />
       {error && <p>Error: {error.message}</p>}
     </div>
