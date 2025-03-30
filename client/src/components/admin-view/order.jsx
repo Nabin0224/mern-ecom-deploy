@@ -73,76 +73,81 @@ const AdminOrdersView = () => {
       selectedOrders.includes(order._id)
   );
   console.log("selectedOrderDetails", selectedOrderDetails)
+  return (
+    <div ref={contentRef} className="bg-white print:w-full">
+      {selectedOrderDetails.length > 0 ? (
+        selectedOrderDetails.map((order) => (
+          <div
+            key={order._id}
+            className="w-full h-[100vh] p-12 flex flex-col justify-between border print:border-black print:shadow-none print:page-break"
+            style={{ pageBreakAfter: "always" }} // Ensures a new page for each order
+          >
+            {/* Header */}
+            <div className="text-center">
+              <h1 className="text-5xl font-bold">Style Me</h1>
+              <h2 className="text-2xl font-semibold">Kathmandu</h2>
+              <h2 className="text-2xl font-semibold">9864782899</h2>
+            </div>
 
-    return (
-      <div ref={contentRef} className="">
-        {selectedOrderDetails.length > 0 ? (
-          selectedOrderDetails.map((order) => (
-            <div key={order._id} className="grid gap-6 m-8 border-b p-6">
-              <div className="flex flex-col gap-0">
-                <h1 className="text-center text-3xl font-bold">Style Me</h1>
-                <h2 className="text-center text-xl font-[500]">Kathmandu</h2>
-                <h2 className="text-center text-xl font-[500]">9864782899</h2>
+            {/* Order Information */}
+            <div className="flex justify-between text-xl">
+              <div>
+                <p className="font-medium">Order Date:</p>
+                <p>{order?.orderDate?.split("T")[0]}</p>
               </div>
-              <div className="grid gap-2">
-                <div className="flex mt-2 items-center justify-between">
-                  <p className="font-medium ">Order Date</p>
-                  <Label className="">{order?.orderDate?.split("T")[0]}</Label>
-                </div>
-              </div>
-              <div className="flex  items-center justify-start gap-4">
-                <p className="font-bold text-2xl">Cod</p>
-                <Label className="font-bold text-2xl">
-                  ${order.totalAmount}
-                </Label>
-              </div>
-
-              <Separator />
-
-              <div className="grid grid-cols-[2fr_1fr] gap-4">
-                <div className="grid">
-                  <div className="font-medium text-xl">Shipping Info</div>
-                  <div className="grid gap-0.5 text-muted-foreground">
-                    <span>{order.addressInfo?.fullName}</span>
-                    <span>{order.addressInfo?.address}</span>
-                    <span>{order.addressInfo?.city}</span>
-                    <span>{order.addressInfo?.phone}</span>
-                  </div>
-                </div>
-                <div className="barcode">
-                <QRCode value={`${window.location.origin}/admin/qrcodedetail/${order._id}`} size={200} />
-
-                </div>
-              </div>
-              <Separator />
-              <div className="grid gap-4">
-                <div className="grid gap-2">
-                  <div className="font-medium text-xl mb-4">Order Details</div>
-                  <ul className="grid gap-3">
-                    {order.cartItem && order.cartItem.length > 0
-                      ? order.cartItem.map((item) => (
-                          <li
-                            key={item.title}
-                            className="flex items-center justify-between"
-                          >
-                            <span>{item.title}</span>
-                            <span>Quantity: {item.quantity}</span>
-                            <span>Color: {item.color}</span>
-
-                            {/* <span>Price: ${item.price}</span> */}
-                          </li>
-                        ))
-                      : null}
-                  </ul>
-                </div>
+              <div className="text-right">
+                <p className="font-bold">Total Amount:</p>
+                <p className="text-3xl font-bold text-green-600">${order.totalAmount}</p>
               </div>
             </div>
-          ))
-        ) : (
-          <p>No orders selected for printing.</p>
-        )}
-      </div>
-    );
+
+            <Separator className="my-6" />
+
+            {/* Shipping Info & QR Code */}
+            <div className="grid grid-cols-2 gap-12">
+              <div>
+                <h3 className="font-medium text-2xl mb-4">Shipping Info</h3>
+                <p className="text-xl">{order.addressInfo?.fullName}</p>
+                <p className="text-xl">{order.addressInfo?.address}</p>
+                <p className="text-xl">{order.addressInfo?.city}</p>
+                <p className="text-xl">{order.addressInfo?.phone}</p>
+              </div>
+              <div className="flex justify-end">
+                <QRCode value={`${window.location.origin}/admin/qrcodedetail/${order._id}`} size={200} />
+              </div>
+            </div>
+
+            <Separator className="my-6" />
+
+            {/* Order Details */}
+            <div>
+              <h3 className="font-medium text-2xl mb-4">Order Details</h3>
+              <table className="w-full border-collapse border text-left text-xl">
+                <thead>
+                  <tr className="border-b">
+                    <th className="p-4 border-r">Item</th>
+                    <th className="p-4 border-r text-center">Quantity</th>
+                    <th className="p-4 text-center">Color</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {order.cartItem?.map((item) => (
+                    <tr key={item.title} className="border-b">
+                      <td className="p-4 border-r">{item.title}</td>
+                      <td className="p-4 border-r text-center">{item.quantity}</td>
+                      <td className="p-4 text-center">{item.color}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        ))
+      ) : (
+        <p className="text-center text-xl font-medium">No orders selected for printing.</p>
+      )}
+    </div>
+  );
   };
 
   const handleCheckboxChange = (getId) => {
