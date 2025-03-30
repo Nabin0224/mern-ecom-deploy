@@ -146,16 +146,14 @@ const AdminOrdersView = () => {
   };
 
   const handleCheckboxChange = (getId) => {
-    setSelectedOrders((prev) =>{
-     const updatedSelection = prev.includes(getId)
+    setSelectedOrders((prev) =>
+ prev.includes(getId)
         ? prev.filter((id) => id !== getId)
-        : [...prev, getId];
-
-        sessionStorage.setItem("selectedOrdersForQrCode", JSON.stringify(updatedSelection));
-        return updatedSelection;
+        : [...prev, getId]
 
 
-    }
+
+    
     );
   };
   
@@ -261,9 +259,7 @@ const AdminOrdersView = () => {
                 </TableBody>
               </Table>
               <Button onClick={handleBulkPrint}>Print All</Button>
-              <Button onClick={() => navigate("/admin/scanqrcode")}>
-                Scan QR Code
-              </Button>
+f
             </CardContent>
           </Card>
           {/* <div className="hidden">

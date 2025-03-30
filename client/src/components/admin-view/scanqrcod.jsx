@@ -1,42 +1,51 @@
-import { useState } from "react";
-import { QrReader } from "react-qr-reader"; // Correct import
+import { useEffect, useRef, useState } from "react";
+import QrScanner from "qr-scanner";
 import { useNavigate } from "react-router-dom";
 
 const QRCodeScanner = ({ onScan }) => {
+  const videoRef = useRef(null);
+  const scannerRef = useRef(null);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  const handleScanResult = (result) => {
-    if (result && result.text) {  
-      console.log("Scanned Data:", result.text);  // Log the URL to the console
-      const scannedURL = result.text;
+  useEffect(() => {
+    if (!videoRef.current) return;
 
-      // Check if the scanned URL is valid
+    // Initialize QR Scanner
+    const scanner = new QrScanner(
+      videoRef.current,
+      (result) => handleScanResult(result),
+      {
+        preferredCamera: "environment", // Use back camera
+        highlightScanRegion: true,
+      }
+    );
+
+    scannerRef.current = scanner;
+    scanner.start().catch((err) => setError(err));
+
+    return () => {
+      scanner.stop();
+    };
+  }, []);
+
+  const handleScanResult = (result) => {
+    if (result) {
+      console.log("Scanned Data:", result.data);
+      const scannedURL = result.data;
+
       if (scannedURL) {
-        console.log("Navigating to: ", scannedURL);  // Log before navigating
-        window.location.href = scannedURL // Navigate to the scanned URL
+        console.log("Navigating to:", scannedURL);
+        window.location.href = scannedURL; // Navigate to the scanned URL
       } else {
         console.error("Invalid URL detected", scannedURL);
       }
     }
   };
 
-  const handleError = (err) => {
-    console.error("QR Scanner Error:", err);
-    setError(err);
-  };
-
   return (
     <div>
-      <QrReader
-        delay={300}
-        onError={handleError}
-        onResult={handleScanResult} // Use onResult here
-        style={{ width: "100%" }}
-        constraints={{
-          facingMode: "environment", // Use back camera
-        }}
-      />
+      <video ref={videoRef} style={{ width: "100%" }} />
       {error && <p>Error: {error.message}</p>}
     </div>
   );

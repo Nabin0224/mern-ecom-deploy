@@ -1,6 +1,6 @@
 import React from 'react'
 import { Button } from '../ui/button'
-import { AlignJustify, LogOut } from 'lucide-react'
+import { AlignJustify, LogOut, ScanQrCode } from 'lucide-react'
 
 import { useNavigate } from 'react-router-dom'
 
@@ -34,7 +34,8 @@ const AdminHeader = ({setOpen}) => {
     <span className='sr-only'>Toggle Menu</span>
     
     </Button>
-    <div className="logout flex flex-1 justify-end">
+    <div className="logout flex flex-1 justify-end gap-4">
+       <ScanQrCode size={35} onClick={() => navigate("/admin/scanqrcode")}/>
       <Button onClick={handleLogout} className="inline-flex px-4 py-3 rounded-md text-sm font-medium">
       <LogOut  />
       Logout
