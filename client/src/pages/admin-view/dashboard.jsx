@@ -39,9 +39,9 @@ const AdminDashboard = () => {
     dispatch(fetchDailyOrders())
   }, [dispatch]);
 
+  const orders = dailyOrders?.length > 0 ? dailyOrders[dailyOrders.length - 1] : { totalOrders: 0 };
+  const totalOrders = orders?.totalOrders || 0;
 
-  const orders = dailyOrders && dailyOrders.length > 0 ? dailyOrders[dailyOrders.length - 1] : null;
-const totalOrders = orders ? orders.totalOrders : 0;
   function handleDeleteImage(id) {
     dispatch(deleteFeatureImages(id)).then((data) => {
       if (data?.payload?.success) {
