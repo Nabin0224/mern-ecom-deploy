@@ -295,7 +295,7 @@ const CreateCustomOrder = () => {
               <Input
                 placeholder="Email"
                 type="email"
-                {...register("email", { required: true })}
+                {...register("email", { required: false })}
               />
             </div>
             <div className="w-1/3">
@@ -331,7 +331,7 @@ const CreateCustomOrder = () => {
               <Input
                 placeholder="Nearest Landmark"
                 type="text"
-                {...register("nearest_landmark", { required: true })}
+                {...register("nearest_landmark", { required: false })}
               />
             </div>
           </div>
@@ -341,9 +341,9 @@ const CreateCustomOrder = () => {
             <h1 className="font-semibold text-2xl mb-6">Delivery Charge</h1>
             <Label>Delivery Charge</Label>
             <Input
-              type="text"
+              type= "number"
               value={deliveryCharge}
-              readOnly
+              
               {...register("delivery_charge")}
             />
           </div>
@@ -357,16 +357,11 @@ const CreateCustomOrder = () => {
             />
           </div>
         </div>
-
-        <div className="bg-white/80 mb-4 border-b-2 p-6">
-          <h1 className="font-semibold text-2xl mb-6">Payment</h1>
-          <Label>Payment Status</Label>
-          <Input
-            placeholder="Payment Status"
-            type="text"
-            {...register("paymentStatus", { required: true })}
-          />
-        </div>
+        <select {...register("paymentStatus", { required: true })} className="border p-2">
+  <option value="cod">COD</option>
+  <option value="paid">Paid</option>
+  <option value="partially_paid">Partially Paid</option>
+</select>
 
         <Button type="submit" className="bg-purple-600 mt-4 p-2">
           Create Order

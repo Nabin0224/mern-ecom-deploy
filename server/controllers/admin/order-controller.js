@@ -6,10 +6,10 @@ const CustomerOrder = require("../../models/CustomOrder")
 const getAllOrdersofAllUser = async(req, res)=> {
 try {
   
-  const paypalorders = await Order.find({})
-  const esewaorders = await EsewaOrder.find({});
-  const codorders = await CodOrder.find({})
-  const customorders = await CustomerOrder.find({})
+  const paypalorders = await Order.find({}).sort({ createdAt: -1 })
+  const esewaorders = await EsewaOrder.find({}).sort({ createdAt: -1 })
+  const codorders = await CodOrder.find({}).sort({ createdAt: -1 })
+  const customorders = await CustomerOrder.find({}).sort({ createdAt: -1 })
       // returns array of orders present in the database 
 
   if(paypalorders.length === 0 && esewaorders.length === 0 && codorders.length === 0 && customorders.length=== 0 ) {
@@ -19,7 +19,7 @@ try {
     })
   }
 
-  const orders = [...paypalorders, ...esewaorders, ...codorders, ...customorders]
+  const orders = [...paypalorders, ...esewaorders, ...codorders, ...customorders].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt) )
   return res.status(200).json({
     success: true,
     data: orders,

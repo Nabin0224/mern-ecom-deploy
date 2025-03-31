@@ -96,8 +96,8 @@ const AdminOrdersView = () => {
                 <p>{order?.orderDate?.split("T")[0]}</p>
               </div>
               <div className="text-right">
-                <p className="font-bold">Total Amount:</p>
-                <p className="text-3xl font-bold text-green-600">${order.totalAmount}</p>
+                <p className="font-bold">COD Amount:</p>
+                <p className="text-3xl font-bold text-green-600">₹{order.totalAmount}</p>
               </div>
             </div>
 
