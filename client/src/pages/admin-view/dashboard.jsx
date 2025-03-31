@@ -39,9 +39,13 @@ const AdminDashboard = () => {
     dispatch(fetchDailyOrders())
   }, [dispatch]);
 
-  const orders = dailyOrders?.length > 0 ? dailyOrders[dailyOrders.length - 1] : { totalOrders: 0 };
-  const totalOrders = orders?.totalOrders || 0;
+  const orders = dailyOrders && dailyOrders?.length > 0 ? dailyOrders[dailyOrders.length-1] : 0
+  
+  const totalOrder = orders.totalOrders 
+  console.log("totalOrder", totalOrder)
+  
 
+  
   function handleDeleteImage(id) {
     dispatch(deleteFeatureImages(id)).then((data) => {
       if (data?.payload?.success) {
@@ -57,7 +61,7 @@ const AdminDashboard = () => {
  
   const lastTwoDays = dailyOrders && dailyOrders.slice(-2);
   console.log(lastTwoDays, "last")
-  const percent = lastTwoDays && lastTwoDays.length > 0 ? (lastTwoDays[1].totalOrders - lastTwoDays[0].totalOrders ) * (lastTwoDays[0].totalOrders/100) : 0;
+  const percent = lastTwoDays && lastTwoDays.length > 0 ? (lastTwoDays[1]?.totalOrders - lastTwoDays[0]?.totalOrders ) * (lastTwoDays[0]?.totalOrders/100) : 0;
   console.log(percent)
   const growthColorClass = percent < 0 ? "text-red-600" : "text-green-600";
 
@@ -73,7 +77,7 @@ const AdminDashboard = () => {
     <div className="bg-blue-100 shadow-md rounded-lg p-6 text-center text-gray-800 flex flex-col items-center hover:scale-105 hover:shadow-lg transition-all duration-300">
       <PackageCheck size={40} className="text-blue-500 mb-2" />
       <h2 className="text-lg font-semibold">Total Orders</h2>
-      <p className="text-4xl font-bold">{totalOrders}</p>
+      <p className="text-4xl font-bold">{totalOrder}</p>
     </div>
 
     {/* Growth Box */}
