@@ -17,54 +17,43 @@ import { AccordionContent, AccordionItem } from "@radix-ui/react-accordion";
 import { Separator } from "@/components/ui/separator";
 import { ChevronLeft, ChevronRight, Minus, Plus } from "lucide-react";
 
-
 const ProductDetailsPage = () => {
   const dispatch = useDispatch();
   const productId = useParams();
-  
+
   const { user } = useSelector((state) => state.auth);
   const { formData } = useSelector((state) => state.esewaOrders);
   const { cartItems } = useSelector((state) => state.shoppingCart);
-  const [ cartColor, setCartColor ] = useState("")
-  const [currentImageIndex, setCurrentImageIndex] = useState(0)
-  
+  const [cartColor, setCartColor] = useState("");
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  function handlePrevImage() {
-    if (!productDetails?.image || productDetails?.image.length === 0) return;
-  
-    setCurrentImageIndex((prevIndex) => 
-      prevIndex === 0 ? productDetails.image.length - 1 : prevIndex - 1
-    );
-  }
-  
-  function handleNextImage() {
-    if (!productDetails?.image || productDetails?.image.length === 0) return;
-  
-    setCurrentImageIndex((prevIndex) => 
-      prevIndex >= productDetails.image.length - 1 ? 0 : prevIndex + 1
-    );
-  }
-  
+ 
+
+
+
   const { productList, productDetails } = useSelector(
     (state) => state.shoppingProducts
   );
   const [count, setCount] = useState(1);
-  
-  
+  const [selectedColor, setSelectedColor] = useState(null);
+
   const cartItemDetails =
-  cartItems?.items?.find((item) => item?.productId == productDetails?._id) ?? null;
-  
+    cartItems?.items?.find(
+      (item) =>
+        item?.productId == productDetails?._id && item.color === selectedColor
+    ) ?? null;
+
   useEffect(() => {
     if (productDetails?.image && productDetails.image.length > 0) {
       setCurrentImageIndex(0); // Reset index when product changes
     }
   }, [productDetails]);
-  
-  
+
+  console.log("productDetals", productDetails);
   useEffect(() => {
     dispatch(fetchCartItems(user?.id));
   }, [user, productId]);
-  
+
   useEffect(() => {
     dispatch(fetchProductDetails(productId.id));
   }, [user, productId]);
@@ -73,173 +62,157 @@ const ProductDetailsPage = () => {
       setCount(cartItemDetails.quantity);
     }
   }, [cartItemDetails]);
-  
-  
+
   // const cartItem = cartItems?.items?.find((item) => item?.productId === productDetails?._id);
-  
-  
-  const [selectedColor, setSelectedColor] = useState(productDetails?.colors[0]?.code);
-  
-function handleAddtoCart(getCurrentProductId, getTotalStock) {
-  
-  let finalQuantity = count > 1 ? count : 1;
-  let getCartItems = cartItems?.items || [];
 
-  // Check if the product is already in the cart
-  const existingCartItem = getCartItems.find(
-    (item) => item.productId === getCurrentProductId
-  );
+  function handleAddtoCart(getCurrentProductId, getTotalStock) {
+    let finalQuantity = count > 1 ? count : 1;
+    let getCartItems = cartItems?.items || [];
+    console.log("CartItems", cartItems);
 
-  
+    // check if the product with same color is present or not
 
-  if (existingCartItem) {
-    
-const updatedQuantity = finalQuantity; // Instead of adding, directly replace it
+    // Check if the product is already in the cart
+    const existingCartItem = getCartItems.find(
+      (item) =>
+        item.productId === getCurrentProductId && item.color === selectedColor
+    );
 
-if (updatedQuantity > getTotalStock) {
-  toast({
-    title: `Only ${getTotalStock} items can be added for this product`,
-    variant: "destructive",
-    duration: 2000,
-  });
-  return;
-}
+    if (existingCartItem) {
+      const updatedQuantity = finalQuantity; // Instead of adding, directly replace it
 
-dispatch(
-  updateCartQuantity({
-    userId: user?.id,
-    productId: getCurrentProductId,
-    quantity: updatedQuantity, // Directly set the new quantity
-  })
-).then(() => {
-  dispatch(fetchCartItems(user?.id));
-  toast({
-    title: "Cart updated successfully",
-    duration: 2000,
-  });
-});
-
-    dispatch(
-      updateCartQuantity({
-        userId: user?.id,
-        productId: getCurrentProductId,
-        quantity: updatedQuantity,
-      })
-    ).then(() => {
-      dispatch(fetchCartItems(user?.id));
-      toast({
-        title: "Cart updated successfully",
-        duration: 2000,
-      });
-    });
-  } else {
-    // **NEW ENTRY CHECK**: Ensure quantity does not exceed stock
-    if (finalQuantity > getTotalStock) {
-      toast({
-        title: `Only ${getTotalStock} items are available in stock`,
-        variant: "destructive",
-        duration: 2000,
-      });
-      return;
-    }
-
-    // If the item does not exist, add it normally
-    if(!selectedColor) {
-      toast({
-        title: "Please choose a color!",
-        variant: "destructive",
-        duration: 1500
-      })
-    }
-    dispatch(
-      addToCart({
-        userId: user?.id,
-        productId: getCurrentProductId,
-        quantity: finalQuantity,
-        color:  selectedColor
-        
-      })
-    ).then((data) => {
-      if (data?.payload?.success) {
-        dispatch(fetchCartItems(user?.id));
+      if (updatedQuantity > getTotalStock) {
         toast({
-          title: "Product Added to the Cart",
+          title: `Only ${getTotalStock} items can be added for this product`,
+          variant: "destructive",
           duration: 2000,
         });
-      }
-    });
-  }
-}
-  function handleCartQuantity(getCartItem, typeofAction) {
-    if (!getCartItem) return;
-    if (getCartItem) {
-      const updatedQuantity =
-        typeofAction === "plus"
-          ? getCartItem?.quantity + 1
-          : getCartItem?.quantity - 1;
-
-      // If the action is "plus", make sure there's enough stock
-      if (typeofAction === "plus") {
-        const getCurrentProductIndex = productList.findIndex(
-          (item) => item._id === getCartItem?.productId
-        );
-        if (getCurrentProductIndex !== -1) {
-          const getTotalStock = productList[getCurrentProductIndex].totalStock;
-          if (updatedQuantity > getTotalStock) {
-            toast({
-              title: `Only ${getTotalStock} items can be added`,
-              variant: "destructive",
-              duration: 2000,
-            });
-            return;
-          }
-        }
-      } else {
+        return;
       }
 
       dispatch(
         updateCartQuantity({
           userId: user?.id,
-          productId: getCartItem?.productId,
+          productId: getCurrentProductId,
+          color: selectedColor, // update quanity of the same color
           quantity: updatedQuantity,
         })
       ).then(() => {
-        // Ensure cart is refetched after update
         dispatch(fetchCartItems(user?.id));
+        toast({
+          title: "Cart updated successfully",
+          duration: 2000,
+        });
+      });
+    } else {
+      // **NEW ENTRY CHECK**: Ensure quantity does not exceed stock
+      if (finalQuantity > getTotalStock) {
+        toast({
+          title: `Only ${getTotalStock} items are available in stock`,
+          variant: "destructive",
+          duration: 2000,
+        });
+        return;
+      }
+
+      // If the item does not exist, add it normally
+      if (!selectedColor) {
+        toast({
+          title: "Please choose a color!",
+          variant: "destructive",
+          duration: 1500,
+        });
+      }
+      dispatch(
+        addToCart({
+          userId: user?.id,
+          productId: getCurrentProductId,
+          quantity: finalQuantity,
+          color: selectedColor,
+        })
+      ).then((data) => {
+        if (data?.payload?.success) {
+          dispatch(fetchCartItems(user?.id));
+          toast({
+            title: "Product Added to the Cart",
+            duration: 2000,
+          });
+        }
       });
     }
   }
 
+  function handleCartQuantity(getCartItem, typeofAction) {
+    if (!selectedColor) {
+      toast({ title: "Please select a color first!", variant: "destructive" });
+      return;
+    }
+
+    const cartItemWithColor = cartItems?.items?.find(
+      (item) =>
+        item.productId === getCartItem?.productId &&
+        item.color === getCartItem.color // Ensure correct color is used
+    );
+
+    if (!cartItemWithColor) return;
+
+    let updatedQuantity =
+      typeofAction === "plus"
+        ? cartItemWithColor.quantity + 1
+        : cartItemWithColor.quantity - 1;
+
+    if (updatedQuantity < 1) return;
+
+    const productInList = productList.find(
+      (item) => item._id === getCartItem?.productId
+    );
+
+    if (productInList && updatedQuantity > productInList.totalStock) {
+      toast({
+        title: `Only ${productInList.totalStock} items available`,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    dispatch(
+      updateCartQuantity({
+        userId: user?.id,
+        productId: getCartItem?.productId,
+        color: selectedColor,
+        quantity: updatedQuantity,
+      })
+    ).then(() => dispatch(fetchCartItems(user?.id)));
+  }
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2  gap-2 min-w-fit m-1 p-1 md:p-2 md:m-2 h-full">
-      <div className="relative rounded-lg m-1 p-1  h-full  md:p-8">
-        { productDetails?.image && productDetails?.image.length > 0 && (
-        <img
-          src={productDetails?.image[currentImageIndex]}
-          alt={productDetails?.title}
-          width={600}
-          height={600}
-          className="aspect-square object-center object-cover"
-        />
-        )
+      <div className="relative rounded-lg m-1 p-1  h-full  md:p-8 flex flex-col gap-2">
+        {productDetails?.image && productDetails?.image.length > 0 && (
+          <img
+            src={productDetails?.image[currentImageIndex]}
+            alt={productDetails?.title}
+            width={600}
+            height={600}
+            className="aspect-square object-center object-cover"
+          />
+        )}
+        <div className="flex gap-2">
+        {
+          productDetails?.image && productDetails?.image.length > 0 ? productDetails?.image.map((item, index) => 
+            <img onClick={() => setCurrentImageIndex(index)}
+          
+          key={index}
+            src={item}
+            alt={productDetails?.title}
+            width={100}
+            height={50}
+            className={`aspect-square object-center object-cover transition-all duration-200 ${currentImageIndex === index ? "scale-110 border-blue-500 ": ""} `}
+          />
+          ) : null
+        }
+        </div>
 
-}
-
-<button 
-onClick={handlePrevImage}
-className="absolute left-8 top-1/2 transform -translate-y-1/2 bg-gray-400 p-2 rounded-sm "
->
-<ChevronLeft size={10}/>
-</button>
-
-<button 
-onClick={handleNextImage}
-className="absolute right-24 top-1/2 transform -translate-y-1/2 bg-gray-400 p-2 rounded-sm"
->
-
-  <ChevronRight size={10}/>
-
-</button>
       </div>
       <div className=" m-1 p-1 Productdetails relative flex flex-col md:p-8">
         <div className="">
@@ -267,23 +240,24 @@ className="absolute right-24 top-1/2 transform -translate-y-1/2 bg-gray-400 p-2 
         </div>
         <div className="Color mb-6 md:mb-6">
           <h2>Color : </h2>
-           <div>
-           <div className="flex gap-2 mt-3">
-        {productDetails?.colors?.map((color) => (
-          <button
-            key={color.colorName}
-            className={`w-6 h-6 rounded-full border-2 ${
-              selectedColor === color.code ? "border-black" : "border-gray-300"
-            }`}
-            style={{ backgroundColor: color.code }}
-            onClick={() => {setSelectedColor(color.code)
-
-              
-            }}
-          />
-        ))}
-      </div>
-           </div>
+          <div>
+            <div className="flex gap-2 mt-3">
+              {productDetails?.colors?.map((color) => (
+                <button
+                  key={color.colorName}
+                  className={`w-6 h-6 rounded-full border-2 ${
+                    selectedColor === color.code
+                      ? "border-black"
+                      : "border-gray-300"
+                  }`}
+                  style={{ backgroundColor: color.code }}
+                  onClick={() => {
+                    setSelectedColor(color.code);
+                  }}
+                />
+              ))}
+            </div>
+          </div>
         </div>
         <div className="Quantity  md:mb-6">
           <h2>Quantity :</h2>
@@ -303,7 +277,9 @@ className="absolute right-24 top-1/2 transform -translate-y-1/2 bg-gray-400 p-2 
             className="h-6 w-6 rounded-sm"
             size="icon"
             // disabled={ cartItemDetails?.quantity ===1  || count === 1}
-            disabled={cartItemDetails?.quantity <= 1 || (!cartItemDetails && count <= 1)}
+            disabled={
+              cartItemDetails?.quantity <= 1 || (!cartItemDetails && count <= 1)
+            }
           >
             <Minus className="w-4 h-4" strokeWidth={0.8} />
             <span className="sr-only">Decrease</span>

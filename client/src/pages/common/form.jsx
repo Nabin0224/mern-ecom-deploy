@@ -108,7 +108,7 @@ function CommonForm({
                       {
                         colorName: selectedColor.label,
                         code: selectedColor.code,
-                        quantity: 0,
+                        quantity: ''
                       },
                     ],
                   });

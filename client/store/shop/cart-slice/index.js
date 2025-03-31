@@ -36,13 +36,14 @@ export const fetchCartItems = createAsyncThunk(
 
 export const updateCartQuantity = createAsyncThunk(
   "cart/update-cart",
-  async ({ userId, productId, quantity }) => {
+  async ({ userId, productId, quantity, color }) => {
     const response = await axios.put(
       `${import.meta.env.VITE_API_URL}/api/shop/cart/update-cart`,
       {
         userId,
         productId,
         quantity,
+        color,
       }
     );
     return response.data;

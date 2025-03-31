@@ -25,12 +25,12 @@ const addToCart = async (req, res) => {
     }
 
     const findCurrentProductIndex = cart.items.findIndex(
-      (item) => item.productId.toString() === productId
+      (item) => item.productId.toString() === productId && item.color == color
     );
     if (findCurrentProductIndex === -1) {
       cart.items.push({ productId, quantity, color });
     } else {
-      cart.items[findCurrentProductIndex].quantity += quantity;
+      cart.items[findCurrentProductIndex].quantity = quantity;
     }
     
     await cart.save();
@@ -107,9 +107,9 @@ const fetchCartItems = async (req, res) => {
 
 const updateCartItems = async (req, res) => {
   try {
-    const { userId, productId, quantity } = req.body;
+    const { userId, productId, quantity, color } = req.body;
 
-    if (!userId || !productId || quantity <= 0)
+    if (!userId || !productId ||  !color || quantity <= 0)
       return res.status(400).json({
         success: false,
         message: "Invalid data provided!",
@@ -123,7 +123,7 @@ const updateCartItems = async (req, res) => {
       });
     }
     const findCurrentProductIndex = cart.items.findIndex(
-      (item) => item.productId.toString() === productId
+      (item) => item.productId.toString() === productId && item.color === color 
     );
 
     if (findCurrentProductIndex === -1) {
@@ -133,6 +133,7 @@ const updateCartItems = async (req, res) => {
           message: "Cart item not present!",
         });
     }
+
     cart.items[findCurrentProductIndex].quantity = quantity;
 
     await cart.save();

@@ -15,6 +15,7 @@ const UserCartItemsContent = ({ cartItem }) => {
   const dispatch = useDispatch();
   const { toast } = useToast();
   
+  
 
   function handleDeleteCartItem(getCartItem) {
     
@@ -29,7 +30,8 @@ const UserCartItemsContent = ({ cartItem }) => {
       }
     });
   }
-
+console.log("cartIte in cart", cartItem)
+console.log("color in productList", productList)
   function handleCartQuantity(getCartItem, typeofAction) {
     const updatedQuantity =
       typeofAction === "plus"
@@ -39,7 +41,7 @@ const UserCartItemsContent = ({ cartItem }) => {
     // If the action is "plus", make sure there's enough stock
     if (typeofAction === "plus") {
       const getCurrentProductIndex = productList.findIndex(
-        (item) => item._id === getCartItem?.productId
+        (item) => item._id === getCartItem?.productId 
       );
       if (getCurrentProductIndex !== -1) {
         const getTotalStock = productList[getCurrentProductIndex].totalStock;
@@ -59,6 +61,7 @@ const UserCartItemsContent = ({ cartItem }) => {
         userId: user?.id,
         productId: getCartItem?.productId,
         quantity: updatedQuantity,
+        color: getCartItem?.color
       })
     );
   }

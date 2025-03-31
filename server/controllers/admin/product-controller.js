@@ -122,6 +122,7 @@ const editProduct = async (req, res) => {
       salePrice,
       totalStock,
       image,
+      colors
     } = req.body;
 
     console.log("req body in edit ", req.body);
@@ -134,6 +135,7 @@ const editProduct = async (req, res) => {
     findProduct.salePrice = salePrice || findProduct.salePrice;
     findProduct.totalStock = totalStock || findProduct.totalStock;
     findProduct.image = image || findProduct.image;
+    findProduct.colors = colors || findProduct.colors
 
     await findProduct.save();
 
