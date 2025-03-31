@@ -99,7 +99,7 @@ const districtOptions = districts.map((district) => ({
 }));
 
 const CreateCustomOrder = () => {
-  const { register, handleSubmit, setValue, watch } = useForm();
+  const { register, handleSubmit, setValue, watch, formState: { errors },  } = useForm();
   const [deliveryCharge, setDeliveryCharge] = useState(0);
   const { productList } = useSelector((state) => state.shoppingProducts);
   const dispatch = useDispatch();
@@ -302,9 +302,13 @@ const CreateCustomOrder = () => {
               <Label>Phone</Label>
               <Input
                 placeholder="Phone"
-                type="text"
-                {...register("phone", { required: true })}
+                type="number"
+                {...register("phone", { required: true,
+                  minLength: 10,
+                  maxLength: 10.,
+                 })}
               />
+              {errors.phone && <span className="text-red-500">This field is required!!</span>}
             </div>
           </div>
 

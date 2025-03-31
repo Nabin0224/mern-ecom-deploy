@@ -149,6 +149,7 @@ const AdminOrdersView = () => {
     </div>
   );
   };
+  console.log("orderlsot", orderList)
 
   const handleCheckboxChange = (getId) => {
     setSelectedOrders((prev) =>
@@ -189,7 +190,7 @@ const AdminOrdersView = () => {
                 <TableHeader>
                   <TableRow>
                     <TableHead></TableHead>
-                    <TableHead>Order Id</TableHead>
+                    <TableHead>Customer Name</TableHead>
                     <TableHead>Order Date</TableHead>
                     <TableHead>Order Status</TableHead>
                     <TableHead>Order Price</TableHead>
@@ -207,7 +208,7 @@ const AdminOrdersView = () => {
                               onChange={() => handleCheckboxChange(item?._id)}
                             />
                           </TableCell>
-                          <TableCell>{item._id}</TableCell>
+                          <TableCell>{item?.addressInfo?.fullName}</TableCell>
                           <TableCell>
                             {item?.orderDate?.split("T")[0]}
                           </TableCell>
