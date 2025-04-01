@@ -1,7 +1,7 @@
-const CodOrder = require("../../models/CodOrder.js")
-const CustomOrder  = require("../../models/CustomOrder.js");
-const EsewaOrder   = require("../../models/EsewaOrder.js");
-const express = require("express")
+const CodOrder = require("../../models/CodOrder.js");
+const CustomOrder = require("../../models/CustomOrder.js");
+const EsewaOrder = require("../../models/EsewaOrder.js");
+const express = require("express");
 
 const router = express.Router();
 
@@ -9,17 +9,36 @@ router.get("/daily", async (req, res) => {
   try {
     const lastMonth = new Date();
     lastMonth.setMonth(lastMonth.getMonth() - 1);
+    lastMonth.setHours(0, 0, 0, 0); // Start of day in UTC
 
-    // Function to get daily orders from a collection
+    const endOfLastMonth = new Date();
+    endOfLastMonth.setDate(0); // Last day of previous month
+    endOfLastMonth.setHours(23, 59, 59, 999); // End of day in UTC
+
+    // Function to get daily orders from a collection with Nepal Time
     const getDailyOrders = async (model) => {
       return model.aggregate([
-        { $match: { createdAt: { $gte: lastMonth } } }, // Filter last month orders
+        { 
+          $match: { createdAt: { $gte: lastMonth, $lte: endOfLastMonth } } 
+        },
         {
           $group: {
-            _id: { $dayOfMonth: "$createdAt" }, // Group by day
-            total: { $sum: 1 }, // Count orders
+            _id: {
+              $dateToString: { 
+                format: "%Y-%m-%d", 
+                date: { 
+                  $dateAdd: { 
+                    startDate: "$createdAt", 
+                    unit: "hour", 
+                    amount: 5 
+                  }
+                } 
+              } 
+            },
+            total: { $sum: 1 },
           },
         },
+        { $sort: { _id: 1 } } // Ensure sorted by date
       ]);
     };
 
@@ -35,7 +54,7 @@ router.get("/daily", async (req, res) => {
 
     const mergeOrders = (orders) => {
       orders.forEach(({ _id, total }) => {
-        if (!combinedData[_id]) combinedData[_id] = { day: _id, totalOrders: 0 };
+        if (!combinedData[_id]) combinedData[_id] = { date: _id, totalOrders: 0 };
         combinedData[_id].totalOrders += total;
       });
     };
@@ -45,12 +64,13 @@ router.get("/daily", async (req, res) => {
     mergeOrders(esewaOrders);
 
     // Convert object to sorted array
-    const finalData = Object.values(combinedData).sort((a, b) => a.day - b.day);
+    const finalData = Object.values(combinedData);
 
-     res.status(200).json({
-        success: true,
-        data: finalData
+    res.status(200).json({
+      success: true,
+      data: finalData
     });
+
   } catch (error) {
     res.status(500).json({ error: "Error fetching data" });
   }
