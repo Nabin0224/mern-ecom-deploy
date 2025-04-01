@@ -25,9 +25,7 @@ const CustomOrderSchema = new mongoose.Schema({
     paymentMethod: String, 
     paymentStatus: String,
     totalAmount: String,
-    orderDate: {
-        type: Date
-    },
+    orderDate: String
 },
 {timestamps: true})
 

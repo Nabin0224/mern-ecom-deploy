@@ -40,7 +40,7 @@ const createEsewaOrder = async (req, res) => {
       
      } = req.body;
      
-
+console.log("formData in esewa", req.body)
     let transaction_uuid = uuidv4();
 
     

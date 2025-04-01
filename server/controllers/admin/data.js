@@ -1,7 +1,7 @@
-const CodOrder = require("../../models/CodOrder.js")
-const CustomOrder  = require("../../models/CustomOrder.js");
-const EsewaOrder   = require("../../models/EsewaOrder.js");
-const express = require("express")
+const CodOrder = require("../../models/CodOrder.js");
+const CustomOrder = require("../../models/CustomOrder.js");
+const EsewaOrder = require("../../models/EsewaOrder.js");
+const express = require("express");
 
 const router = express.Router();
 
@@ -9,23 +9,57 @@ router.get("/daily", async (req, res) => {
   try {
     const lastMonth = new Date();
     lastMonth.setMonth(lastMonth.getMonth() - 1);
-    lastMonth.setHours(0, 0, 0, 0); // Start of day in UTC
-
-    const endOfLastMonth = new Date();
-    endOfLastMonth.setDate(0); // Last day of previous month
-    endOfLastMonth.setHours(23, 59, 59, 999); // End of day in UTC
 
     // Function to get daily orders from a collection
     const getDailyOrders = async (model) => {
       return model.aggregate([
         { $match: { createdAt: { $gte: lastMonth } } }, // Filter last month orders
         {
+          $addFields: {
+            nepalTime: {
+              $dateAdd: {
+                startDate: "$createdAt",
+                unit: "hour",
+                amount: 5,
+              },
+            },
+          },
+        },
+        {
+          $addFields: {
+            nepalTime: {
+              $dateAdd: {
+                startDate: "$nepalTime",
+                unit: "minute",
+                amount: 45,
+              },
+            },
+          },
+        },
+        {
           $group: {
-            _id: { $dayOfMonth: "$createdAt" }, // Group by day
+            _id: {
+              year: { $year: "$nepalTime" },
+              month: { $month: "$nepalTime" },
+              day: { $dayOfMonth: "$nepalTime" },
+            },
             total: { $sum: 1 }, // Count orders
           },
         },
-        { $sort: { _id: 1 } } // Ensure sorted by date
+        {
+          $project: {
+            _id: 0,
+            date: {
+              $dateFromParts: {
+                year: "$_id.year",
+                month: "$_id.month",
+                day: "$_id.day",
+              },
+            },
+            total: 1,
+          },
+        },
+        { $sort: { date: 1 } }, // Ensure sorting by date
       ]);
     };
 
@@ -40,9 +74,10 @@ router.get("/daily", async (req, res) => {
     const combinedData = {};
 
     const mergeOrders = (orders) => {
-      orders.forEach(({ _id, total }) => {
-        if (!combinedData[_id]) combinedData[_id] = { day: _id, totalOrders: 0 };
-        combinedData[_id].totalOrders += total;
+      orders.forEach(({ date, total }) => {
+        const dayKey = date.toISOString().split("T")[0]; // Format YYYY-MM-DD
+        if (!combinedData[dayKey]) combinedData[dayKey] = { date: dayKey, totalOrders: 0 };
+        combinedData[dayKey].totalOrders += total;
       });
     };
 
@@ -51,11 +86,11 @@ router.get("/daily", async (req, res) => {
     mergeOrders(esewaOrders);
 
     // Convert object to sorted array
-    const finalData = Object.values(combinedData).sort((a, b) => a.day - b.day);
+    const finalData = Object.values(combinedData).sort((a, b) => new Date(a.date) - new Date(b.date));
 
-     res.status(200).json({
-        success: true,
-        data: finalData
+    res.status(200).json({
+      success: true,
+      data: finalData,
     });
   } catch (error) {
     res.status(500).json({ error: "Error fetching data" });

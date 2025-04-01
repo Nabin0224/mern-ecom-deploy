@@ -46,6 +46,10 @@ const ShoppingCheckout = () => {
   });
 
   //logic for total amount in cart
+  const orderDate = new Date();
+  const nepalTime = orderDate.toLocaleString("en-US", {
+    timeZone: "Asia/Kathmandu",
+  });
 
   const totalCartAmount =
     cartItems?.items && cartItems.items.length > 0
@@ -103,8 +107,8 @@ const ShoppingCheckout = () => {
       orderStatus: "pending",
       paymentMethod: "paypal",
       paymentStatus: "pending",
-      orderDate: new Date(),
-      orderUpdateDate: new Date(),
+      orderDate: nepalTime,
+      orderUpdateDate: nepalTime,
       paymentId: "",
       payerId: "",
       totalAmount: totalCartAmount,
@@ -161,8 +165,8 @@ const ShoppingCheckout = () => {
         })),
         userId: user.id,
         cartId: cartItems?._id,
-        orderDate: new Date(),
-        orderUpdateDate: new Date(),
+        orderDate: nepalTime,
+        orderUpdateDate: nepalTime,
         addressInfo: {
           fullName: currentSelectedAddressInfo?.fullName,
           addressId: currentSelectedAddressInfo?._id,

@@ -31,8 +31,8 @@ const EsewaOrderSchema = new mongoose.Schema({
     paymentMethod: String,
     paymentStatus: String,
     totalAmount: String, 
-    orderDate: Date,
-    orderUpdatedDate: Date,
+    orderDate: String,
+    orderUpdatedDate: String,
     orderId: String,
     ref_id: String, // from esewa 
     

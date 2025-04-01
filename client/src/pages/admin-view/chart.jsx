@@ -29,9 +29,16 @@ const Chart = () => {
       <ResponsiveContainer width="100%" height={300}>
         <LineChart data={dailyOrders}>
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="day" >
+          {/* <XAxis dataKey="day" >
           <Label value="Days" offset={0} position="insideBottom" />
-          </XAxis>
+          </XAxis> */}
+          <XAxis
+  dataKey="date"
+  tickFormatter={(date) => new Date(date).getDate()} // Extracts only the day
+>
+  <Label value="Days" offset={0} position="insideBottom" />
+</XAxis>
+
           <YAxis 
             domain={[0, maxTotalOrders]}  // Dynamic Y-Axis range
             ticks={yAxisTicks}            // Fixed gap of 1 for Y-Axis ticks

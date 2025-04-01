@@ -80,7 +80,7 @@ const AddProduct = () => {
           0
         ),
       };
-
+      console.log("updatedFormData", updatedFormData)
       dispatch(addNewProduct(updatedFormData)).then((data) => {
         if (data?.payload?.success) {
           dispatch(fetchAllProducts());

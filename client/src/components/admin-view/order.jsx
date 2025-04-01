@@ -212,7 +212,7 @@ const AdminOrdersView = () => {
                           <TableCell>
                             <span className="mr-3">
                               {" "}
-                              {item?.orderDate?.split("T")[0]}
+                              {item?.orderDate?.split(",")[0]}
                             </span>
                             <span className="text-muted-foreground">
                               {

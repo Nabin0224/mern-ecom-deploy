@@ -100,7 +100,13 @@ const districtOptions = districts.map((district) => ({
 }));
 
 const CreateCustomOrder = () => {
-  const { register, handleSubmit, setValue, watch, formState: { errors },  } = useForm();
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm();
   const [deliveryCharge, setDeliveryCharge] = useState(0);
   const { productList } = useSelector((state) => state.shoppingProducts);
   const dispatch = useDispatch();
@@ -170,16 +176,16 @@ const CreateCustomOrder = () => {
   //   //checking for double orders
   //   const checkOrderExists = async(phone) => {
   //     try {
-  //       const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/admin/check/check-order`, 
+  //       const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/admin/check/check-order`,
   //         phone
-  
+
   //        )
   //        return response.message
   //     } catch (error) {
   //       console.log(error.message)
   //     }
   //   }
-    
+
   //   dispatch(createOrder(formattedData)).then((data) => {
   //     if (data?.payload?.success) {
   //       navigate("/admin/orders");
@@ -191,59 +197,68 @@ const CreateCustomOrder = () => {
   //   });
   // };
 
-
   const onSubmit = async (data) => {
     console.log("data on submit", data);
 
-    const CodAmount = items.reduce((sum, item) => sum + item?.price * item?.quantity, 0);
-    
+    const CodAmount = items.reduce(
+      (sum, item) => sum + item?.price * item?.quantity,
+      0
+    );
+    const orderDate = new Date();
+    const nepalTime = orderDate.toLocaleString("en-US", {
+      timeZone: "Asia/Kathmandu",
+    });
+
     const formattedData = {
-        userId: "userId",
-        addressInfo: {
-            fullName: data.fullName,
-            address: data.address,
-            city: data.city,
-            nearest_landmark: data.nearest_landmark,
-            phone: data.phone,
-        },
-        cartItem: items,
-        orderStatus: "cod",
-        paymentMethod: "cod",
-        paymentStatus: data.paymentStatus,
-        totalAmount: data.delivery_charge + CodAmount - (data.discount_amount || 0),
-        orderDate: new Date(),
-    }
-    console.log("phone", data.phone)
+      userId: "userId",
+      addressInfo: {
+        fullName: data.fullName,
+        address: data.address,
+        city: data.city,
+        nearest_landmark: data.nearest_landmark,
+        phone: data.phone,
+      },
+      cartItem: items,
+      orderStatus: "cod",
+      paymentMethod: "cod",
+      paymentStatus: data.paymentStatus,
+      totalAmount:
+        data.delivery_charge + CodAmount - (data.discount_amount || 0),
+      orderDate: nepalTime,
+    };
+    console.log("phone", data.phone);
     try {
-        // Step 1: Check if order exists
-        const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/admin/check/check-order`, { phone: data.phone });
-        
-        if (response.data.exists) {
-            // Ask the user if they want to continue
-            const confirmOrder = window.confirm(
-                "An order with this phone number already exists! Do you want to proceed?"
-            );
+      // Step 1: Check if order exists
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/admin/check/check-order`,
+        { phone: data.phone }
+      );
 
-            if (!confirmOrder) {
-                return;
-            }
+      if (response.data.exists) {
+        // Ask the user if they want to continue
+        const confirmOrder = window.confirm(
+          "An order with this phone number already exists! Do you want to proceed?"
+        );
+
+        if (!confirmOrder) {
+          return;
         }
+      }
 
-        // Step 3: Create the order
-        dispatch(createOrder(formattedData)).then((result) => {
-            if (result?.payload?.success) {
-                navigate("/admin/orders");
-                toast({
-                    title: "Order successfully created",
-                    duration: 2000,
-                });
-            }
-        });
-
+      // Step 3: Create the order
+      dispatch(createOrder(formattedData)).then((result) => {
+        if (result?.payload?.success) {
+          navigate("/admin/orders");
+          toast({
+            title: "Order successfully created",
+            duration: 2000,
+          });
+        }
+      });
     } catch (error) {
-        console.error("Error checking order:", error);
+      console.error("Error checking order:", error);
     }
-};
+  };
   return (
     <div className="flex flex-col h-[100vh] w-full border-b-4 gap-4 p-6">
       <div className="addproduct bg-white/80 mb-4 border-b-2 relative">
@@ -372,12 +387,15 @@ const CreateCustomOrder = () => {
               <Input
                 placeholder="Phone"
                 type="number"
-                {...register("phone", { required: true,
+                {...register("phone", {
+                  required: true,
                   minLength: 10,
-                  maxLength: 10.,
-                 })}
+                  maxLength: 10,
+                })}
               />
-              {errors.phone && <span className="text-red-500">This field is required!!</span>}
+              {errors.phone && (
+                <span className="text-red-500">This field is required!!</span>
+              )}
             </div>
           </div>
 
@@ -414,9 +432,8 @@ const CreateCustomOrder = () => {
             <h1 className="font-semibold text-2xl mb-6">Delivery Charge</h1>
             <Label>Delivery Charge</Label>
             <Input
-              type= "number"
+              type="number"
               value={deliveryCharge}
-              
               {...register("delivery_charge")}
             />
           </div>
@@ -430,11 +447,14 @@ const CreateCustomOrder = () => {
             />
           </div>
         </div>
-        <select {...register("paymentStatus", { required: true })} className="border p-2">
-  <option value="cod">COD</option>
-  <option value="paid">Paid</option>
-  <option value="partially_paid">Partially Paid</option>
-</select>
+        <select
+          {...register("paymentStatus", { required: true })}
+          className="border p-2"
+        >
+          <option value="cod">COD</option>
+          <option value="paid">Paid</option>
+          <option value="partially_paid">Partially Paid</option>
+        </select>
 
         <Button type="submit" className="bg-purple-600 mt-4 p-2">
           Create Order
