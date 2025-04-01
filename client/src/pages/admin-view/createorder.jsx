@@ -13,6 +13,7 @@ import CustomProduct from "../../components/admin-view/custom-product";
 import { fetchAllFilteredProducts } from "../../../store/shop/product-slice/index";
 import { Cross, CrossIcon, Minus, Plus, Trash, TrashIcon } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import axios from "axios";
 
 const districts = [
   "Kathmandu",
@@ -131,50 +132,118 @@ const CreateCustomOrder = () => {
     setValue("delivery_charge", charge); // Update form field
   };
   console.log("items", items);
-  const onSubmit = (data) => {
+
+  // const onSubmit = (data) => {
+  //   console.log("data on submit", data);
+  //   const CodAmount =
+  //     items && items.length > 0
+  //       ? items.reduce(
+  //           (sum, currentItem) =>
+  //             sum + currentItem?.price * currentItem?.quantity,
+  //           0
+  //         )
+  //       : 0;
+
+  //   console.log("totalCodAmount", CodAmount);
+  //   const formattedData = {
+  //     userId: "userId",
+
+  //     addressInfo: {
+  //       fullName: data.fullName,
+  //       addressId: "",
+  //       address: data.address,
+  //       city: data.city,
+  //       nearest_landmark: data.nearest_landmark,
+  //       phone: data.phone,
+  //     },
+  //     cartItem: items,
+  //     orderStatus: "cod",
+  //     paymentMethod: "cod",
+  //     paymentStatus: data.paymentStatus,
+  //     totalAmount: data.delivery_charge + CodAmount - data.discount_amount,
+  //     orderDate: new Date(),
+  //   };
+  //   console.log("fomatted form data ", formattedData);
+
+  //   setItems([]);
+
+  //   //checking for double orders
+  //   const checkOrderExists = async(phone) => {
+  //     try {
+  //       const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/admin/check/check-order`, 
+  //         phone
+  
+  //        )
+  //        return response.message
+  //     } catch (error) {
+  //       console.log(error.message)
+  //     }
+  //   }
+    
+  //   dispatch(createOrder(formattedData)).then((data) => {
+  //     if (data?.payload?.success) {
+  //       navigate("/admin/orders");
+  //       toast({
+  //         title: "Order successfully created",
+  //         duration: 2000,
+  //       });
+  //     }
+  //   });
+  // };
+
+
+  const onSubmit = async (data) => {
     console.log("data on submit", data);
-    const CodAmount =
-      items && items.length > 0
-        ? items.reduce(
-            (sum, currentItem) =>
-              sum + currentItem?.price * currentItem?.quantity,
-            0
-          )
-        : 0;
 
-    console.log("totalCodAmount", CodAmount);
+    const CodAmount = items.reduce((sum, item) => sum + item?.price * item?.quantity, 0);
+    
     const formattedData = {
-      userId: "userId",
+        userId: "userId",
+        addressInfo: {
+            fullName: data.fullName,
+            address: data.address,
+            city: data.city,
+            nearest_landmark: data.nearest_landmark,
+            phone: data.phone,
+        },
+        cartItem: items,
+        orderStatus: "cod",
+        paymentMethod: "cod",
+        paymentStatus: data.paymentStatus,
+        totalAmount: data.delivery_charge + CodAmount - (data.discount_amount || 0),
+        orderDate: new Date(),
+    }
+    console.log("phone", data.phone)
+    try {
+        // Step 1: Check if order exists
+        const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/admin/check/check-order`, { phone: data.phone });
+        
+        if (response.data.exists) {
+            // Ask the user if they want to continue
+            const confirmOrder = window.confirm(
+                "An order with this phone number already exists! Do you want to proceed?"
+            );
 
-      addressInfo: {
-        fullName: data.fullName,
-        addressId: "",
-        address: data.address,
-        city: data.city,
-        nearest_landmark: data.nearest_landmark,
-        phone: data.phone,
-      },
-      cartItem: items,
-      orderStatus: "cod",
-      paymentMethod: "cod",
-      paymentStatus: data.paymentStatus,
-      totalAmount: data.delivery_charge + CodAmount - data.discount_amount,
-      orderDate: new Date(),
-    };
-    console.log("fomatted form data ", formattedData);
+            if (!confirmOrder) {
+                return;
+            }
+        }
 
-    setItems([]);
-    dispatch(createOrder(formattedData)).then((data) => {
-      if (data?.payload?.success) {
-        navigate("/admin/orders");
-        toast({
-          title: "Order successfully created",
-          duration: 2000,
+        // Step 3: Create the order
+        dispatch(createOrder(formattedData)).then((result) => {
+            if (result?.payload?.success) {
+                navigate("/admin/orders");
+                toast({
+                    title: "Order successfully created",
+                    duration: 2000,
+                });
+            }
         });
-      }
-    });
-  };
 
+    } catch (error) {
+        console.error("Error checking order:", error);
+    }
+};
   return (
     <div className="flex flex-col h-[100vh] w-full border-b-4 gap-4 p-6">
       <div className="addproduct bg-white/80 mb-4 border-b-2 relative">
