@@ -73,7 +73,7 @@ const App = () => {
             <Route path="dashboard" element={<AdminDashboard />} />
             <Route path="products" element={<AdminProducts />} />
             <Route path="orders" element={<AdminOrders />} />
-            <Route path="createorder" element={<CreateCustomOrder/>} />
+            <Route path="createorder/:id?" element={<CreateCustomOrder/>} />
             <Route path="addproduct" element={<AddProduct/>} />
             <Route path="addproduct/edit/:id" element={<AddProduct/>} />
             {/* <Route path="qrcode" element={<QrCode/>} /> */}

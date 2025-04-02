@@ -1,10 +1,11 @@
-const { createOrder, updateOrder, deleteOrder } = require("../../controllers/admin/custom-order-controller");
+const { createOrder, updateOrder, deleteOrder, getAllCustomOrders } = require("../../controllers/admin/custom-order-controller");
 
 const express = require("express");
 const router = express.Router();
 
 router.post("/createCustomOrder", createOrder);
-router.put("/updateCustomOrder", updateOrder);
-router.delete("/deleteCustomOrder", deleteOrder);
+router.get("/getCustomOrders", getAllCustomOrders)
+router.put("/updateCustomOrder/:id", updateOrder);
+router.delete("/deleteCustomOrder/:id", deleteOrder);
 
 module.exports = router;

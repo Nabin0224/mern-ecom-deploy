@@ -1,17 +1,29 @@
 import Select from "react-select";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog } from "@/components/ui/dialog";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { createOrder } from "../../../store/admin/order-slice/custom-order/index";
+import {
+  createOrder,
+  getAllCustomOrders,
+  updateCustomOrder,
+} from "../../../store/admin/order-slice/custom-order/index";
 
 import CustomProduct from "../../components/admin-view/custom-product";
 import { fetchAllFilteredProducts } from "../../../store/shop/product-slice/index";
-import { Cross, CrossIcon, Minus, Plus, Trash, TrashIcon } from "lucide-react";
+import {
+  Cross,
+  CrossIcon,
+  Minus,
+  Plus,
+  Trash,
+  TrashIcon,
+  UserPen,
+} from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import axios from "axios";
 
@@ -100,6 +112,7 @@ const districtOptions = districts.map((district) => ({
 }));
 
 const CreateCustomOrder = () => {
+
   const {
     register,
     handleSubmit,
@@ -107,6 +120,33 @@ const CreateCustomOrder = () => {
     watch,
     formState: { errors },
   } = useForm();
+
+  const { customOrderList } = useSelector((state) => state.adminCustomOrders);
+
+  console.log("custom order list in create order", customOrderList);
+
+  const { id } = useParams();
+  useEffect(() => {
+    dispatch(getAllCustomOrders());
+  }, [id]);
+  useEffect(() => {
+    if (id) {
+      const existingOrder = customOrderList.find((order) => order?._id === id);
+      if (existingOrder) {
+        setValue("fullName", existingOrder.addressInfo.fullName);
+        setValue("phone", existingOrder.addressInfo.phone);
+        setValue("city", existingOrder.addressInfo.city);
+        setValue("address", existingOrder.addressInfo.address);
+        setValue("nearest_landmark", existingOrder.addressInfo.nearest_landmark);
+        setValue("delivery_charge", existingOrder.delivery_charge);
+        setValue("discount_amount", existingOrder.discount_amount || 0);
+        setValue("paymentStatus", existingOrder.paymentStatus);
+        setItems(existingOrder.cartItem || []);
+      }
+      console.log("existing order", existingOrder)
+    }
+  }, [id, customOrderList]);
+  
   const [deliveryCharge, setDeliveryCharge] = useState(0);
   const { productList } = useSelector((state) => state.shoppingProducts);
   const dispatch = useDispatch();
@@ -139,64 +179,6 @@ const CreateCustomOrder = () => {
   };
   console.log("items", items);
 
-  // const onSubmit = (data) => {
-  //   console.log("data on submit", data);
-  //   const CodAmount =
-  //     items && items.length > 0
-  //       ? items.reduce(
-  //           (sum, currentItem) =>
-  //             sum + currentItem?.price * currentItem?.quantity,
-  //           0
-  //         )
-  //       : 0;
-
-  //   console.log("totalCodAmount", CodAmount);
-  //   const formattedData = {
-  //     userId: "userId",
-
-  //     addressInfo: {
-  //       fullName: data.fullName,
-  //       addressId: "",
-  //       address: data.address,
-  //       city: data.city,
-  //       nearest_landmark: data.nearest_landmark,
-  //       phone: data.phone,
-  //     },
-  //     cartItem: items,
-  //     orderStatus: "cod",
-  //     paymentMethod: "cod",
-  //     paymentStatus: data.paymentStatus,
-  //     totalAmount: data.delivery_charge + CodAmount - data.discount_amount,
-  //     orderDate: new Date(),
-  //   };
-  //   console.log("fomatted form data ", formattedData);
-
-  //   setItems([]);
-
-  //   //checking for double orders
-  //   const checkOrderExists = async(phone) => {
-  //     try {
-  //       const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/admin/check/check-order`,
-  //         phone
-
-  //        )
-  //        return response.message
-  //     } catch (error) {
-  //       console.log(error.message)
-  //     }
-  //   }
-
-  //   dispatch(createOrder(formattedData)).then((data) => {
-  //     if (data?.payload?.success) {
-  //       navigate("/admin/orders");
-  //       toast({
-  //         title: "Order successfully created",
-  //         duration: 2000,
-  //       });
-  //     }
-  //   });
-  // };
-
   const onSubmit = async (data) => {
     console.log("data on submit", data);
 
@@ -214,7 +196,7 @@ const CreateCustomOrder = () => {
       minute: "2-digit",
       hour12: true,
     }).format(orderDate);
-    
+
     console.log(nepalTime); // Output: "2025-04-02"
 
     const formattedData = {
@@ -235,7 +217,21 @@ const CreateCustomOrder = () => {
       orderDate: nepalTime,
     };
     console.log("phone", data.phone);
+
     try {
+
+    if(id) {
+      dispatch(updateCustomOrder({id, formattedData})).then((data)=> {
+        if(data?.payload?.success) {
+          navigate("/admin/orders")
+          toast({
+            title: "Order successfully updated",
+            duration: 2000,
+          })
+        }
+      })
+      
+    }else{
       // Step 1: Check if order exists
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/api/admin/check/check-order`,
@@ -263,10 +259,12 @@ const CreateCustomOrder = () => {
           });
         }
       });
+    }
     } catch (error) {
       console.error("Error checking order:", error);
     }
   };
+
   return (
     <div className="flex flex-col h-[100vh] w-full border-b-4 gap-4 p-6">
       <div className="addproduct bg-white/80 mb-4 border-b-2 relative">
@@ -464,8 +462,12 @@ const CreateCustomOrder = () => {
           <option value="partially_paid">Partially Paid</option>
         </select>
 
-        <Button type="submit" className="bg-purple-600 mt-4 p-2">
-          Create Order
+        <Button type="submit" className={`bg-purple-600 mt-4 p-2`}>
+          {
+            id ? "Edit Order" : "CreateOrder"
+          }
+          
+         
         </Button>
       </form>
     </div>

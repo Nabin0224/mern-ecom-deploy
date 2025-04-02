@@ -25,6 +25,7 @@ import { Label } from "../ui/label";
 import { Separator } from "../ui/separator";
 import { Navigate, useNavigate } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
+import { Edit } from "lucide-react";
 
 const AdminOrdersView = () => {
   const { orderList, orderDetails, resetOrderDetails } = useSelector(
@@ -63,6 +64,10 @@ const AdminOrdersView = () => {
   const handleBulkPrint = useReactToPrint({
     contentRef,
   });
+  
+  const handleUpdateCustomOrder = async() => {
+
+  }
 
   const BulkPrintableContent = ({ selectedOrders, orderList }, ref) => {
     const selectedOrderDetails = orderList.filter((order) =>
@@ -169,7 +174,7 @@ const AdminOrdersView = () => {
       <div className="createOrder">
         <Button
           className="bg-purple-600"
-          onClick={() => navigate("/admin/createorder")}
+          onClick={() => navigate(`/admin/createorder`)}
         >
           Create Order
         </Button>
@@ -215,9 +220,7 @@ const AdminOrdersView = () => {
                               {item?.orderDate?.split(",")[0]}
                             </span>
                             <span className="text-muted-foreground">
-                              
-                                    {item?.orderDate?.split(",")[1]}
-                              
+                              {item?.orderDate?.split(",")[1]}
                             </span>
                           </TableCell>
                           <TableCell>
@@ -266,6 +269,15 @@ const AdminOrdersView = () => {
                             >
                               Print
                             </Button>
+                            <Button  variant="outline" 
+                            onClick={()=>{ handleUpdateCustomOrder(item?._id)
+                              navigate(`/admin/createorder/${item?._id}`)
+                            }}
+                            >
+                          
+                              <Edit/>
+                            </Button>
+                            
                           </TableCell>
                         </TableRow>
                       ))
