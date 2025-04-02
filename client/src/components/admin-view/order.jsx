@@ -215,16 +215,9 @@ const AdminOrdersView = () => {
                               {item?.orderDate?.split(",")[0]}
                             </span>
                             <span className="text-muted-foreground">
-                              {
-                                new Date(item?.createdAt)
-                                  .toLocaleString("en-US", {
-                                    timeZone: "Asia/Kathmandu",
-                                    hour: "2-digit",
-                                    minute: "2-digit",
-                                    hour12: true,
-                                  })
-                                  
-                              }
+                              
+                                    {item?.orderDate?.split(",")[1]}
+                              
                             </span>
                           </TableCell>
                           <TableCell>

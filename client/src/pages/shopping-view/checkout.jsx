@@ -35,6 +35,7 @@ const ShoppingCheckout = () => {
   const dispatch = useDispatch();
   const { formData } = useSelector((state) => state.esewaOrders);
 
+ 
   const alwaysOpenItems = ["item-1"];
   const [openItems, setOpenItems] = useState(alwaysOpenItems);
   const navigate = useNavigate();
@@ -47,9 +48,18 @@ const ShoppingCheckout = () => {
 
   //logic for total amount in cart
   const orderDate = new Date();
-  const nepalTime = orderDate.toLocaleString("en-US", {
+  const nepalTime = new Intl.DateTimeFormat("en-CA", {
     timeZone: "Asia/Kathmandu",
-  });
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  }).format(orderDate);
+  
+  console.log(nepalTime); // Output: "2025-04-02"
+
 
   const totalCartAmount =
     cartItems?.items && cartItems.items.length > 0
@@ -277,8 +287,8 @@ const ShoppingCheckout = () => {
       })),
       userId: user.id,
       cartId: cartItems?._id,
-      orderDate: new Date(),
-      orderUpdateDate: new Date(),
+      orderDate: nepalTime,
+      orderUpdateDate: nepalTime,
       addressInfo: {
         fullName: currentSelectedAddressInfo?.fullName,
         addressId: currentSelectedAddressInfo?._id,

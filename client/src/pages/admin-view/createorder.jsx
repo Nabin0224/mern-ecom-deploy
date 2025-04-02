@@ -205,9 +205,17 @@ const CreateCustomOrder = () => {
       0
     );
     const orderDate = new Date();
-    const nepalTime = orderDate.toLocaleString("en-US", {
+    const nepalTime = new Intl.DateTimeFormat("en-CA", {
       timeZone: "Asia/Kathmandu",
-    });
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    }).format(orderDate);
+    
+    console.log(nepalTime); // Output: "2025-04-02"
 
     const formattedData = {
       userId: "userId",
