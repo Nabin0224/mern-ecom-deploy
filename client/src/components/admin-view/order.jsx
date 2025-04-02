@@ -73,6 +73,7 @@ const AdminOrdersView = () => {
     const selectedOrderDetails = orderList.filter((order) =>
       selectedOrders.includes(order._id)
     );
+    console.log("selectedOrderDetails", selectedOrderDetails)
     console.log("selectedOrderDetails", selectedOrderDetails);
     return (
       <div ref={contentRef} className="bg-white print:w-full">
@@ -99,7 +100,10 @@ const AdminOrdersView = () => {
                 <div className="text-right">
                   <p className="font-bold text-4xl">COD Amount:</p>
                   <p className="text-4xl font-bold text-green-600">
-                    ₹{order.totalAmount}
+                    {
+                      order.paymentStatus && order.paymentStatus === "cod" ?  `Rs ${order.totalAmount}` : "PAID"
+                    }
+                    
                   </p>
                 </div>
               </div>

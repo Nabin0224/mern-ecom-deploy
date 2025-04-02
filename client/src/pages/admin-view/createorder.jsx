@@ -209,8 +209,8 @@ const CreateCustomOrder = () => {
         phone: data.phone,
       },
       cartItem: items,
-      orderStatus: "cod",
-      paymentMethod: "cod",
+      orderStatus: "",
+      paymentMethod: data.paymenStatus,
       paymentStatus: data.paymentStatus,
       totalAmount:
         data.delivery_charge + CodAmount - (data.discount_amount || 0),
