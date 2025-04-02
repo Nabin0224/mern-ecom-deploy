@@ -25,9 +25,23 @@ import { Label } from "../ui/label";
 import { Separator } from "../ui/separator";
 import { Navigate, useNavigate } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-import { Delete, Edit } from "lucide-react";
+import { Delete, DeleteIcon, Edit, LucideDelete, Trash2 } from "lucide-react";
 import { deleteCustomOrder } from "../../../store/admin/order-slice/custom-order/index";
 import { toast } from "@/hooks/use-toast";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+} from "../ui/alert-dialog";
+import {
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@radix-ui/react-alert-dialog";
+import { FcDeleteRow, FcRemoveImage } from "react-icons/fc";
 
 const AdminOrdersView = () => {
   const { orderList, orderDetails, resetOrderDetails } = useSelector(
@@ -41,18 +55,17 @@ const AdminOrdersView = () => {
 
   // handle delete custom order?
 
-  const handleDeleteCustomOrder = async(id)=> {
-
-    dispatch(deleteCustomOrder(id)).then((data)=> {
-      if(data?.payload?.success) {
+  const handleDeleteCustomOrder = async (id) => {
+    dispatch(deleteCustomOrder(id)).then((data) => {
+      if (data?.payload?.success) {
         dispatch(getAllOrdersForAdmin());
         toast({
           title: "Order deleted successfully",
-          duration: 2000
-        })
+          duration: 2000,
+        });
       }
-    })
-  }
+    });
+  };
 
   useEffect(
     (getId) => {
@@ -81,16 +94,14 @@ const AdminOrdersView = () => {
   const handleBulkPrint = useReactToPrint({
     contentRef,
   });
-  
-  const handleUpdateCustomOrder = async() => {
 
-  }
+  const handleUpdateCustomOrder = async () => {};
 
   const BulkPrintableContent = ({ selectedOrders, orderList }, ref) => {
     const selectedOrderDetails = orderList.filter((order) =>
       selectedOrders.includes(order._id)
     );
-    console.log("selectedOrderDetails", selectedOrderDetails)
+    console.log("selectedOrderDetails", selectedOrderDetails);
     console.log("selectedOrderDetails", selectedOrderDetails);
     return (
       <div ref={contentRef} className="bg-white print:w-full">
@@ -117,10 +128,9 @@ const AdminOrdersView = () => {
                 <div className="text-right">
                   <p className="font-bold text-4xl">COD Amount:</p>
                   <p className="text-4xl font-bold text-green-600">
-                    {
-                      order.paymentStatus && order.paymentStatus === "cod" ?  `Rs ${order.totalAmount}` : "PAID"
-                    }
-                    
+                    {order.paymentStatus && order.paymentStatus === "cod"
+                      ? `Rs ${order.totalAmount}`
+                      : "PAID"}
                   </p>
                 </div>
               </div>
@@ -182,14 +192,102 @@ const AdminOrdersView = () => {
   };
   console.log("orderlsot", orderList);
 
-  const handleCheckboxChange = (getId) => {
-    setSelectedOrders((prev) =>
-      prev.includes(getId)
-        ? prev.filter((id) => id !== getId)
-        : [...prev, getId]
-    );
-  };
+  const [selectAll, setSelectAll] = useState(false);
+  const [lastChecked, setLastChecked] = useState(null);
 
+  //handle select and deselect all 
+
+  const handleSelectAll = () => {
+    if(selectAll) {
+      setSelectedOrders([]); //Deselect all orders 
+    } else{
+      setSelectedOrders(orderList.map((order)=> order?._id))  //Select all orders 
+    }
+    setSelectAll(!selectAll)
+  }
+
+//   const handleCheckboxChange = (getId, event, index) => {
+//     let updatedSelectedOrders = [...selectedOrders];
+
+//     if(event.shiftKey && lastChecked !== null) {
+//       const start = Math.min(lastChecked, index);
+//       const end = Math.max(lastChecked, index);
+//       const idsInRange = orderList.slice(start, end+1).map(order => order?._id);
+
+
+//       if(selectedOrders.includes(getId)){
+
+//         //Deselect range
+
+//         updatedSelectedOrders = updatedSelectedOrders.filter(id => !idsInRange.includes(id));
+
+//       } else{
+//         //Select range
+//         updatedSelectedOrders = Array.from(new Set([...updatedSelectedOrders, ...idsInRange]));
+//       }
+//     } else{
+//       //toogle single checkbox
+
+//       if (updatedSelectedOrders.includes(getId)) {
+//         updatedSelectedOrders = updatedSelectedOrders.filter(id => id !== getId);
+//       } else{
+//         updatedSelectedOrders.push(getId);
+//       }
+//     }
+
+// setSelectedOrders(updatedSelectedOrders);
+// setLastChecked(index);
+//     // setSelectedOrders((prev) =>
+//     //   prev.includes(getId)
+//     //     ? prev.filter((id) => id !== getId)
+//     //     : [...prev, getId]
+//     // );
+//   };
+
+  // check if all ordres are selected
+  
+  const handleCheckboxChange = (getId, event, index) => {
+    console.log("event", event.shiftKey)
+    console.log("index", index)
+    console.log("lastchecked", lastChecked)
+    let updatedSelectedOrders = [...selectedOrders];
+    console.log("updatedchecked before", updatedSelectedOrders)
+  
+    if (event.shiftKey && lastChecked !== null) {
+      console.log("shift key pressed and lastchecked not null")
+      const start = Math.min(lastChecked, index);
+      const end = Math.max(lastChecked, index);
+  
+      // Get all order IDs within the range
+      const idsInRange = orderList.slice(start, end + 1).map(order => order._id);
+      console.log("idsInrange ok", idsInRange)
+  
+      // If the clicked item was already selected, deselect the range
+      if (selectedOrders.includes(getId)) {
+        updatedSelectedOrders = updatedSelectedOrders.filter(id => !idsInRange.includes(id));
+      } else {
+        // Otherwise, select the range
+        updatedSelectedOrders = Array.from(new Set([...updatedSelectedOrders, ...idsInRange]));
+      }
+    } else {
+      console.log("shift key NOt pressed and lastchecked Is null")
+      // Toggle single checkbox selection
+      if (updatedSelectedOrders.includes(getId)) {
+        updatedSelectedOrders = updatedSelectedOrders.filter(id => id !== getId);
+      } else {
+        updatedSelectedOrders.push(getId);
+      }
+    }
+    console.log("updatedcheck afer", updatedSelectedOrders)
+    setSelectedOrders(updatedSelectedOrders);
+    setLastChecked(index); // Set the last checked index
+  };
+  
+  useEffect(()=> {
+    if(orderList.length > 0) {
+      setSelectAll(selectedOrders.length === orderList.length)
+    }
+  }, [selectedOrders, orderList])
   return (
     <div className="flex flex-col gap-2">
       <div className="createOrder">
@@ -215,6 +313,15 @@ const AdminOrdersView = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
+                    <TableHead>
+                      <input
+                      className="shadow-md"
+                      type = "checkbox"
+                      checked ={selectAll}
+                      onChange={handleSelectAll}
+                      >
+                      </input>
+                    </TableHead>
                     <TableHead></TableHead>
                     <TableHead>Customer Name</TableHead>
                     <TableHead>Order Date</TableHead>
@@ -225,13 +332,13 @@ const AdminOrdersView = () => {
                 </TableHeader>
                 <TableBody>
                   {orderList && orderList.length > 0
-                    ? orderList.map((item) => (
+                    ? orderList.map((item, index) => (
                         <TableRow key={item?._id}>
                           <TableCell>
                             <input
                               type="checkbox"
                               checked={selectedOrders.includes(item?._id)}
-                              onChange={() => handleCheckboxChange(item?._id)}
+                              onClick={(event) => handleCheckboxChange(item?._id, event, index)}
                             />
                           </TableCell>
                           <TableCell>{item?.addressInfo?.fullName}</TableCell>
@@ -290,23 +397,45 @@ const AdminOrdersView = () => {
                             >
                               Print
                             </Button>
-                            <Button  variant="outline" 
-                            onClick={()=>{ handleUpdateCustomOrder(item?._id)
-                              navigate(`/admin/createorder/${item?._id}`)
-                            }}
+                            <Button
+                              variant="outline"
+                              onClick={() => {
+                                handleUpdateCustomOrder(item?._id);
+                                navigate(`/admin/createorder/${item?._id}`);
+                              }}
                             >
-                          
-                              <Edit/>
+                              <Edit />
                             </Button>
-                            <Button  variant="outline" 
-                            onClick={()=>{ handleDeleteCustomOrder(item?._id)
-                              
-                            }}
-                            >
-                          
-                              <Delete/>
-                            </Button>
-                            
+
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button
+                                  variant="outline"
+                                 
+                                >
+                                 <Trash2/>
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>
+                                    Are you sure to delete order?
+                                  </AlertDialogTitle>
+                                  <AlertDialogDescription className="text-red-500">
+                                    order will be permanently deleted form
+                                    database!
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel className="bg-gray-500 text-white hover:bg-gray-700 rounded-sm p-1 mr-1"  >Cancel</AlertDialogCancel>
+                                  <AlertDialogAction className="bg-red-600 text-white hover:bg-red-700 rounded-sm p-1"  onClick={() => {
+                                    handleDeleteCustomOrder(item?._id);
+                                  }} >
+                                    Delete
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
                           </TableCell>
                         </TableRow>
                       ))
