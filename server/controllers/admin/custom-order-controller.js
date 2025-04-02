@@ -130,7 +130,7 @@ const deleteOrder = async (req, res) => {
         })
     }
 
-  const order =   await CustomerOrder.findByIdAndDelete(id);
+  const order =   await CustomOrder.findByIdAndDelete(id);
   if(!order) {
     return res.status(404).json({
         success: false,

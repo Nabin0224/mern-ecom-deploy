@@ -50,16 +50,14 @@ export const updateCustomOrder = createAsyncThunk(
   }
 );
 
-export const deleteOrder = createAsyncThunk(
+export const deleteCustomOrder = createAsyncThunk(
   "/customOrder/deleteOrder",
-  async (id, formData) => {
-    const response = await axios.post(
+  async (id) => {
+    const response = await axios.delete(
       `${
         import.meta.env.VITE_API_URL
-      }/api/admin/customorders/updateCustomOrder/${id}`,
-      {
-        formData,
-      }
+      }/api/admin/customorders/deleteCustomOrder/${id}`,
+      
     );
     return response.data;
   }
@@ -96,13 +94,13 @@ const customOrderSlice = createSlice({
         state.isLoading = false;
       })
  
-      .addCase(deleteOrder.pending, (state) => {
+      .addCase(deleteCustomOrder.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(deleteOrder.fulfilled, (state, action) => {
+      .addCase(deleteCustomOrder.fulfilled, (state, action) => {
         state.isLoading = false;
       })
-      .addCase(deleteOrder.rejected, (state) => {
+      .addCase(deleteCustomOrder.rejected, (state) => {
         state.isLoading = false;
       })
       .addCase(getAllCustomOrders.pending, (state) => {

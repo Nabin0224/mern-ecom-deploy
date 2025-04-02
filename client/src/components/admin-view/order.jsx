@@ -25,7 +25,9 @@ import { Label } from "../ui/label";
 import { Separator } from "../ui/separator";
 import { Navigate, useNavigate } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-import { Edit } from "lucide-react";
+import { Delete, Edit } from "lucide-react";
+import { deleteCustomOrder } from "../../../store/admin/order-slice/custom-order/index";
+import { toast } from "@/hooks/use-toast";
 
 const AdminOrdersView = () => {
   const { orderList, orderDetails, resetOrderDetails } = useSelector(
@@ -36,6 +38,21 @@ const AdminOrdersView = () => {
   const [selectedOrders, setSelectedOrders] = useState([]); // For bulk print
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  // handle delete custom order?
+
+  const handleDeleteCustomOrder = async(id)=> {
+
+    dispatch(deleteCustomOrder(id)).then((data)=> {
+      if(data?.payload?.success) {
+        dispatch(getAllOrdersForAdmin());
+        toast({
+          title: "Order deleted successfully",
+          duration: 2000
+        })
+      }
+    })
+  }
 
   useEffect(
     (getId) => {
@@ -280,6 +297,14 @@ const AdminOrdersView = () => {
                             >
                           
                               <Edit/>
+                            </Button>
+                            <Button  variant="outline" 
+                            onClick={()=>{ handleDeleteCustomOrder(item?._id)
+                              
+                            }}
+                            >
+                          
+                              <Delete/>
                             </Button>
                             
                           </TableCell>
