@@ -112,6 +112,8 @@ const districtOptions = districts.map((district) => ({
 }));
 
 const CreateCustomOrder = () => {
+  const [isPartiallyPaid, setIsPartiallyPaid] = useState(false)
+  const [isFullPaid, setIsFullPaid] = useState(false)
 
   const {
     register,
@@ -124,7 +126,6 @@ const CreateCustomOrder = () => {
   const { customOrderList } = useSelector((state) => state.adminCustomOrders);
 
   console.log("custom order list in create order", customOrderList);
-
   const { id } = useParams();
   useEffect(() => {
     dispatch(getAllCustomOrders());
@@ -153,6 +154,7 @@ const CreateCustomOrder = () => {
   const [openProductDialog, setOpenProductDialog] = useState(false);
   const [items, setItems] = useState([]);
   const navigate = useNavigate();
+  console.log("isFullpaid", isFullPaid)
 
   function handleFetchProducts() {
     dispatch(fetchAllFilteredProducts({ filterParams: {}, sortParams: {} }));
@@ -170,17 +172,42 @@ const CreateCustomOrder = () => {
     return kathmanduValley.includes(selectedDistrict) ? 100 : 150;
   };
 
-  // Handle district selection
-  const handleDistrictChange = (selectedOption) => {
-    setValue("city", selectedOption.value);
-    const charge = calculateDeliveryCharge(selectedOption.value);
-    setDeliveryCharge(charge);
-    setValue("delivery_charge", charge); // Update form field
-  };
+ 
+    // Handle district selection
+    const handleDistrictChange = (selectedOption) => {
+      setValue("city", selectedOption.value);
+      
+        const charge = calculateDeliveryCharge(selectedOption.value);
+        if(isPartiallyPaid) {
+        setDeliveryCharge(charge);
+        }
+       
+        setValue("delivery_charge", charge) 
+    }
+  
+  const {paid, delivery} = watch(["paid_amount", "delivery_charge"]);
+  console.log("paid_amount and delivery", paid, delivery)
+
+  const total = parseInt(paid || 0) - parseInt(delivery || 0)
+  console.log("total", total)
+
+    //handle manual input for delivery charge
+  
+    const handleDeliveryChargeChange = (e) => {
+      console.log("e", e.target.value);
+    const manualValue  = (e.target.value).toString();
+  
+      setDeliveryCharge(manualValue);
+      
+      setValue("delivery_charge", manualValue);
+    };
+    console.log("items", items);
+  
   console.log("items", items);
 
   const onSubmit = async (data) => {
     console.log("data on submit", data);
+    console.log("data.paymentStatus", data.paymenStatus)
 
     const CodAmount = items.reduce(
       (sum, item) => sum + item?.price * item?.quantity,
@@ -209,12 +236,13 @@ const CreateCustomOrder = () => {
         phone: data.phone,
       },
       cartItem: items,
-      orderStatus: "",
+      orderStatus: "pending",
       paymentMethod: data.paymenStatus,
       paymentStatus: data.paymentStatus,
-      totalAmount:
-        data.delivery_charge + CodAmount - (data.discount_amount || 0),
-      orderDate: nepalTime,
+      totalAmount: isFullPaid ? 0 :
+        parseInt(data.delivery_charge) + CodAmount - parseInt(data.discount_amount || 0) - parseInt(data.paid_amount || 0),
+     
+       orderDate: nepalTime,
     };
     console.log("phone", data.phone);
 
@@ -439,7 +467,10 @@ const CreateCustomOrder = () => {
             <Label>Delivery Charge</Label>
             <Input
               type="number"
-              value={deliveryCharge}
+              disabled={isFullPaid}
+              onClick={(e) => handleDeliveryChargeChange(e)}
+            
+             
               {...register("delivery_charge")}
             />
           </div>
@@ -449,18 +480,60 @@ const CreateCustomOrder = () => {
             <Input
               type="text"
               placeholder="discount amount"
+              disabled={isFullPaid}
               {...register("discount_amount", { required: false })}
             />
           </div>
         </div>
-        <select
+        {/* <select
           {...register("paymentStatus", { required: true })}
           className="border p-2"
         >
           <option value="cod">COD</option>
           <option value="paid">Paid</option>
           <option value="partially_paid">Partially Paid</option>
-        </select>
+        </select> */}
+        <div className="flex ">
+          <div
+            className={`${
+              isPartiallyPaid
+                ? "bg-white/80 mb-4 border-b-2 p-6 w-1/2"
+                : "w-full"
+            }`}
+          >
+            <h1 className="font-semibold text-2xl mb-6">Payment Status</h1>
+            <select
+              {...register("paymentStatus", { required: true })}
+              className="border p-2 w-full"
+              onChange={(e) => {
+                setIsPartiallyPaid(
+                  e.target.value == "partially_paid" ? true : false
+                )
+                setIsFullPaid(e.target.value ==="paid" ? true : false)
+              }
+              }
+            >
+              <option value="cod">COD</option>
+              <option value="paid">Paid</option>
+              <option value="partially_paid">Partially Paid</option>
+            </select>
+          </div>
+          <div
+            className={` ${
+              isPartiallyPaid
+                ? " block bg-white/80 mb-4 border-b-2 p-6 w-1/2"
+                : "hidden"
+            }`}
+          >
+            <h1 className="font-semibold text-2xl mb-6">Paid Amount</h1>
+
+            <Input
+              type="text"
+              placeholder="Amount"
+              {...register("paid_amount", { required: false })}
+            />
+          </div>
+        </div>
 
         <Button type="submit" className={`bg-purple-600 mt-4 p-2`}>
           {

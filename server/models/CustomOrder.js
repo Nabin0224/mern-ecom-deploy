@@ -17,14 +17,14 @@ const CustomOrderSchema = new mongoose.Schema({
             title: String,
             image: [],
             price: String,
-            quantity: Number,
+            quantity: String,
             color: String
         }
     ],
     orderStatus: String,
     paymentMethod: String, 
     paymentStatus: String,
-    totalAmount: String,
+    totalAmount: Number,
     orderDate: String
 },
 {timestamps: true})

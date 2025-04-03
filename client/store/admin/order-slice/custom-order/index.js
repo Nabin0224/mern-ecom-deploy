@@ -63,6 +63,21 @@ export const deleteCustomOrder = createAsyncThunk(
   }
 );
 
+export const updateCustomOrderStatus = createAsyncThunk(
+  "/customOrder/updateOrderStatus",
+  async ({id, status}) => {
+    const response = await axios.put(
+      `${
+        import.meta.env.VITE_API_URL
+      }/api/admin/customorders/updateCustomOrderStatus/${id}`,
+    {
+    status
+    }
+    );
+    return response.data;
+  }
+);
+
 const customOrderSlice = createSlice({
   name: "adminCustomOrderSlice",
   initialState,
@@ -111,6 +126,19 @@ const customOrderSlice = createSlice({
         state.customOrderList = action.payload.data
       })
       .addCase(getAllCustomOrders.rejected, (state) => {
+        state.isLoading = false;
+      })
+      .addCase(updateCustomOrderStatus.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(updateCustomOrderStatus.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.customOrderList = state.customOrderList.map((order) =>
+          order._id === action.payload._id ? action.payload : order
+        );
+        
+      })
+      .addCase(updateCustomOrderStatus.rejected, (state) => {
         state.isLoading = false;
       });
   },

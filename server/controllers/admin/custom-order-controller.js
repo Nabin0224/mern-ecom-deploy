@@ -153,9 +153,52 @@ const deleteOrder = async (req, res) => {
   }
 };
 
+const updateOrderStatus = async(req, res) => {
+  try {
+    const { id } = req.params;
+  const { status } = req.body;
+ console.log("params and rbody", req.params, req.bd)
+  if(!id || ! status) {
+    return res.status(400).json({
+      success: false,
+      message: "Id or status not present!",
+    })
+  }
+
+  const updatedOrder = await CustomOrder.findByIdAndUpdate(
+id,
+{ orderStatus : status},
+{ new: true},
+  )
+
+  if(!updateOrder) {
+    return res.status(404).json({
+      success: false,
+      message: "Order not found!",
+     
+    })
+  }
+
+
+  return res.status(200).json({
+    success: true,
+    message: "OrderStatus updated successfully",
+    data: updateOrder
+  })
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Some error occured!",
+      errro: error.message,
+    })
+  }
+}
+
+
 module.exports = {
   createOrder,
   updateOrder,
   deleteOrder,
   getAllCustomOrders,
+  updateOrderStatus
 };

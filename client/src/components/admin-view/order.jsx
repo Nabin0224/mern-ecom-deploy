@@ -25,8 +25,8 @@ import { Label } from "../ui/label";
 import { Separator } from "../ui/separator";
 import { Navigate, useNavigate } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-import { Delete, DeleteIcon, Edit, LucideDelete, Trash2 } from "lucide-react";
-import { deleteCustomOrder } from "../../../store/admin/order-slice/custom-order/index";
+import { ArrowDown, ArrowDownNarrowWide, ChevronDown, Delete, DeleteIcon, Edit, LucideDelete, Trash2 } from "lucide-react";
+import { deleteCustomOrder, updateCustomOrderStatus } from "../../../store/admin/order-slice/custom-order/index";
 import { toast } from "@/hooks/use-toast";
 import {
   AlertDialog,
@@ -42,16 +42,56 @@ import {
   AlertDialogTrigger,
 } from "@radix-ui/react-alert-dialog";
 import { FcDeleteRow, FcRemoveImage } from "react-icons/fc";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem } from "../ui/dropdown-menu";
+import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 
 const AdminOrdersView = () => {
   const { orderList, orderDetails, resetOrderDetails } = useSelector(
     (state) => state.adminOrders
   );
-
+ const [isOrderDispatched, setIsOrderDispatched] = useState(false)
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
   const [selectedOrders, setSelectedOrders] = useState([]); // For bulk print
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const handleBulkStatusChange = async () => {
+    if (selectedOrders.length === 0) {
+      toast({ title: "No orders selected", duration: 2000 });
+      return;
+    }
+  
+    // Dispatch status update for each selected order
+    const updatePromises = selectedOrders.map((id) =>
+      dispatch(updateCustomOrderStatus({ id, status: "dispatched" }))
+    );
+  
+    // Wait for all updates to complete
+    Promise.all(updatePromises).then((responses) => {
+      const success = responses.every((res) => res?.payload?.success);
+      if (success) {
+        toast({ title: "All selected orders dispatched successfully", duration: 2000 });
+        dispatch(getAllOrdersForAdmin()); // Refresh order list
+      } else {
+        toast({ title: "Failed to update some orders", duration: 2000 });
+      }
+    });
+  };
+  
+
+  // handle order status 
+
+  const handleOrderStatusChange = (id, status) => {
+ dispatch(updateCustomOrderStatus({ id, status} )).then((data)=> {
+  if(data?.payload?.success) {
+    toast({
+      title: "Order Status Updated successfully",
+      duration: 2000,
+    })
+    dispatch(getAllOrdersForAdmin());
+  }
+ })
+  }
 
   // handle delete custom order?
 
@@ -128,7 +168,7 @@ const AdminOrdersView = () => {
                 <div className="text-right">
                   <p className="font-bold text-4xl">COD Amount:</p>
                   <p className="text-4xl font-bold text-green-600">
-                    {order.paymentStatus && order.paymentStatus === "cod"
+                    {order.paymentStatus && order.paymentStatus === "cod" || order.paymentStatus === "partially_paid"
                       ? `Rs ${order.totalAmount}`
                       : "PAID"}
                   </p>
@@ -255,8 +295,8 @@ const AdminOrdersView = () => {
   
     if (event.shiftKey && lastChecked !== null) {
       console.log("shift key pressed and lastchecked not null")
-      const start = Math.min(lastChecked, index);
-      const end = Math.max(lastChecked, index);
+      const start = Math.min(lastChecked, index); // finding starting range
+      const end = Math.max(lastChecked, index); // finding ending range
   
       // Get all order IDs within the range
       const idsInRange = orderList.slice(start, end + 1).map(order => order._id);
@@ -290,14 +330,19 @@ const AdminOrdersView = () => {
   }, [selectedOrders, orderList])
   return (
     <div className="flex flex-col gap-2">
-      <div className="createOrder">
+      <div className="createOrder flex justify-between">
         <Button
           className="bg-purple-600"
           onClick={() => navigate(`/admin/createorder`)}
         >
           Create Order
         </Button>
+         <Button className="bg-green-600" onClick={handleBulkStatusChange}>
+  Dispatch Selected Orders
+</Button>
       </div>
+     
+
 
       <Tabs defaultValue="Website Order">
         <TabsList>
@@ -322,7 +367,7 @@ const AdminOrdersView = () => {
                       >
                       </input>
                     </TableHead>
-                    <TableHead></TableHead>
+                    
                     <TableHead>Customer Name</TableHead>
                     <TableHead>Order Date</TableHead>
                     <TableHead>Order Status</TableHead>
@@ -352,17 +397,29 @@ const AdminOrdersView = () => {
                             </span>
                           </TableCell>
                           <TableCell>
-                            <Badge
+                           <div className="flex gap-1 md:gap-2">
+                           <Badge
                               className={`py-1 px-3 ${
-                                item?.orderStatus === "confirmed"
+                                item?.orderStatus === "dispatched"
                                   ? "bg-green-500"
-                                  : item?.orderStatus === "rejected"
-                                  ? "bg-red-600"
+                                  : item?.orderStatus === "pending"
+                                  ? "bg-gray-400"
                                   : "bg-black"
                               }`}
                             >
                               {item?.orderStatus}
                             </Badge>
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                              <ChevronDown/>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent>
+                                <DropdownMenuItem onClick={()=> handleOrderStatusChange(item?._id, "dispatched")}>dispatched</DropdownMenuItem>
+                                <DropdownMenuItem onClick={()=> handleOrderStatusChange(item?._id, "pending")}>pending</DropdownMenuItem>
+                              </DropdownMenuContent>
+
+                            </DropdownMenu>
+                           </div>
                           </TableCell>
                           <TableCell>{item?.totalAmount}</TableCell>
                           <TableCell className="flex gap-2">
@@ -442,7 +499,12 @@ const AdminOrdersView = () => {
                     : null}
                 </TableBody>
               </Table>
-              <Button onClick={handleBulkPrint}>Print All</Button>
+              <div className="flex gap-4">
+  <Button onClick={handleBulkPrint}>Print All</Button>
+  <Button className="bg-green-600" onClick={handleBulkStatusChange}>
+    Dispatch Selected Orders
+  </Button>
+</div>
             </CardContent>
           </Card>
           {/* <div className="hidden">
