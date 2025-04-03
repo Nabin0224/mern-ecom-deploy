@@ -31,10 +31,8 @@ const createOrder = async (req, res) => {
 };
 const getAllCustomOrders = async (req, res) => {
   try {
-    
-    const order =await CustomOrder.find();
+    const order = await CustomOrder.find();
 
-    
     return res.status(200).json({
       success: true,
       message: "Custom order Successfully fetched!",
@@ -48,9 +46,6 @@ const getAllCustomOrders = async (req, res) => {
     });
   }
 };
-
-
-
 
 const updateOrder = async (req, res) => {
   try {
@@ -72,25 +67,24 @@ const updateOrder = async (req, res) => {
       });
     }
 
-  const {
-        address,
-        city,
-        delivery_charge,
-        discount_amount,
-        email,
-        fullName,
-        nearest_landmark,
-        paymentStatus,
-        phone
+    const {
+      address,
+      city,
+      delivery_charge,
+      discount_amount,
+      email,
+      fullName,
+      nearest_landmark,
+      paymentStatus,
+      phone,
     } = req.body;
     const updateData = req.body.formattedData || req.body;
-    
-    
+
     for (let key in updateData) {
-        if (updateData[key] !== undefined) {
-          findOrder[key] = updateData[key];
-        }
+      if (updateData[key] !== undefined) {
+        findOrder[key] = updateData[key];
       }
+    }
 
     findOrder.address = address || findOrder.address;
     findOrder.city = city || findOrder.city;
@@ -100,17 +94,15 @@ const updateOrder = async (req, res) => {
     findOrder.fullName = fullName || findOrder.fullName;
     findOrder.nearest_landmark = nearest_landmark || findOrder.nearest_landmark;
     findOrder.paymentStatus = paymentStatus || findOrder.paymentStatus;
-    findOrder.phone = phone || findOrder.phone
+    findOrder.phone = phone || findOrder.phone;
 
-    
     await findOrder.save();
 
     return res.status(200).json({
-        success: true,
-        message: "Order edited successfully",
-        data: findOrder
-    })
-
+      success: true,
+      message: "Order edited successfully",
+      data: findOrder,
+    });
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -123,27 +115,26 @@ const updateOrder = async (req, res) => {
 const deleteOrder = async (req, res) => {
   try {
     const { id } = req.params;
-    if(!id) {
-        return res.status(400).json({
-            success: false,
-            message: "Id is requried to delete order",
-        })
+    if (!id) {
+      return res.status(400).json({
+        success: false,
+        message: "Id is requried to delete order",
+      });
     }
 
-  const order =   await CustomOrder.findByIdAndDelete(id);
-  if(!order) {
-    return res.status(404).json({
+    const order = await CustomOrder.findByIdAndDelete(id);
+    if (!order) {
+      return res.status(404).json({
         success: false,
-        message: "Order not found!"
-    })
-  }
+        message: "Order not found!",
+      });
+    }
 
-  return res.status(200).json({
-    success: true,
-    messaage: "Order deleted successfully",
-    data: order
-  })
-
+    return res.status(200).json({
+      success: true,
+      messaage: "Order deleted successfully",
+      data: order,
+    });
   } catch (error) {
     res.status(400).json({
       success: false,
@@ -153,52 +144,49 @@ const deleteOrder = async (req, res) => {
   }
 };
 
-const updateOrderStatus = async(req, res) => {
+const updateOrderStatus = async (req, res) => {
   try {
     const { id } = req.params;
-  const { status } = req.body;
- console.log("params and rbody", req.params, req.bd)
-  if(!id || ! status) {
-    return res.status(400).json({
-      success: false,
-      message: "Id or status not present!",
-    })
-  }
+    const { status } = req.body;
+    console.log("params and rbody", req.params, req.bd);
+    if (!id || !status) {
+      return res.status(400).json({
+        success: false,
+        message: "Id or status not present!",
+      });
+    }
 
-  const updatedOrder = await CustomOrder.findByIdAndUpdate(
-id,
-{ orderStatus : status},
-{ new: true},
-  )
+    const updatedOrder = await CustomOrder.findByIdAndUpdate(
+      id,
+      { orderStatus: status },
+      { new: true }
+    );
 
-  if(!updateOrder) {
-    return res.status(404).json({
-      success: false,
-      message: "Order not found!",
-     
-    })
-  }
+    if (!updateOrder) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found!",
+      });
+    }
 
-
-  return res.status(200).json({
-    success: true,
-    message: "OrderStatus updated successfully",
-    data: updateOrder
-  })
+    return res.status(200).json({
+      success: true,
+      message: "OrderStatus updated successfully",
+      data: updateOrder,
+    });
   } catch (error) {
     return res.status(500).json({
       success: false,
       message: "Some error occured!",
       errro: error.message,
-    })
+    });
   }
-}
-
+};
 
 module.exports = {
   createOrder,
   updateOrder,
   deleteOrder,
   getAllCustomOrders,
-  updateOrderStatus
+  updateOrderStatus,
 };

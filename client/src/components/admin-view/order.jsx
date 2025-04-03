@@ -18,6 +18,7 @@ import { Badge } from "../ui/badge";
 import {
   getAllOrdersForAdmin,
   getOrderDetailsForAdmin,
+  getUpdatedOrderStatus,
 } from "../../../store/admin/order-slice/index";
 import AdminOrderDetailsView from "./order-details";
 import { useReactToPrint } from "react-to-print";
@@ -25,8 +26,22 @@ import { Label } from "../ui/label";
 import { Separator } from "../ui/separator";
 import { Navigate, useNavigate } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-import { ArrowDown, ArrowDownNarrowWide, ChevronDown, Delete, DeleteIcon, Edit, LucideDelete, Trash2 } from "lucide-react";
-import { deleteCustomOrder, updateCustomOrderStatus } from "../../../store/admin/order-slice/custom-order/index";
+import {
+  ArrowDown,
+  ArrowDownNarrowWide,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  Delete,
+  DeleteIcon,
+  Edit,
+  LucideDelete,
+  Trash2,
+} from "lucide-react";
+import {
+  deleteCustomOrder,
+  updateCustomOrderStatus,
+} from "../../../store/admin/order-slice/custom-order/index";
 import { toast } from "@/hooks/use-toast";
 import {
   AlertDialog,
@@ -41,57 +56,86 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@radix-ui/react-alert-dialog";
-import { FcDeleteRow, FcRemoveImage } from "react-icons/fc";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem } from "../ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "../ui/dropdown-menu";
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 
 const AdminOrdersView = () => {
-  const { orderList, orderDetails, resetOrderDetails } = useSelector(
-    (state) => state.adminOrders
-  );
- const [isOrderDispatched, setIsOrderDispatched] = useState(false)
+  const [isOrderDispatched, setIsOrderDispatched] = useState(false);
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
   const [selectedOrders, setSelectedOrders] = useState([]); // For bulk print
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const {
+    orderList,
+    orderDetails,
+    resetOrderDetails,
+    totalOrders,
+    totalPages,
+  } = useSelector((state) => state.adminOrders);
+
+  const [currentPage, setCurrentPage] = useState(1);
+
+  useEffect(
+    (getId) => {
+      dispatch(getAllOrdersForAdmin(currentPage));
+      dispatch(getOrderDetailsForAdmin(getId));
+    },
+    [dispatch, currentPage]
+  );
+
+  useEffect(() => {
+    dispatch(getAllOrdersForAdmin());
+  }, []);
+
+  const handleFetchOrderDetails = async (getId) => {
+    sessionStorage.setItem("orderDetailsId", getId);
+    await dispatch(getOrderDetailsForAdmin(getId));
+  };
 
   const handleBulkStatusChange = async () => {
     if (selectedOrders.length === 0) {
       toast({ title: "No orders selected", duration: 2000 });
       return;
     }
-  
+
     // Dispatch status update for each selected order
     const updatePromises = selectedOrders.map((id) =>
-      dispatch(updateCustomOrderStatus({ id, status: "dispatched" }))
+      dispatch(getUpdatedOrderStatus({ id, status: "dispatched" }))
     );
-  
+
     // Wait for all updates to complete
     Promise.all(updatePromises).then((responses) => {
       const success = responses.every((res) => res?.payload?.success);
       if (success) {
-        toast({ title: "All selected orders dispatched successfully", duration: 2000 });
+        toast({
+          title: "All selected orders dispatched successfully",
+          duration: 2000,
+        });
         dispatch(getAllOrdersForAdmin()); // Refresh order list
       } else {
         toast({ title: "Failed to update some orders", duration: 2000 });
       }
     });
   };
-  
 
-  // handle order status 
+  // handle order status
 
   const handleOrderStatusChange = (id, status) => {
- dispatch(updateCustomOrderStatus({ id, status} )).then((data)=> {
-  if(data?.payload?.success) {
-    toast({
-      title: "Order Status Updated successfully",
-      duration: 2000,
-    })
-    dispatch(getAllOrdersForAdmin());
-  }
- })
-  }
+    dispatch(getUpdatedOrderStatus({ id, status: status })).then((data) => {
+      if (data?.payload?.success) {
+        toast({
+          title: "Order Status Updated successfully",
+          duration: 2000,
+        });
+        dispatch(getAllOrdersForAdmin());
+      }
+    });
+  };
 
   // handle delete custom order?
 
@@ -105,23 +149,6 @@ const AdminOrdersView = () => {
         });
       }
     });
-  };
-
-  useEffect(
-    (getId) => {
-      dispatch(getAllOrdersForAdmin());
-      dispatch(getOrderDetailsForAdmin(getId));
-    },
-    [dispatch]
-  );
-
-  useEffect(() => {
-    dispatch(getAllOrdersForAdmin());
-  }, []);
-
-  const handleFetchOrderDetails = async (getId) => {
-    sessionStorage.setItem("orderDetailsId", getId);
-    await dispatch(getOrderDetailsForAdmin(getId));
   };
 
   const contentRef = useRef(null);
@@ -168,7 +195,8 @@ const AdminOrdersView = () => {
                 <div className="text-right">
                   <p className="font-bold text-4xl">COD Amount:</p>
                   <p className="text-4xl font-bold text-green-600">
-                    {order.paymentStatus && order.paymentStatus === "cod" || order.paymentStatus === "partially_paid"
+                    {(order.paymentStatus && order.paymentStatus === "cod") ||
+                    order.paymentStatus === "partially_paid"
                       ? `Rs ${order.totalAmount}`
                       : "PAID"}
                   </p>
@@ -235,99 +263,67 @@ const AdminOrdersView = () => {
   const [selectAll, setSelectAll] = useState(false);
   const [lastChecked, setLastChecked] = useState(null);
 
-  //handle select and deselect all 
+  //handle select and deselect all
 
   const handleSelectAll = () => {
-    if(selectAll) {
-      setSelectedOrders([]); //Deselect all orders 
-    } else{
-      setSelectedOrders(orderList.map((order)=> order?._id))  //Select all orders 
+    if (selectAll) {
+      setSelectedOrders([]); //Deselect all orders
+    } else {
+      setSelectedOrders(orderList.map((order) => order?._id)); //Select all orders
     }
-    setSelectAll(!selectAll)
-  }
+    setSelectAll(!selectAll);
+  };
 
-//   const handleCheckboxChange = (getId, event, index) => {
-//     let updatedSelectedOrders = [...selectedOrders];
-
-//     if(event.shiftKey && lastChecked !== null) {
-//       const start = Math.min(lastChecked, index);
-//       const end = Math.max(lastChecked, index);
-//       const idsInRange = orderList.slice(start, end+1).map(order => order?._id);
-
-
-//       if(selectedOrders.includes(getId)){
-
-//         //Deselect range
-
-//         updatedSelectedOrders = updatedSelectedOrders.filter(id => !idsInRange.includes(id));
-
-//       } else{
-//         //Select range
-//         updatedSelectedOrders = Array.from(new Set([...updatedSelectedOrders, ...idsInRange]));
-//       }
-//     } else{
-//       //toogle single checkbox
-
-//       if (updatedSelectedOrders.includes(getId)) {
-//         updatedSelectedOrders = updatedSelectedOrders.filter(id => id !== getId);
-//       } else{
-//         updatedSelectedOrders.push(getId);
-//       }
-//     }
-
-// setSelectedOrders(updatedSelectedOrders);
-// setLastChecked(index);
-//     // setSelectedOrders((prev) =>
-//     //   prev.includes(getId)
-//     //     ? prev.filter((id) => id !== getId)
-//     //     : [...prev, getId]
-//     // );
-//   };
-
-  // check if all ordres are selected
-  
   const handleCheckboxChange = (getId, event, index) => {
-    console.log("event", event.shiftKey)
-    console.log("index", index)
-    console.log("lastchecked", lastChecked)
+    console.log("event", event.shiftKey);
+    console.log("index", index);
+    console.log("lastchecked", lastChecked);
     let updatedSelectedOrders = [...selectedOrders];
-    console.log("updatedchecked before", updatedSelectedOrders)
-  
+    console.log("updatedchecked before", updatedSelectedOrders);
+
     if (event.shiftKey && lastChecked !== null) {
-      console.log("shift key pressed and lastchecked not null")
+      console.log("shift key pressed and lastchecked not null");
       const start = Math.min(lastChecked, index); // finding starting range
       const end = Math.max(lastChecked, index); // finding ending range
-  
+
       // Get all order IDs within the range
-      const idsInRange = orderList.slice(start, end + 1).map(order => order._id);
-      console.log("idsInrange ok", idsInRange)
-  
+      const idsInRange = orderList
+        .slice(start, end + 1)
+        .map((order) => order._id);
+      console.log("idsInrange ok", idsInRange);
+
       // If the clicked item was already selected, deselect the range
       if (selectedOrders.includes(getId)) {
-        updatedSelectedOrders = updatedSelectedOrders.filter(id => !idsInRange.includes(id));
+        updatedSelectedOrders = updatedSelectedOrders.filter(
+          (id) => !idsInRange.includes(id)
+        );
       } else {
         // Otherwise, select the range
-        updatedSelectedOrders = Array.from(new Set([...updatedSelectedOrders, ...idsInRange]));
+        updatedSelectedOrders = Array.from(
+          new Set([...updatedSelectedOrders, ...idsInRange])
+        );
       }
     } else {
-      console.log("shift key NOt pressed and lastchecked Is null")
+      console.log("shift key NOt pressed and lastchecked Is null");
       // Toggle single checkbox selection
       if (updatedSelectedOrders.includes(getId)) {
-        updatedSelectedOrders = updatedSelectedOrders.filter(id => id !== getId);
+        updatedSelectedOrders = updatedSelectedOrders.filter(
+          (id) => id !== getId
+        );
       } else {
         updatedSelectedOrders.push(getId);
       }
     }
-    console.log("updatedcheck afer", updatedSelectedOrders)
+    console.log("updatedcheck afer", updatedSelectedOrders);
     setSelectedOrders(updatedSelectedOrders);
     setLastChecked(index); // Set the last checked index
   };
-  
-  useEffect(()=> {
-    if(orderList.length > 0) {
-      setSelectAll(selectedOrders.length === orderList.length)
+
+  useEffect(() => {
+    if (orderList.length > 0) {
+      setSelectAll(selectedOrders.length === orderList.length);
     }
-  }, [selectedOrders, orderList])
+  }, [selectedOrders, orderList]);
   return (
     <div className="flex flex-col gap-2">
       <div className="createOrder flex justify-between">
@@ -337,14 +333,15 @@ const AdminOrdersView = () => {
         >
           Create Order
         </Button>
-         <Button className="bg-green-600" onClick={handleBulkStatusChange}>
-  Dispatch Selected Orders
-</Button>
+        <Button className="bg-green-600" onClick={handleBulkStatusChange}>
+          Dispatch Orders
+        </Button>
       </div>
-     
+      <div className="flex justify-end">
+        <Button onClick={handleBulkPrint}>Print All</Button>
+      </div>
 
-
-      <Tabs defaultValue="Website Order">
+      <Tabs defaultValue="Website Order" className="relative">
         <TabsList>
           <TabsTrigger value="Website Order">Website Order</TabsTrigger>
           <TabsTrigger value="Custom Order">Custom Order</TabsTrigger>
@@ -355,19 +352,18 @@ const AdminOrdersView = () => {
               <CardTitle>Order History</CardTitle>
             </CardHeader>
             <CardContent>
-              <Table>
+              <Table className="mb-4 md:mb-8">
                 <TableHeader>
                   <TableRow>
                     <TableHead>
                       <input
-                      className="shadow-md"
-                      type = "checkbox"
-                      checked ={selectAll}
-                      onChange={handleSelectAll}
-                      >
-                      </input>
+                        className="shadow-md"
+                        type="checkbox"
+                        checked={selectAll}
+                        onChange={handleSelectAll}
+                      ></input>
                     </TableHead>
-                    
+
                     <TableHead>Customer Name</TableHead>
                     <TableHead>Order Date</TableHead>
                     <TableHead>Order Status</TableHead>
@@ -383,7 +379,9 @@ const AdminOrdersView = () => {
                             <input
                               type="checkbox"
                               checked={selectedOrders.includes(item?._id)}
-                              onClick={(event) => handleCheckboxChange(item?._id, event, index)}
+                              onClick={(event) =>
+                                handleCheckboxChange(item?._id, event, index)
+                              }
                             />
                           </TableCell>
                           <TableCell>{item?.addressInfo?.fullName}</TableCell>
@@ -397,29 +395,46 @@ const AdminOrdersView = () => {
                             </span>
                           </TableCell>
                           <TableCell>
-                           <div className="flex gap-1 md:gap-2">
-                           <Badge
-                              className={`py-1 px-3 ${
-                                item?.orderStatus === "dispatched"
-                                  ? "bg-green-500"
-                                  : item?.orderStatus === "pending"
-                                  ? "bg-gray-400"
-                                  : "bg-black"
-                              }`}
-                            >
-                              {item?.orderStatus}
-                            </Badge>
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                              <ChevronDown/>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent>
-                                <DropdownMenuItem onClick={()=> handleOrderStatusChange(item?._id, "dispatched")}>dispatched</DropdownMenuItem>
-                                <DropdownMenuItem onClick={()=> handleOrderStatusChange(item?._id, "pending")}>pending</DropdownMenuItem>
-                              </DropdownMenuContent>
-
-                            </DropdownMenu>
-                           </div>
+                            <div className="flex gap-1 md:gap-2">
+                              <Badge
+                                className={`py-1 px-3 ${
+                                  item?.orderStatus === "dispatched"
+                                    ? "bg-green-500"
+                                    : item?.orderStatus === "pending"
+                                    ? "bg-gray-400"
+                                    : "bg-black"
+                                }`}
+                              >
+                                {item?.orderStatus}
+                              </Badge>
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <ChevronDown />
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent>
+                                  <DropdownMenuItem
+                                    onClick={() =>
+                                      handleOrderStatusChange(
+                                        item?._id,
+                                        "dispatched"
+                                      )
+                                    }
+                                  >
+                                    dispatched
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                    onClick={() =>
+                                      handleOrderStatusChange(
+                                        item?._id,
+                                        "pending"
+                                      )
+                                    }
+                                  >
+                                    pending
+                                  </DropdownMenuItem>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
+                            </div>
                           </TableCell>
                           <TableCell>{item?.totalAmount}</TableCell>
                           <TableCell className="flex gap-2">
@@ -466,11 +481,8 @@ const AdminOrdersView = () => {
 
                             <AlertDialog>
                               <AlertDialogTrigger asChild>
-                                <Button
-                                  variant="outline"
-                                 
-                                >
-                                 <Trash2/>
+                                <Button variant="outline">
+                                  <Trash2 />
                                 </Button>
                               </AlertDialogTrigger>
                               <AlertDialogContent>
@@ -484,10 +496,15 @@ const AdminOrdersView = () => {
                                   </AlertDialogDescription>
                                 </AlertDialogHeader>
                                 <AlertDialogFooter>
-                                  <AlertDialogCancel className="bg-gray-500 text-white hover:bg-gray-700 rounded-sm p-1 mr-1"  >Cancel</AlertDialogCancel>
-                                  <AlertDialogAction className="bg-red-600 text-white hover:bg-red-700 rounded-sm p-1"  onClick={() => {
-                                    handleDeleteCustomOrder(item?._id);
-                                  }} >
+                                  <AlertDialogCancel className="bg-gray-500 text-white hover:bg-gray-700 rounded-sm p-1 mr-1">
+                                    Cancel
+                                  </AlertDialogCancel>
+                                  <AlertDialogAction
+                                    className="bg-red-600 text-white hover:bg-red-700 rounded-sm p-1"
+                                    onClick={() => {
+                                      handleDeleteCustomOrder(item?._id);
+                                    }}
+                                  >
                                     Delete
                                   </AlertDialogAction>
                                 </AlertDialogFooter>
@@ -499,12 +516,38 @@ const AdminOrdersView = () => {
                     : null}
                 </TableBody>
               </Table>
-              <div className="flex gap-4">
-  <Button onClick={handleBulkPrint}>Print All</Button>
-  <Button className="bg-green-600" onClick={handleBulkStatusChange}>
-    Dispatch Selected Orders
-  </Button>
-</div>
+              <div className="flex gap-4 absolute bottom-1 left-7">
+                <Button
+                  className="bg-green-600"
+                  onClick={handleBulkStatusChange}
+                >
+                  Dispatch Orders
+                </Button>
+                  </div>
+                {/* Pagination Controls */}
+                <div className="flex justify-center items-center gap-4 mt-4 absolute bottom-1 right-1">
+                  <Button
+                  variant="outline"
+                    disabled={currentPage === 1}
+                    onClick={() =>
+                      setCurrentPage((prev) => Math.max(prev - 1, 1))
+                    }
+                  >
+                    <ChevronLeft /> Previous
+                  </Button>
+                  <span className="text-xs">
+                    Page {currentPage} of {totalPages}
+                  </span>
+                  <Button
+                  variant="outline"
+                    disabled={currentPage === totalPages}
+                    onClick={() =>
+                      setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                    }
+                  >
+                    Next <ChevronRight />
+                  </Button>
+                </div>
             </CardContent>
           </Card>
           {/* <div className="hidden">

@@ -9,9 +9,9 @@ const initialState = {
 
 export const getAllOrdersForAdmin = createAsyncThunk(
   "/order/getAllOrdersForAdmin",
-  async () => {
+  async (page = 1) => {
     const response = await axios.get(
-      `${import.meta.env.VITE_API_URL}/api/admin/orders/get`
+      `${import.meta.env.VITE_API_URL}/api/admin/orders/get?page=${page}`
     );
     return response.data;
   }
@@ -27,10 +27,10 @@ export const getOrderDetailsForAdmin = createAsyncThunk(
   }
 );
 
-export const getUpdatedOrderStatus = createAsyncThunk("/order/getUpdatedOrderStatus", async({id, orderStatus})=> {
+export const getUpdatedOrderStatus = createAsyncThunk("/order/getUpdatedOrderStatus", async({id, status})=> {
  const response = await axios.put(`${import.meta.env.VITE_API_URL}/api/admin/orders/update/${id}`,
   {
-    orderStatus
+    status
   }
  )
  return response.data  
@@ -52,6 +52,8 @@ const adminOrderSlice = createSlice({
       .addCase(getAllOrdersForAdmin.fulfilled, (state, action) => {
         state.isLoading = false;
         state.orderList = action.payload.data;
+        state.totalPages = action.payload.totalPages; // Store total pages
+        state.currentPage = action.payload.currentPage; // Store current page
       })
       .addCase(getAllOrdersForAdmin.rejected, (state, action) => {
         state.isLoading = false;
