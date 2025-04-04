@@ -420,7 +420,9 @@ const CreateCustomOrder = () => {
               <Label>Phone</Label>
               <Input
                 placeholder="Phone"
-                type="number"
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]"
                 {...register("phone", {
                   required: true,
                   minLength: 10,

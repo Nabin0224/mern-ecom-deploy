@@ -5,6 +5,8 @@ import axios from "axios";
 const initialState = {
   orderList: [],
   orderDetails: null,
+  totalOrders: '',
+  totalPages: ''
 };
 
 export const getAllOrdersForAdmin = createAsyncThunk(
