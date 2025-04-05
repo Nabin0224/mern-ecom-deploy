@@ -4,6 +4,7 @@ import axios from "axios";
 const initialState = {
   isLoading: false,
   searchResults: [],
+  searchOrders: []
 };
 
 export const getSearchResults = createAsyncThunk(
@@ -11,6 +12,15 @@ export const getSearchResults = createAsyncThunk(
   async (keyword) => {
     const response = await axios.get(
       `${import.meta.env.VITE_API_URL}/api/shop/search/${keyword}`
+    );
+    return response.data;
+  }
+);
+export const getSearchOrders = createAsyncThunk(
+  "/shop/getSearchOrders",
+  async (search) => {
+    const response = await axios.get(
+      `${import.meta.env.VITE_API_URL}/api/shop/search/order/${search}`
     );
     return response.data;
   }
@@ -36,6 +46,17 @@ const searchSlice = createSlice({
       .addCase(getSearchResults.rejected, (state, action) => {
         state.isLoading = false;
         state.searchResults = [];
+      })
+      .addCase(getSearchOrders.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getSearchOrders.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.searchOrders = action.payload.data;
+      })
+      .addCase(getSearchOrders.rejected, (state, action) => {
+        state.isLoading = false;
+        state.searchOrders = [];
       });
   },
 });
