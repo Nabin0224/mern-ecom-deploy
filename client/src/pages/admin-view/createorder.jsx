@@ -104,6 +104,87 @@ const districts = [
   "Kalikot",
   "Mugu",
   "Humla",
+  "Pokhara",
+  "Biratnagar",
+  "Birgunj",
+  "Dharan",
+  "Janakpur",
+  "Hetauda",
+  "Butwal",
+  "Nepalgunj",
+  "Dhangadhi",
+  "Itahari",
+  "Bharatpur",
+  "Gorkha",
+  "Tansen",
+  "Bhadrapur",
+  "Dhankuta",
+  "Ilam",
+  "Banepa",
+  "Panauti",
+  "Bhairahawa",
+  "Tikapur",
+  "Inaruwa",
+  "Rajbiraj",
+  "Gaighat",
+  "Baglung",
+  "Tulsipur",
+  "Gulariya",
+  "Kalaiya",
+  "Parasi",
+  "Damak",
+  "Mechinagar",
+  "Siddharthanagar",
+  "Lahan",
+  "Siraha",
+  "Dhulikhel",
+  "Ghorahi",
+  "Kawasoti",
+  "Jaleshwar",
+  "Malangwa",
+  "Chandrapur",
+  "Birtamode",
+  "Waling",
+  "Dasharathchand",
+  "Amargadhi",
+  "Dipayal Silgadhi",
+  "Sandhikharka",
+  "Damauli",
+  "Putalibazar",
+  "Musikot",
+  "Manma",
+  "Charikot",
+  "Triveni",
+  "Phidim",
+  "Chainpur",
+  "Bhojpur",
+  "Okhaldhunga",
+  "Salleri",
+  "Diktel",
+  "Jiri",
+  "Dhunche",
+  "Chautara",
+  "Syangja",
+  "Lamjung",
+  "Rukumkot",
+  "Pyuthan",
+  "Rolpa",
+  "Salyan",
+  "Ramechhap",
+  "Khandbari",
+  "Martadi",
+  "Mangalsen",
+  "Jumla",
+  "Simikot",
+  "Darchula",
+  "Bajhang",
+  "Bajura",
+  "Taplejung",
+  "Terhathum",
+  "Rautahat",
+  "Mahendranagar",
+  "Rajapur",
+  "Bardibas",
 ];
 
 const districtOptions = districts.map((district) => ({
@@ -112,8 +193,8 @@ const districtOptions = districts.map((district) => ({
 }));
 
 const CreateCustomOrder = () => {
-  const [isPartiallyPaid, setIsPartiallyPaid] = useState(false)
-  const [isFullPaid, setIsFullPaid] = useState(false)
+  const [isPartiallyPaid, setIsPartiallyPaid] = useState(false);
+  const [isFullPaid, setIsFullPaid] = useState(false);
 
   const {
     register,
@@ -138,23 +219,26 @@ const CreateCustomOrder = () => {
         setValue("phone", existingOrder.addressInfo.phone);
         setValue("city", existingOrder.addressInfo.city);
         setValue("address", existingOrder.addressInfo.address);
-        setValue("nearest_landmark", existingOrder.addressInfo.nearest_landmark);
+        setValue(
+          "nearest_landmark",
+          existingOrder.addressInfo.nearest_landmark
+        );
         setValue("delivery_charge", existingOrder.delivery_charge);
         setValue("discount_amount", existingOrder.discount_amount || 0);
         setValue("paymentStatus", existingOrder.paymentStatus);
         setItems(existingOrder.cartItem || []);
       }
-      console.log("existing order", existingOrder)
+      console.log("existing order", existingOrder);
     }
   }, [id, customOrderList]);
-  
+
   const [deliveryCharge, setDeliveryCharge] = useState(0);
   const { productList } = useSelector((state) => state.shoppingProducts);
   const dispatch = useDispatch();
   const [openProductDialog, setOpenProductDialog] = useState(false);
   const [items, setItems] = useState([]);
   const navigate = useNavigate();
-  console.log("isFullpaid", isFullPaid)
+  console.log("isFullpaid", isFullPaid);
 
   function handleFetchProducts() {
     dispatch(fetchAllFilteredProducts({ filterParams: {}, sortParams: {} }));
@@ -172,42 +256,41 @@ const CreateCustomOrder = () => {
     return kathmanduValley.includes(selectedDistrict) ? 100 : 150;
   };
 
- 
-    // Handle district selection
-    const handleDistrictChange = (selectedOption) => {
-      setValue("city", selectedOption.value);
-      
-        const charge = calculateDeliveryCharge(selectedOption.value);
-        if(isPartiallyPaid) {
-        setDeliveryCharge(charge);
-        }
-       
-        setValue("delivery_charge", charge) 
+  // Handle district selection
+  const handleDistrictChange = (selectedOption) => {
+    setValue("city", selectedOption.value);
+
+    const charge = calculateDeliveryCharge(selectedOption.value);
+    if (isPartiallyPaid) {
+      setDeliveryCharge(charge);
     }
-  
-  const {paid, delivery} = watch(["paid_amount", "delivery_charge"]);
-  console.log("paid_amount and delivery", paid, delivery)
 
-  const total = parseInt(paid || 0) - parseInt(delivery || 0)
-  console.log("total", total)
+    setValue("delivery_charge", charge);
+  };
 
-    //handle manual input for delivery charge
-  
-    const handleDeliveryChargeChange = (e) => {
-      console.log("e", e.target.value);
-    const manualValue  = (e.target.value).toString();
-  
-      setDeliveryCharge(manualValue);
-      
-      setValue("delivery_charge", manualValue);
-    };
-    console.log("items", items);
-  
+  const { paid, delivery } = watch(["paid_amount", "delivery_charge"]);
+  console.log("paid_amount and delivery", paid, delivery);
+
+  const total = parseInt(paid || 0) - parseInt(delivery || 0);
+  console.log("total", total);
+
+  //handle manual input for delivery charge
+
+  const handleDeliveryChargeChange = (e) => {
+    console.log("e", e.target.value);
+    const manualValue = e.target.value.toString();
+
+    setDeliveryCharge(manualValue);
+
+    setValue("delivery_charge", manualValue);
+  };
+  console.log("items", items);
+
   console.log("items", items);
 
   const onSubmit = async (data) => {
     console.log("data on submit", data);
-    console.log("data.paymentStatus", data.paymenStatus)
+    console.log("data.paymentStatus", data.paymenStatus);
 
     const CodAmount = items.reduce(
       (sum, item) => sum + item?.price * item?.quantity,
@@ -239,55 +322,57 @@ const CreateCustomOrder = () => {
       orderStatus: "pending",
       paymentMethod: data.paymenStatus,
       paymentStatus: data.paymentStatus,
-      totalAmount: isFullPaid ? 0 :
-        parseInt(data.delivery_charge) + CodAmount - parseInt(data.discount_amount || 0) - parseInt(data.paid_amount || 0),
-     
-       orderDate: nepalTime,
+      totalAmount: isFullPaid
+        ? 0
+        : parseInt(data.delivery_charge) +
+          CodAmount -
+          parseInt(data.discount_amount || 0) -
+          parseInt(data.paid_amount || 0),
+
+      orderDate: nepalTime,
     };
     console.log("phone", data.phone);
 
     try {
-
-    if(id) {
-      dispatch(updateCustomOrder({id, formattedData})).then((data)=> {
-        if(data?.payload?.success) {
-          navigate("/admin/orders")
-          toast({
-            title: "Order successfully updated",
-            duration: 2000,
-          })
-        }
-      })
-      
-    }else{
-      // Step 1: Check if order exists
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/admin/check/check-order`,
-        { phone: data.phone }
-      );
-
-      if (response.data.exists) {
-        // Ask the user if they want to continue
-        const confirmOrder = window.confirm(
-          "An order with this phone number already exists! Do you want to proceed?"
+      if (id) {
+        dispatch(updateCustomOrder({ id, formattedData })).then((data) => {
+          if (data?.payload?.success) {
+            navigate("/admin/orders");
+            toast({
+              title: "Order successfully updated",
+              duration: 2000,
+            });
+          }
+        });
+      } else {
+        // Step 1: Check if order exists
+        const response = await axios.post(
+          `${import.meta.env.VITE_API_URL}/api/admin/check/check-order`,
+          { phone: data.phone }
         );
 
-        if (!confirmOrder) {
-          return;
-        }
-      }
+        if (response.data.exists) {
+          // Ask the user if they want to continue
+          const confirmOrder = window.confirm(
+            "An order with this phone number already exists! Do you want to proceed?"
+          );
 
-      // Step 3: Create the order
-      dispatch(createOrder(formattedData)).then((result) => {
-        if (result?.payload?.success) {
-          navigate("/admin/orders");
-          toast({
-            title: "Order successfully created",
-            duration: 2000,
-          });
+          if (!confirmOrder) {
+            return;
+          }
         }
-      });
-    }
+
+        // Step 3: Create the order
+        dispatch(createOrder(formattedData)).then((result) => {
+          if (result?.payload?.success) {
+            navigate("/admin/orders");
+            toast({
+              title: "Order successfully created",
+              duration: 2000,
+            });
+          }
+        });
+      }
     } catch (error) {
       console.error("Error checking order:", error);
     }
@@ -471,8 +556,6 @@ const CreateCustomOrder = () => {
               type="number"
               disabled={isFullPaid}
               onClick={(e) => handleDeliveryChargeChange(e)}
-            
-             
               {...register("delivery_charge")}
             />
           </div>
@@ -487,7 +570,7 @@ const CreateCustomOrder = () => {
             />
           </div>
         </div>
-       
+
         <div className="flex ">
           <div
             className={`${
@@ -503,10 +586,9 @@ const CreateCustomOrder = () => {
               onChange={(e) => {
                 setIsPartiallyPaid(
                   e.target.value == "partially_paid" ? true : false
-                )
-                setIsFullPaid(e.target.value ==="paid" ? true : false)
-              }
-              }
+                );
+                setIsFullPaid(e.target.value === "paid" ? true : false);
+              }}
             >
               <option value="cod">COD</option>
               <option value="paid">Paid</option>
@@ -531,11 +613,7 @@ const CreateCustomOrder = () => {
         </div>
 
         <Button type="submit" className={`bg-purple-600 mt-4 p-2`}>
-          {
-            id ? "Edit Order" : "CreateOrder"
-          }
-          
-         
+          {id ? "Edit Order" : "CreateOrder"}
         </Button>
       </form>
     </div>
