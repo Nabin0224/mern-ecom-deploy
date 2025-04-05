@@ -1,4 +1,6 @@
+const CodOrder = require("../../models/CodOrder");
 const CustomOrder = require("../../models/CustomOrder");
+const EsewaOrder = require("../../models/EsewaOrder");
 const { findById } = require("../../models/Order");
 const Product = require("../../models/products");
 
@@ -156,7 +158,7 @@ const deleteOrder = async (req, res) => {
       });
     }
 
-    const order = await CustomOrder.findByIdAndDelete(id);
+    const order = await CustomOrder.findByIdAndDelete(id) || await EsewaOrder.findByIdAndDelete(id) || await CodOrder.findByIdAndDelete(id)
     if (!order) {
       return res.status(404).json({
         success: false,
