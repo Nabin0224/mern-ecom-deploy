@@ -119,37 +119,35 @@ export const ShoppingHome = () => {
               />
             ))
           : null}
-        {/* <Button
-          variant="outline"
-          size="icon"
-          className="absolute top-1/2 left-4 transform  -translate-y-1/2 bg-white/60"
-          onClick={() =>
-            setCurrentIndex(
-              (prevIndex) => (prevIndex - 1 + slides.length) % slides.length
-            )
-          }
-        >
-          <ChevronLeftIcon className="w-4 h-4" />
-        </Button>
-
-        <Button
-          variant="outline"
-          size="icon"
-          className="absolute top-1/2 right-4 transform  -translate-y-1/2 bg-white/60"
-          onClick={() =>
-            setCurrentIndex((prevIndex) => (prevIndex + 1) % slides.length)
-          }
-        >
-          <ChevronRightIcon className="w-4 h-4" />
-        </Button> */}
+       
       </div>
 
-      <section className="py-12 bg-gray-50">
+   
+
+      <section className="New arrivals py-4 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-bold text-center mb-8">Hottest 🔥</h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 p-2 gap-6">
+            {productList && productList.length > 0
+              ? productList.map((item) => (
+                  <ShoppingProducttile
+                    product={item}
+                    handleGetProductDetails={handleGetProductDetails}
+                    handleAddtoCart={handleAddtoCart}
+                  />
+                ))
+              : null}
+          </div>
+        </div>
+      </section>
+      <section className=" shopByCategory py-12 bg-gray-50">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-6">
             Shop by category
           </h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-2 sm:h-[750px] md:h-[400px]">
+          <div 
+          className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-2 sm:h-[750px] md:h-[400px]"
+          >
             {categoriesWithImage.map((item) => (
               <Card
                 onClick={() => handleNavigateToListingPage(item, "category")}
@@ -167,23 +165,6 @@ export const ShoppingHome = () => {
                 </CardContent>
               </Card>
             ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="New arrivals py-4 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-8">Hottest 🔥</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 p-2 gap-6">
-            {productList && productList.length > 0
-              ? productList.map((item) => (
-                  <ShoppingProducttile
-                    product={item}
-                    handleGetProductDetails={handleGetProductDetails}
-                    handleAddtoCart={handleAddtoCart}
-                  />
-                ))
-              : null}
           </div>
         </div>
       </section>

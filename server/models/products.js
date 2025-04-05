@@ -10,7 +10,13 @@ const ProductSchema = new mongoose.Schema(
     price: Number,
     salePrice: Number,
     totalStock: Number,
-    colors:[]
+    colors: [
+      {
+        colorName: String,
+        code: String,
+        quantity: Number,
+      },
+    ],
   },
   { timestamps: true }
 );

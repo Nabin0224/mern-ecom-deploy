@@ -65,10 +65,11 @@ export const addProductFormElements = [
     componentType: "select",
     options: [
       { id: "dress", label: "Dress" },
-      { id: "women", label: "Women" },
-      { id: "kids", label: "Kids" },
-      { id: "accessories", label: "Accessories" },
-      { id: "footwear", label: "Footwear" },
+      { id: "bag", label: "Bags" },
+      // { id: "women", label: "Women" },
+      // { id: "kids", label: "Kids" },
+      // { id: "accessories", label: "Accessories" },
+      // { id: "footwear", label: "Footwear" },
     ],
   },
   {
@@ -158,10 +159,10 @@ export const shoppingViewHeaderMenuItems = [
 
 export const categoryOptionsMap = {
   dress: "Dress",
-  women: "Women",
-  kids: "Kids",
-  accessories: "Accessories",
-  footwear: "Footwear",
+  bag: "Bags"
+  // kids: "Kids",
+  // accessories: "Accessories",
+  // footwear: "Footwear",
 };
 
 export const brandOptionsMap = {
@@ -177,8 +178,8 @@ export const filterOptions = {
   category: [
     { id: "dress", label: "Dress" },
     { id: "bags", label: "Bags" },
-    { id: "accessories", label: "Accessories" },
-    { id: "footwear", label: "Footwear" },
+    // { id: "accessories", label: "Accessories" },
+    // { id: "footwear", label: "Footwear" },
   ],
   brand: [
     { id: "no brand", label: "No Brand" },

@@ -14,7 +14,7 @@ import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "@/hooks/use-toast";
 import { checkGoogleAuth, loginUser, registerUser } from "../../../store/auth-slice/index";
-// import { checkAuth,  } from "../../../store/google-auth/index";
+
 
 
 export default function AuthPopup({isLogin, setIsLogin}) {

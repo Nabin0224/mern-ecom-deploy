@@ -1,9 +1,11 @@
 const CustomOrder = require("../../models/CustomOrder");
 const { findById } = require("../../models/Order");
+const Product = require("../../models/products");
 
 const createOrder = async (req, res) => {
   try {
     const { formData } = req.body;
+    console.log("formData in create order", formData)
     if (!formData) {
       return res.status(404).json({
         success: false,
@@ -14,6 +16,38 @@ const createOrder = async (req, res) => {
     console.log("formData in custom order creation", formData);
 
     const order = new CustomOrder(formData);
+
+    //managing out of stock feature
+    for (let item of order.cartItem) {
+      console.log('entered in first loop')
+      let product = await Product.findById(item.productId);
+      if (!product) {
+        return res.status(404).json({
+          success: false,
+          message: "Product not found in database!",
+        });
+      }
+      for (let colorItem of product.colors) {
+        if (colorItem.colorName === item.color) {
+          if (colorItem.quantity < item.quantity) {
+            return res.status(400).json({
+              success: false,
+              message: `Not enough stock for ${product.title}`,
+            });
+          }
+
+          colorItem.quantity -= item.quantity;
+        }
+      }
+      // Recalculating the total stock of the product
+      product.totalStock = product.colors.reduce(
+        (sum, c) => sum + c.quantity,
+        0
+      );
+      console.log("saving database in create order")
+      product.markModified("colors");
+      await product.save();
+    }
 
     await order.save();
     return res.status(200).json({

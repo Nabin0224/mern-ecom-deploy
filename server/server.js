@@ -10,6 +10,7 @@ const shopAddressRouter = require("./routes/shop/address-routes");
 const shopOrderRouter = require("./routes/shop/order-routes");
 const shopEsewaOrderRouter = require("./routes/shop/esewa-order-routes");
 const shopCodOrderRouter = require("./routes/shop/cod-order-routes");
+const shopSubscribeRouter = require('./routes/shop/subscribe')
 const adminOrderRouter = require("./routes/admin/order-routes");
 const searchRouter = require("./routes/shop/search-routes");
 const commonFeatureRouter = require("./routes/common/feature");
@@ -85,6 +86,7 @@ app.use("/api/admin/check", adminOrderCheckRouter);
 app.use("/api/shop/search", searchRouter);
 app.use("/api/common/feature", commonFeatureRouter);
 app.use("/api/google", googleauthRouter);
+app.use('/api/shop/subscribe', shopSubscribeRouter);
 
 app.listen(PORT, () => {
   console.log(`Server running successfully at ${PORT}`);

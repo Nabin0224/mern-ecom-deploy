@@ -18,6 +18,7 @@ const CodOrderSchema = new mongoose.Schema({
             image: [],
             price: Number,
             quantity: Number,
+            color: String,
         }
     ],
     orderStatus: String,

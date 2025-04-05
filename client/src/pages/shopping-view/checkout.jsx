@@ -255,6 +255,8 @@ const ShoppingCheckout = () => {
     form.submit();
   };
 
+
+
   // cod initialization
   function handleCodPayment() {
     if (cartItems.length == 0) {
@@ -274,6 +276,7 @@ const ShoppingCheckout = () => {
       return;
     }
     setIsLoading(true);
+    console.log("cartItems in checkout", cartItems )
     const orderData = {
       cartItem: cartItems?.items?.map((singleCartItem) => ({
         productId: singleCartItem?.productId,
@@ -284,6 +287,7 @@ const ShoppingCheckout = () => {
         title: singleCartItem?.title,
         image: singleCartItem?.image,
         quantity: singleCartItem?.quantity,
+        color: singleCartItem?.color
       })),
       userId: user.id,
       cartId: cartItems?._id,

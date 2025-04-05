@@ -422,7 +422,7 @@ const CreateCustomOrder = () => {
                 placeholder="Phone"
                 type="text"
                 inputMode="numeric"
-                pattern="[0-9]"
+                // pattern="[0-9]"
                 {...register("phone", {
                   required: true,
                   minLength: 10,
@@ -487,14 +487,7 @@ const CreateCustomOrder = () => {
             />
           </div>
         </div>
-        {/* <select
-          {...register("paymentStatus", { required: true })}
-          className="border p-2"
-        >
-          <option value="cod">COD</option>
-          <option value="paid">Paid</option>
-          <option value="partially_paid">Partially Paid</option>
-        </select> */}
+       
         <div className="flex ">
           <div
             className={`${

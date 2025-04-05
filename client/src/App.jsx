@@ -30,6 +30,7 @@ import AddProduct from "./pages/admin-view/add-product";
 // import QrCode from "./components/admin-view/generateqrcode";
 import QRCodeScanner from "./components/admin-view/scanqrcod";
 import QrCodeDetails from "./components/admin-view/qrcodedetails";
+import Legal from "./pages/shopping-view/legal";
 
 const App = () => {
   const { isAuthenticated, isLoading, user } = useSelector(
@@ -47,8 +48,8 @@ const App = () => {
 
   return (
     <>
-          <ScrollToTop/>
-      <div className="flex flex-col ">
+      <ScrollToTop />
+      <div className="flex flex-col">
         <Routes>
           <Route
             path="/auth"
@@ -73,31 +74,43 @@ const App = () => {
             <Route path="dashboard" element={<AdminDashboard />} />
             <Route path="products" element={<AdminProducts />} />
             <Route path="orders" element={<AdminOrders />} />
-            <Route path="createorder/:id?" element={<CreateCustomOrder/>} />
-            <Route path="addproduct" element={<AddProduct/>} />
-            <Route path="addproduct/edit/:id" element={<AddProduct/>} />
+            <Route path="createorder/:id?" element={<CreateCustomOrder />} />
+            <Route path="addproduct" element={<AddProduct />} />
+            <Route path="addproduct/edit/:id" element={<AddProduct />} />
             {/* <Route path="qrcode" element={<QrCode/>} /> */}
-            <Route path="scanqrcode" element={<QRCodeScanner/>} />
+            <Route path="scanqrcode" element={<QRCodeScanner />} />
             <Route path="qrcodedetail/:id" element={<QrCodeDetails />} />
-            
           </Route>
 
-          <Route
-  path="/"
-  element={<ShoppingLayout />}
->
-  <Route path="account" element={ <CheckAuth isAuthenticated={isAuthenticated} user={user}><ShoppingAccount /></CheckAuth>} />
-  <Route path="checkout" element={ <CheckAuth isAuthenticated={isAuthenticated} user={user}><ShoppingCheckout /></CheckAuth>} /> 
-  <Route path="listing" element={<ShoppingListing />} />
-  <Route path="/" element={<ShoppingHome />} />
-  <Route path="product-detail/:id" element={<ProductDetailsPage />} />
-  <Route path="paypal-return" element={<PayPalReturnPage />} />
-  <Route path="esewa-return" element={<EsewaReturnPage />} />
-  <Route path="payment-success" element={<PaymentSuccessPage />} />
-  <Route path="payment-cancel" element={<PaymentCancelPage />} />
-  <Route path="search" element={<SearchPage />} />
-</Route>
-            
+          <Route path="/" element={<ShoppingLayout />}>
+            <Route
+              path="account"
+              element={
+                <CheckAuth isAuthenticated={isAuthenticated} user={user}>
+                  <ShoppingAccount />
+                </CheckAuth>
+              }
+            />
+           
+            <Route
+              path="checkout"
+              element={
+                <CheckAuth isAuthenticated={isAuthenticated} user={user}>
+                  <ShoppingCheckout />
+                </CheckAuth>
+              }
+            />
+            <Route path="listing" element={<ShoppingListing />} />
+            <Route path="/" element={<ShoppingHome />} />
+            <Route path="product-detail/:id" element={<ProductDetailsPage />} />
+            <Route path="paypal-return" element={<PayPalReturnPage />} />
+            <Route path="esewa-return" element={<EsewaReturnPage />} />
+            <Route path="payment-success" element={<PaymentSuccessPage />} />
+            <Route path="payment-cancel" element={<PaymentCancelPage />} />
+            <Route path="search" element={<SearchPage />} />
+            <Route path="legal" element={<Legal/>} />
+          </Route>
+
           <Route path="/unauth" element={<UnAuthPage />} />
         </Routes>
       </div>

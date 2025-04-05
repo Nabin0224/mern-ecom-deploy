@@ -186,19 +186,42 @@ const verifyEsewaPayment = async (req, res) => {
 
 
 
-    for(let item of transaction.cartItem) {
-      let product = await Product.findById(item.productId)
-
-      if(!product) {
-        return res.status(404).json({
-          success: false,
-          messsage:  ` Not enough stock for this product ${product.title}`,
-      })
-        
-      }
-      product.totalStock -= item.quantity
-      await product.save();
-    }
+    //managing out of stock feature
+ 
+     for (let item of order.cartItem) {
+       let product = await Product.findById(item.productId);
+ 
+       if (!product) {
+         return res.status(404).json({
+           success: false,
+           messsage: `Not enough stock for this product ${product.title}`,
+         });
+       }
+ 
+       for (let colorItem of product.colors) {
+         if (colorItem.code === item.color) {
+           if (colorItem.quantity < item.quantity) {
+             return res.status(400).json({
+               success: false,
+               message: `Not enought stock for ${product.title} in color ${item.color}`,
+             });
+           }
+           colorItem.quantity -= item.quantity;
+         }
+       }
+ 
+       //   Recalculation totalStock
+ 
+       product.totalStock = product.colors.reduce(
+         (sum, c) => sum + c.quantity,
+         0
+       );
+ 
+       product.markModified("colors");
+ 
+       await product.save();
+     }
+ 
         // deleting the cart item after order is placed 
         const getCart = transaction.cartId;
         await Cart.findByIdAndDelete(getCart);
