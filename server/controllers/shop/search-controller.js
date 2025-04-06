@@ -59,7 +59,7 @@ const searchOrders = async(req, res) => {
         { "addressInfo.address": regEx },
         { "addressInfo.city": regEx },
         { "addressInfo.nearest_landmark": regEx },
-        { "addressInfo.phone": regEx }
+        { "addressInfo.phone": search }
                 
             ]
         }
