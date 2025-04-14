@@ -255,9 +255,10 @@ const ShoppingCheckout = () => {
     form.submit();
   };
 
-
+  //<-------------------------------------------------------------------->
 
   // cod initialization
+  
   function handleCodPayment() {
     if (cartItems.length == 0) {
       toast({
@@ -383,7 +384,7 @@ const ShoppingCheckout = () => {
                       : " Checkout with Paypal"}
                   </Button> */}
 
-                  <Button
+                  {/* <Button
                     onClick={handleInitiateEsewaPayment}
                     variant="outline"
                     className={`hover:scale-105 transition-all duration-200 w-2/3 h-[80px] m-4  bg-[#F0F0F0]/80 text-black ${isEsewaPaymentStart} ? bg-[#F0F0F0]/20 :  bg-[#F0F0F0] text-muted-foreground`}
@@ -392,13 +393,13 @@ const ShoppingCheckout = () => {
                     {isEsewaPaymentStart
                       ? "Payment Processing..."
                       : <img className="w-1/3" src={esewa}></img>}
-                  </Button>
+                  </Button> */}
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
                     <Button
                   variant="outline"
                     
-                    className={`hover:scale-105 transition-all duration-200 w-2/3 h-[80px] m-4 text-black ${
+                    className={`hover:scale-105 transition-all duration-200 w-full h-[80px] m-4 text-black ${
                       isLoading ? "bg-[#F0F0F0]/90" : "bg-[#F0F0F0]"
                     } relative`}
                     disabled={isLoading}

@@ -1,6 +1,8 @@
 require('dotenv').config();   // load environment variables from .env
 const cloudinary = require('cloudinary').v2;
 const multer = require('multer');
+const sharp = require("sharp");
+
 
 
       // Configuration using .env variables 

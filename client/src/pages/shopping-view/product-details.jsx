@@ -9,15 +9,19 @@ import {
 import { useDispatch } from "react-redux";
 
 import { useSelector } from "react-redux";
-import { toast } from "@/hooks/use-toast";
-import { useParams } from "react-router-dom";
+import { toast, useToast } from "@/hooks/use-toast";
+import { useNavigate, useParams } from "react-router-dom";
 import { fetchProductDetails } from "../../../store/shop/product-slice/index";
 import { Accordion, AccordionTrigger } from "@/components/ui/accordion";
 import { AccordionContent, AccordionItem } from "@radix-ui/react-accordion";
 import { Separator } from "@/components/ui/separator";
 import { ChevronLeft, ChevronRight, Minus, Plus } from "lucide-react";
+import { Toast } from "@/components/ui/toast";
+import AuthPopup from "../../components/shopping-view/login-card";
 
 const ProductDetailsPage = () => {
+  const {toast} = useToast();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const productId = useParams();
 
@@ -26,9 +30,20 @@ const ProductDetailsPage = () => {
   const { cartItems } = useSelector((state) => state.shoppingCart);
   const [cartColor, setCartColor] = useState("");
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [showAuthPopup, setShowAuthPopup] = useState(false);
 
  
-
+const handleCheckLogin = () => {
+  if(!user) {
+    toast({
+      title: "Please Login to proceed Add to Cart!",
+      variant: "destructive",
+      duration: 2000,
+    })
+  }
+ setShowAuthPopup(true)
+  
+}
 
 
   const { productList, productDetails } = useSelector(
@@ -313,7 +328,7 @@ const ProductDetailsPage = () => {
             </AccordionTrigger>
             <AccordionContent>
               <p className="font-extraligh text-muted-foreground text-md md:text-lg">
-                This is a exchange and return policy compiling to our store
+                See our exchange and refund policy in legal section
               </p>
             </AccordionContent>
           </AccordionItem>
@@ -329,8 +344,9 @@ const ProductDetailsPage = () => {
             <Button
               variant="secondary"
               onClick={() =>
-                handleAddtoCart(productDetails?._id, productDetails?.totalStock)
-              }
+             { handleAddtoCart(productDetails?._id, productDetails?.totalStock)
+              handleCheckLogin()}
+            }
               className="w-full rounded-sm"
             >
               Add to Cart
@@ -355,6 +371,7 @@ const ProductDetailsPage = () => {
           )}
         </div>
       </div>
+      {showAuthPopup && <AuthPopup onClose={() => setShowAuthPopup(false)} />}
     </div>
   );
 };

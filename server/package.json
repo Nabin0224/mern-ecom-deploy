@@ -31,6 +31,7 @@
     "passport-google-oauth2": "^0.2.0",
     "passport-google-oauth20": "^2.0.0",
     "paypal-rest-sdk": "^1.8.1",
+    "sharp": "^0.34.0",
     "uuid": "^11.1.0"
   }
 }
