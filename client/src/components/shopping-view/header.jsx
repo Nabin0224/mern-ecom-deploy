@@ -41,6 +41,7 @@ import UserCartWrapper from "./cart-wrapper";
 import { fetchCartItems } from "../../../store/shop/cart-slice/index";
 import { Label } from "../ui/label";
 import AuthPopup from "./login-card";
+import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
 
 function MenuItems({ setOpenMobileCartSheet }) {
   const navigate = useNavigate();
@@ -134,7 +135,15 @@ function HeaderRightContent({
         }}
       >
         <div className={`${user ? "hidden" : "block"}`}>
-          <AuthPopup isLogin={isLogin} setIsLogin={setIsLogin} />
+          <Dialog>
+            <DialogTrigger asChild>
+            <Button variant="default">Login</Button>
+            </DialogTrigger>
+             <DialogContent className="max-w-[90%] md:max-w-md">
+                      <AuthPopup isLogin={isLogin} setIsLogin={setIsLogin} />
+                    </DialogContent>
+          </Dialog>
+        
         </div>
         <Button
           onClick={() => {

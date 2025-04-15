@@ -1,5 +1,9 @@
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent } from "../../components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+} from "../../components/ui/dialog";
 import React, { useEffect, useState } from "react";
 import {
   addToCart,
@@ -18,9 +22,10 @@ import { Separator } from "@/components/ui/separator";
 import { ChevronLeft, ChevronRight, Minus, Plus } from "lucide-react";
 import { Toast } from "@/components/ui/toast";
 import AuthPopup from "../../components/shopping-view/login-card";
+import { AlertDialogContent } from "@/components/ui/alert-dialog";
 
 const ProductDetailsPage = () => {
-  const {toast} = useToast();
+  const { toast } = useToast();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const productId = useParams();
@@ -31,20 +36,21 @@ const ProductDetailsPage = () => {
   const [cartColor, setCartColor] = useState("");
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showAuthPopup, setShowAuthPopup] = useState(false);
+  const [isLogin, setIsLogin] = useState(false);
 
- 
-const handleCheckLogin = () => {
-  if(!user) {
-    toast({
-      title: "Please Login to proceed Add to Cart!",
-      variant: "destructive",
-      duration: 2000,
-    })
-  }
- setShowAuthPopup(true)
-  
-}
-
+  const handleCheckLogin = () => {
+    if (!user) {
+      toast({
+        title: "Please Login to proceed Add to Cart!",
+        variant: "destructive",
+        duration: 2000,
+      });
+      setIsLogin(false);
+    } else {
+      setIsLogin(true);
+      setShowAuthPopup(true);
+    }
+  };
 
   const { productList, productDetails } = useSelector(
     (state) => state.shoppingProducts
@@ -213,21 +219,24 @@ const handleCheckLogin = () => {
           />
         )}
         <div className="flex gap-2">
-        {
-          productDetails?.image && productDetails?.image.length > 0 ? productDetails?.image.map((item, index) => 
-            <img onClick={() => setCurrentImageIndex(index)}
-          
-          key={index}
-            src={item}
-            alt={productDetails?.title}
-            width={100}
-            height={50}
-            className={`aspect-square object-center object-cover transition-all duration-200 ${currentImageIndex === index ? "scale-110 border-blue-500 ": ""} `}
-          />
-          ) : null
-        }
+          {productDetails?.image && productDetails?.image.length > 0
+            ? productDetails?.image.map((item, index) => (
+                <img
+                  onClick={() => setCurrentImageIndex(index)}
+                  key={index}
+                  src={item}
+                  alt={productDetails?.title}
+                  width={100}
+                  height={50}
+                  className={`aspect-square object-center object-cover transition-all duration-200 ${
+                    currentImageIndex === index
+                      ? "scale-110 border-blue-500 "
+                      : ""
+                  } `}
+                />
+              ))
+            : null}
         </div>
-
       </div>
       <div className=" m-1 p-1 Productdetails relative flex flex-col md:p-8">
         <div className="">
@@ -335,24 +344,49 @@ const handleCheckLogin = () => {
         </Accordion>
         <Separator className="w-full bg-black/20" />
 
-        <div className="md:bottom-8 w-full mx-auto mb-2 ">
-          {productDetails?.totalStock === 0 ? (
-            <Button className="w-full opacity-60 cursor-not-allowed bg-[#E5E5E5]">
-              Out of Stock
-            </Button>
-          ) : (
-            <Button
-              variant="secondary"
-              onClick={() =>
-             { handleAddtoCart(productDetails?._id, productDetails?.totalStock)
-              handleCheckLogin()}
-            }
-              className="w-full rounded-sm"
-            >
-              Add to Cart
-            </Button>
-          )}
-        </div>
+        <div className="md:bottom-8 w-full mx-auto mb-2">
+  {productDetails?.totalStock === 0 && (
+    <Button className="w-full opacity-60 cursor-not-allowed bg-[#E5E5E5]">
+      Out of Stock
+    </Button>
+  )}
+
+  {productDetails?.totalStock !== 0 && !user && (
+    <Dialog open={showAuthPopup} onOpenChange={setShowAuthPopup}>
+      <DialogTrigger asChild>
+        <Button
+          variant="secondary"
+          onClick={() => {
+            toast({
+              title: "Please login to add items to cart!",
+              variant: "destructive",
+            });
+            setIsLogin(false);
+            setShowAuthPopup(true);
+          }}
+          className="w-full rounded-sm"
+        >
+          Add to Cart
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="max-w-[90%] md:max-w-md">
+        <AuthPopup isLogin={isLogin} setIsLogin={setIsLogin} />
+      </DialogContent>
+    </Dialog>
+  )}
+
+  {productDetails?.totalStock !== 0 && user && (
+    <Button
+      variant="secondary"
+      onClick={() =>
+        handleAddtoCart(productDetails?._id, productDetails?.totalStock)
+      }
+      className="w-full rounded-sm"
+    >
+      Add to Cart
+    </Button>
+  )}
+</div>
 
         <div className="md:bottom-8 w-full mx-auto ">
           {productDetails?.totalStock === 0 ? (
@@ -371,7 +405,6 @@ const handleCheckLogin = () => {
           )}
         </div>
       </div>
-      {showAuthPopup && <AuthPopup onClose={() => setShowAuthPopup(false)} />}
     </div>
   );
 };

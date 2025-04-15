@@ -17,7 +17,7 @@ import { checkGoogleAuth, loginUser, registerUser } from "../../../store/auth-sl
 
 
 
-export default function AuthPopup({isLogin, setIsLogin}) {
+export default function AuthPopup({isLogin, setIsLogin, triggerButton}) {
   // const { user } = useSelector(state => state.auth)
   const [isStart, setIsStart] = useState(false)
   const dispatch = useDispatch();
@@ -97,19 +97,14 @@ useEffect(() => {
   };
 
   return (
-    <>
-      {/* Login Button */}
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button variant="default">Login</Button>
-        </DialogTrigger>
-
-        {/* Modal Content */}
-        <DialogContent className="max-w-md w-full p-6">
+    
+     
+        <>
           <DialogHeader>
             <DialogTitle className="text-center text-2xl font-semibold">
               {isLogin ? "Login to Your Account" : "Create an Account"}
             </DialogTitle>
+
           </DialogHeader>
 
           {/* Google Sign-In Button */}
@@ -172,8 +167,7 @@ useEffect(() => {
               {isLogin ? "Sign Up" : "Login"}
             </button>
           </p>
-        </DialogContent>
-      </Dialog>
+     
     </>
   );
 }
