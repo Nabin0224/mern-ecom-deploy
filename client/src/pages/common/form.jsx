@@ -118,7 +118,8 @@ function CommonForm({
               }}
             >
               <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select Color" />
+                {/* <SelectValue placeholder="Select Color" /> */}
+                <span>Select Color</span>
               </SelectTrigger>
               <SelectContent>
                 {getControlItem.options.map((color) => (
