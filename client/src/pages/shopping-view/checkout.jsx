@@ -21,6 +21,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Navigate, useNavigate } from "react-router-dom";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogTitle, AlertDialogTrigger } from   "@/components/ui/alert-dialog";
 import { AlertDialogHeader } from "@/components/ui/alert-dialog";
+import { sendSms } from "../../../store/admin/sms-slice/index";
 
 const ShoppingCheckout = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -307,8 +308,15 @@ const ShoppingCheckout = () => {
       paymentStatus: "pending",
       totalAmount: totalCartAmount.toString(),
     };
+    const fullName = orderData?.addressInfo?.fullName;
+    const firstName = fullName.split(" ")[0];
+    console.log("firstName", firstName)
     setTimeout(() => {
-      dispatch(createCodOrder(orderData));
+      dispatch(createCodOrder(orderData)).then((data)=> {
+        if(data.payload.success) {
+          dispatch(sendSms({to: [orderData?.addressInfo?.phone], text:[`Dear ${firstName}, thanks for your order at Style Me. Your order is confirmed and being processed. Reach us at stylemeofficial.com.`]}))
+        }
+      })
       navigate("/payment-success");
       setIsLoading(false);
     }, 3000);

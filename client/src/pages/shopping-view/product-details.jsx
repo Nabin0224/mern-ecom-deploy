@@ -424,7 +424,7 @@ const ProductDetailsPage = () => {
               onClick={() =>
                 handleAddtoCart(productDetails?._id, productDetails?.totalStock)
               }
-              className="w-full rounded-sm"
+              className="w-full rounded-sm hidden"
             >
               Buy now
             </Button>
