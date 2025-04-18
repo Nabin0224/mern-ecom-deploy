@@ -23,8 +23,12 @@ import { ChevronLeft, ChevronRight, Minus, Plus } from "lucide-react";
 import { Toast } from "@/components/ui/toast";
 import AuthPopup from "../../components/shopping-view/login-card";
 import { AlertDialogContent } from "@/components/ui/alert-dialog";
+import { Sheet } from "@/components/ui/sheet";
+import UserCartWrapper from "../../components/shopping-view/cart-wrapper";
 
 const ProductDetailsPage = () => {
+  const [openMobileCartSheet, setOpenMobileCartSheet] = useState(false);
+    const [openCartSheet, setOpenCartSheet] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -71,6 +75,7 @@ const ProductDetailsPage = () => {
   }, [productDetails]);
 
   console.log("productDetals", productDetails);
+  console.log("cartItems in product details", cartItems)
   useEffect(() => {
     dispatch(fetchCartItems(user?.id));
   }, [user, productId]);
@@ -354,6 +359,7 @@ const ProductDetailsPage = () => {
   {productDetails?.totalStock !== 0 && !user && (
     <Dialog open={showAuthPopup} onOpenChange={setShowAuthPopup}>
       <DialogTrigger asChild>
+       
         <Button
           variant="secondary"
           onClick={() => {
@@ -368,6 +374,7 @@ const ProductDetailsPage = () => {
         >
           Add to Cart
         </Button>
+       
       </DialogTrigger>
       <DialogContent className="max-w-[90%] md:max-w-md">
         <AuthPopup isLogin={isLogin} setIsLogin={setIsLogin} />
@@ -376,15 +383,34 @@ const ProductDetailsPage = () => {
   )}
 
   {productDetails?.totalStock !== 0 && user && (
+     <Sheet
+     open={openCartSheet}
+     onOpenChange={()=> {
+       setOpenCartSheet(false);
+       setOpenMobileCartSheet(false);
+     }}
+     >
     <Button
       variant="secondary"
       onClick={() =>
-        handleAddtoCart(productDetails?._id, productDetails?.totalStock)
+      {  handleAddtoCart(productDetails?._id, productDetails?.totalStock)
+        selectedColor &&  setOpenCartSheet(true)
+      }
       }
       className="w-full rounded-sm"
     >
       Add to Cart
     </Button>
+    <UserCartWrapper
+              cartItems={
+                cartItems && cartItems.items && cartItems.items.length > 0
+                  ? cartItems.items
+                  : []
+              }
+              setOpenCartSheet={setOpenCartSheet}
+              setOpenMobileCartSheet={setOpenMobileCartSheet}
+            />
+        </Sheet>
   )}
 </div>
 
