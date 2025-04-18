@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import axios from "axios";
+import { sendSms } from "../../../store/admin/sms-slice/index";
 
 const districts = [
   "Kathmandu",
@@ -291,6 +292,18 @@ const CreateCustomOrder = () => {
   const onSubmit = async (data) => {
     console.log("data on submit", data);
     console.log("data.paymentStatus", data.paymenStatus);
+    const fullName = data.fullName;
+    const firstName = fullName.split(" ")[0];
+    console.log("first name", firstName)
+
+    dispatch(
+      sendSms({
+        to: [data.phone],
+        text:[`Dear ${firstName}, thanks for your order at Style Me. Your order is confirmed and being processed. Reach us at stylemeofficial.com.`]
+      })
+    ).then((date) => {
+      console.log(data, "data form sms api dispatch");
+    });
 
     const CodAmount = items.reduce(
       (sum, item) => sum + item?.price * item?.quantity,

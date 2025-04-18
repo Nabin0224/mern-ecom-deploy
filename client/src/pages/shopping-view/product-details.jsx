@@ -208,17 +208,17 @@ const ProductDetailsPage = () => {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2  gap-2 min-w-fit m-1 p-1 md:p-2 md:m-2 h-full">
-      <div className="relative rounded-lg m-1 p-1  h-full  md:p-8 flex flex-col gap-2">
+      <div className="relative rounded-lg m-1 p-1  h-full  md:p-8 flex  gap-2">
         {productDetails?.image && productDetails?.image.length > 0 && (
           <img
             src={productDetails?.image[currentImageIndex]}
             alt={productDetails?.title}
             width={600}
             height={600}
-            className="aspect-square object-center object-cover"
+            className="aspect-[4/5] h-auto object-center object-cover"
           />
         )}
-        <div className="flex gap-2">
+        <div className="flex flex-col gap-2">
           {productDetails?.image && productDetails?.image.length > 0
             ? productDetails?.image.map((item, index) => (
                 <img

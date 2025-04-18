@@ -17,6 +17,7 @@ const commonFeatureRouter = require("./routes/common/feature");
 const googleauthRouter = require("./routes/google-auth-routes")
 const adminCustomOrderRouter = require('./routes/admin/custom-order-routes')
 const adminDataRouter = require('./controllers/admin/data')
+const adminSmsRouter = require("./routes/admin/sms-routes")
 const adminOrderCheckRouter = require("./routes/admin/double-order")
 const app = express();
 const authRouter = require("./routes/auth-routes");
@@ -83,6 +84,7 @@ app.use("/api/admin/orders", adminOrderRouter);
 app.use("/api/admin/customorders", adminCustomOrderRouter);
 app.use("/api/admin/ordersdata", adminDataRouter);
 app.use("/api/admin/check", adminOrderCheckRouter);
+app.use("/api/admin/sms", adminSmsRouter);
 app.use("/api/shop/search", searchRouter);
 app.use("/api/common/feature", commonFeatureRouter);
 app.use("/api/google", googleauthRouter);
