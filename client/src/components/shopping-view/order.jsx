@@ -136,7 +136,7 @@ const ShoppingOrders = () => {
                           onClick={
                           
                             
-                            () => { item?.paymentMethod === "eSewa" ?  handleFetchOrderDetailsOfEsewa(item?._id) :   item?.paymentMethod === "Cod" ? handleFetchOrderDetailsOfCod(item?._id)   : handleFetchOrderDetails(item?._id) } 
+                            () => { item?.paymentMethod === "eSewa" ?  handleFetchOrderDetailsOfEsewa(item?._id) :   item?.paymentMethod === "cod" ? handleFetchOrderDetailsOfCod(item?._id)   : handleFetchOrderDetails(item?._id) } 
                           
                         }
                         >

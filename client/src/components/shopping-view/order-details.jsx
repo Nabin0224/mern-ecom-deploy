@@ -11,6 +11,7 @@ import { useSelector } from 'react-redux'
 
 
 const ShoppingOrderDetailsView = ({orderDetails}) => {
+    console.log("orderDetails in shop", orderDetails)
     const { user } = useSelector(state=> state.auth)
   return (
     <DialogContent >

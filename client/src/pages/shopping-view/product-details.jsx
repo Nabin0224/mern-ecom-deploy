@@ -103,6 +103,7 @@ const ProductDetailsPage = () => {
       (item) =>
         item.productId === getCurrentProductId && item.color === selectedColor
     );
+    console.log("selectedColor", selectedColor)
 
     if (existingCartItem) {
       const updatedQuantity = finalQuantity; // Instead of adding, directly replace it
@@ -275,13 +276,13 @@ const ProductDetailsPage = () => {
                 <button
                   key={color.colorName}
                   className={`w-6 h-6 rounded-full border-2 ${
-                    selectedColor === color.code
+                    selectedColor === color.colorName
                       ? "border-black"
                       : "border-gray-300"
                   }`}
                   style={{ backgroundColor: color.code }}
                   onClick={() => {
-                    setSelectedColor(color.code);
+                    setSelectedColor(color.colorName);
                   }}
                 />
               ))}

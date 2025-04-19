@@ -318,10 +318,11 @@ const ShoppingCheckout = () => {
         phone: currentSelectedAddressInfo?.phone,
       },
       orderStatus: "pending",
-      paymentMethod: "Cod",
-      paymentStatus: "pending",
+      paymentMethod: "cod",
+      paymentStatus: "cod",
       totalAmount: totalCartAmount + currentSelectedAddressInfo?.deliveryCharge
     };
+    console.log("orderdata", orderData)
     const fullName = orderData?.addressInfo?.fullName;
     const firstName = fullName.split(" ")[0].toUpperCase();
     console.log("firstName", firstName)
@@ -329,7 +330,7 @@ const ShoppingCheckout = () => {
     setTimeout(() => {
       dispatch(createCodOrder(orderData)).then((data)=> {
         if(data.payload.success) {
-          dispatch(sendSms({to: [orderData?.addressInfo?.phone], text:[`Dear ${firstName}, thanks for your order at Style Me. Your order is confirmed and being processed. Reach us at stylemeofficial.com.`]}))
+          // dispatch(sendSms({to: [orderData?.addressInfo?.phone], text:[`Dear ${firstName}, thanks for your order at Style Me. Your order is confirmed and being processed. Reach us at stylemeofficial.com.`]}))
         }
       })
       navigate("/payment-success");
