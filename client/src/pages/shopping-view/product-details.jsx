@@ -223,7 +223,7 @@ const ProductDetailsPage = () => {
             className="aspect-[4/5] h-auto object-center object-cover"
           />
         )}
-        <div className="flex gap-2 mt-2">
+        <div className="flex gap-2 mt-2 overflow-auto">
           {productDetails?.image && productDetails?.image.length > 0
             ? productDetails?.image.map((item, index) => (
                 <img
