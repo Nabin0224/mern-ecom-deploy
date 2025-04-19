@@ -47,6 +47,7 @@ const AddProduct = () => {
 
   function handleSubmitProduct (event) {
     event.preventDefault();
+    console.log("formData in add product", formData)
     if (id) {
       const updatedFormData = {
         ...formData,

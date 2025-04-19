@@ -5,6 +5,7 @@ import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 
 const CustomProduct = ({ productList, setItems, items, setOpenProductDialog }) => {
+  console.log("productList in custom product", productList)
   
   function handleCheckedChange(item, selectedColor) {
     setItems((prevItems) => {

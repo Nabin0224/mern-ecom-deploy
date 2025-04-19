@@ -28,6 +28,7 @@ import { toast } from "@/hooks/use-toast";
 import axios from "axios";
 import { sendSms } from "../../../store/admin/sms-slice/index";
 
+
 const districts = [
   "Kathmandu",
   "Lalitpur",
@@ -294,12 +295,14 @@ const CreateCustomOrder = () => {
     console.log("data.paymentStatus", data.paymenStatus);
     const fullName = data.fullName;
     const firstName = fullName.split(" ")[0].toUpperCase();
-    console.log("first name", firstName)
+    console.log("first name", firstName);
 
     dispatch(
       sendSms({
         to: [data.phone],
-        text:[`Dear ${firstName}, thanks for your order at Style Me. Your order is confirmed and being processed. Reach us at stylemeofficial.com.`]
+        text: [
+          `Dear ${firstName}, thanks for your order at Style Me. Your order is confirmed and being processed. Reach us at stylemeofficial.com.`,
+        ],
       })
     ).then((date) => {
       console.log(data, "data form sms api dispatch");
@@ -458,22 +461,41 @@ const CreateCustomOrder = () => {
                       </Button>
                       {item.quantity}
                       <Button
-                        className="rounded-sm"
-                        size={10}
-                        variant="outline"
-                        onClick={() =>
-                          setItems((prevItems) =>
-                            prevItems.map((i) =>
-                              i.productId === item.productId &&
-                              i.color === item.color
-                                ? { ...i, quantity: i.quantity + 1 }
-                                : i
-                            )
-                          )
-                        }
-                      >
-                        <Plus size={20} />
-                      </Button>
+  className="rounded-sm"
+  size={10}
+  variant="outline"
+  onClick={() =>
+    setItems((prevItems) =>
+      prevItems.map((i) => {
+        const product = productList.find((p) => p?._id === i.productId);
+        const colorData = product?.colors.find(
+          (c) => c?.colorName === i.color
+        );
+        const maxQuantity = colorData?.quantity || 0;
+
+        if (
+          i.productId === item.productId &&
+          i.color === item.color
+        ) {
+          if (i.quantity < maxQuantity) {
+            return { ...i, quantity: i.quantity + 1 };
+          } else {
+            toast({
+              title: "Not enough stock!",
+              variant: "destructive",
+              duration: 2000,
+            });
+          }
+        }
+
+        // Always return the original item if no update
+        return i;
+      })
+    )
+  }
+>
+  <Plus size={20} />
+</Button>
                       <span className="ml-4">
                         {" "}
                         <Trash
