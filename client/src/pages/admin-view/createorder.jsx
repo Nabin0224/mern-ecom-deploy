@@ -293,7 +293,7 @@ const CreateCustomOrder = () => {
     console.log("data on submit", data);
     console.log("data.paymentStatus", data.paymenStatus);
     const fullName = data.fullName;
-    const firstName = fullName.split(" ")[0];
+    const firstName = fullName.split(" ")[0].toUpperCase();
     console.log("first name", firstName)
 
     dispatch(

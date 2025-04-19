@@ -6,6 +6,7 @@ const Product = require("../../models/products");
 const createCodOrder = async (req, res) => {
   try {
     const formData = req.body;
+    console.log("formData in cod", formData)
 
     if (!formData || formData == null) {
       return res.status(401).json({

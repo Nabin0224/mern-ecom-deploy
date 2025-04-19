@@ -9,6 +9,60 @@ import {
 } from "../../components/ui/select";
 import { Textarea } from "../../components/ui/textarea";
 import { Button } from "../../components/ui/button";
+import { useEffect, useState } from "react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Command,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+
+const CustomSelect = ({ getControlItem, value, setFormData, formData }) => {
+  const [open, setOpen] = useState(false);
+
+  const handleSelect = (val) => {
+    setFormData({
+      ...formData,
+      [getControlItem.name]: val,
+    });
+    setOpen(false);
+  };
+  console.log(getControlItem.name)
+  console.log("formDAta address", formData)
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <button className="w-full border border-gray-600 px-3 py-2 text-left">
+          {value
+            ? getControlItem.options.find((o) => o.id === value)?.label
+            : getControlItem.label}
+        </button>
+      </PopoverTrigger>
+      <PopoverContent className="w-full p-0">
+        <Command>
+          <CommandInput placeholder={`Search ${getControlItem.label}...`} />
+          <CommandList>
+            {getControlItem.options.map((optionItem) => (
+              <CommandItem
+                key={optionItem.id}
+                onSelect={() => handleSelect(optionItem.id)}
+              >
+                {optionItem.label}
+              </CommandItem>
+            ))}
+          </CommandList>
+        </Command>
+      </PopoverContent>
+    </Popover>
+  );
+};
+
 
 function CommonForm({
   formControls,
@@ -17,7 +71,18 @@ function CommonForm({
   onSubmit,
   buttonText,
   isBtnDisabled,
+  setCurrentSelectedAddressInfo,
 }) {
+  useEffect(() => {
+    const freeZoneCities = ["kathmandu", "lalitpur", "bhaktapur", "kirtipur"];
+    if (formData.city) {
+      setFormData((prev) => ({
+        ...prev,
+        deliveryCharge: freeZoneCities.includes(formData.city.toLowerCase()) ? 100 : 150,
+      }));
+    }
+  }, [formData.city]);
+  
   function renderInputsByComponentType(getControlItem) {
     let element = null;
     const value = formData[getControlItem.name] || "";
@@ -42,32 +107,42 @@ function CommonForm({
         );
         break;
 
+      // case "select":
+      //   element = (
+      //     <Select
+      //       className=" border-gray-600 focus:border-blue-400 focus:outline-none"
+      //       onValueChange={(value) =>
+      //         setFormData({
+      //           ...formData,
+      //           [getControlItem.name]: value,
+      //         })
+      //       }
+      //       value={value}
+      //     >
+      //       <SelectTrigger className="w-full">
+      //         <SelectValue placeholder={getControlItem.label} />
+      //       </SelectTrigger>
+      //       <SelectContent>
+      //         {getControlItem.options.map((optionItem) => (
+      //           <SelectItem key={optionItem.id} value={optionItem.id}>
+      //             {optionItem.label}
+      //           </SelectItem>
+      //         ))}
+      //       </SelectContent>
+      //     </Select>
+      //   );
+      //   break;
+
       case "select":
         element = (
-          <Select
-            className=" border-gray-600 focus:border-blue-400 focus:outline-none"
-            onValueChange={(value) =>
-              setFormData({
-                ...formData,
-                [getControlItem.name]: value,
-              })
-            }
+          <CustomSelect
+            getControlItem={getControlItem}
             value={value}
-          >
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder={getControlItem.label} />
-            </SelectTrigger>
-            <SelectContent>
-              {getControlItem.options.map((optionItem) => (
-                <SelectItem key={optionItem.id} value={optionItem.id}>
-                  {optionItem.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+            setFormData={setFormData}
+            formData={formData}
+          />
         );
         break;
-
       case "textarea":
         element = (
           <Textarea

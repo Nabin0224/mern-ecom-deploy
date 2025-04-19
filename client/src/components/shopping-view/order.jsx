@@ -79,7 +79,7 @@ const ShoppingOrders = () => {
 
   
 
-  const orders = [...orderList, ...orderListOfEsewa, ...orderListOfCod]
+  const orders = [...orderList, ...orderListOfEsewa, ...orderListOfCod].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   
 
   const AllOrderDetials = orderDetails || orderDetailsOfEsewa || orderDetailsOfCod

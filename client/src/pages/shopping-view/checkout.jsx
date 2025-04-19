@@ -22,6 +22,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogTitle, AlertDialogTrigger } from   "@/components/ui/alert-dialog";
 import { AlertDialogHeader } from "@/components/ui/alert-dialog";
 import { sendSms } from "../../../store/admin/sms-slice/index";
+import { fetchAllAddress } from "../../../store/shop/address-slice/index";
 
 const ShoppingCheckout = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -36,7 +37,7 @@ const ShoppingCheckout = () => {
   const dispatch = useDispatch();
   const { formData } = useSelector((state) => state.esewaOrders);
 
- 
+ console.log("current selected", currentSelectedAddressInfo)
   const alwaysOpenItems = ["item-1"];
   const [openItems, setOpenItems] = useState(alwaysOpenItems);
   const navigate = useNavigate();
@@ -61,6 +62,18 @@ const ShoppingCheckout = () => {
   
   console.log(nepalTime); // Output: "2025-04-02"
 
+  useEffect(() => {
+      
+    dispatch(fetchAllAddress(user?.id)).then((data)=> {
+     console.log("data in useeffect", data)
+     const list = data?.payload?.data;
+     if(list && list.length > 0 && !currentSelectedAddressInfo) {
+       setCurrentSelectedAddressInfo(list[0]);
+     }
+    })
+   }, [dispatch, user?.id]);
+   
+
 
   const totalCartAmount =
     cartItems?.items && cartItems.items.length > 0
@@ -74,6 +87,7 @@ const ShoppingCheckout = () => {
           0
         )
       : 0;
+      console.log("totalCartAmount", totalCartAmount)
 
   //function to handle paypal payment
   function handleInitiatePaypalPayment() {
@@ -258,7 +272,7 @@ const ShoppingCheckout = () => {
 
   //<-------------------------------------------------------------------->
 
-  // cod initialization
+  // Cod initialization
   
   function handleCodPayment() {
     if (cartItems.length == 0) {
@@ -306,11 +320,12 @@ const ShoppingCheckout = () => {
       orderStatus: "pending",
       paymentMethod: "Cod",
       paymentStatus: "pending",
-      totalAmount: totalCartAmount.toString(),
+      totalAmount: totalCartAmount + currentSelectedAddressInfo?.deliveryCharge
     };
     const fullName = orderData?.addressInfo?.fullName;
-    const firstName = fullName.split(" ")[0];
+    const firstName = fullName.split(" ")[0].toUpperCase();
     console.log("firstName", firstName)
+    console.log("totala", orderData.totalAmount)
     setTimeout(() => {
       dispatch(createCodOrder(orderData)).then((data)=> {
         if(data.payload.success) {
@@ -415,7 +430,7 @@ const ShoppingCheckout = () => {
                     {isLoading ? (
                       <Skeleton className="absolute inset-0 h-full w-full rounded-full" />
                     ) : (
-                      <h1 className="font-extralight text-xl md:text-2xl">Cash on Delivery</h1>
+                      <h1 className=" font-semibold text-xl md:text-2xl text-green-600">Cash on Delivery</h1>
                     )}
                   </Button>
                     </AlertDialogTrigger>

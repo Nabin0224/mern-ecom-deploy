@@ -213,7 +213,7 @@ const ProductDetailsPage = () => {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2  gap-2 min-w-fit m-1 p-1 md:p-2 md:m-2 h-full">
-      <div className="relative rounded-lg m-1 p-1  h-full  md:p-8 flex  gap-2">
+      <div className="relative rounded-lg m-1 p-1  h-full  md:p-8 flex-col gap-2">
         {productDetails?.image && productDetails?.image.length > 0 && (
           <img
             src={productDetails?.image[currentImageIndex]}
@@ -223,7 +223,7 @@ const ProductDetailsPage = () => {
             className="aspect-[4/5] h-auto object-center object-cover"
           />
         )}
-        <div className="flex flex-col gap-2">
+        <div className="flex gap-2 mt-2">
           {productDetails?.image && productDetails?.image.length > 0
             ? productDetails?.image.map((item, index) => (
                 <img
@@ -233,7 +233,7 @@ const ProductDetailsPage = () => {
                   alt={productDetails?.title}
                   width={100}
                   height={50}
-                  className={`aspect-square object-center object-cover transition-all duration-200 ${
+                  className={`aspect-square rounded-sm object-center object-cover transition-all duration-200 ${
                     currentImageIndex === index
                       ? "scale-110 border-blue-500 "
                       : ""

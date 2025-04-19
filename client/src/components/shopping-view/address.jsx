@@ -13,32 +13,39 @@ import AddressCard from "./address-card";
 import { current } from "@reduxjs/toolkit";
 import { useToast } from "@/hooks/use-toast";
 
+
 const Address = ({setCurrentSelectedAddressInfo, selectedId}) => {
  
   const initialAddressFormData = {
     fullName: "",
-    address: "",
     city: "",
+    address: "",
     nearest_landmark: "",
     phone: "",
+    deliveryCharge: ""
   };
+  
   const [formData, setFormData] = useState(initialAddressFormData);
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const { addressList } = useSelector((state) => state.shoppingAddress);
   const [currentEditedId, SetCurrentEditedId] = useState(null);
   const { toast } = useToast();
+
   function handleManageAddress(event) {
     event.preventDefault();
-    if( addressList.length >= 2 ){
-      toast({
-        title: "Max 2 addresses can be added!",
-        variant: "destructive",
-        duration: 2000,
-      })
-      return;
-    }
 
+    if(currentEditedId === null)
+ {   if( addressList.length >= 2 ){
+    toast({
+      title: "Max 2 addresses can be added!",
+      variant: "destructive",
+      duration: 2000,
+    })
+    return;
+  }
+}
+  
     currentEditedId !== null
       ? dispatch(
           editAddress({
@@ -51,16 +58,24 @@ const Address = ({setCurrentSelectedAddressInfo, selectedId}) => {
             dispatch(fetchAllAddress(user?.id));
             setFormData(initialAddressFormData);
             SetCurrentEditedId(null);
+            
           }
         })
-      : dispatch(
+      :  dispatch(
           addNewAddress({
             ...formData,
             userId: user?.id,
           })
         ).then((data) => {
           if (data?.payload?.success) {
-            dispatch(fetchAllAddress(user?.id));
+            dispatch(fetchAllAddress(user?.id)).then((data)=> {
+              const latest = data.payload.data;
+              const lastAddress = latest?.[latest.length-1];
+              console.log("payload", latest)
+              if(latest) {
+                setCurrentSelectedAddressInfo(lastAddress);
+              }
+            })
             setFormData(initialAddressFormData);
           }
         });
@@ -119,14 +134,15 @@ const Address = ({setCurrentSelectedAddressInfo, selectedId}) => {
           {currentEditedId !== null ? "Edit Address" : "Add New Address"} */}
         </CardTitle>
       </CardHeader>
-      <CardContent className="">
+      <CardContent className={`${currentEditedId === null && selectedId !== null ? 'hidden' : 'block'}`}>
         <CommonForm
           formControls={addressFormControls}
           formData={formData}
           setFormData={setFormData}
-          buttonText={currentEditedId !== null ? "Edit " : "Add"}
+          buttonText={currentEditedId !== null ? "Save" : "Add"}
           onSubmit={handleManageAddress}
           isBtnDisabled={!isFormValid()}
+          // setCurrentSelectedAddressInfo={setCurrentSelectedAddressInfo}
         />
       </CardContent>
     </Card>

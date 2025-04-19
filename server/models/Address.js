@@ -8,6 +8,7 @@ const AddressSchema = new mongoose.Schema({
     city: String,
     nearest_landmark: String,
     phone: String,
+    deliveryCharge: Number
 
 },
 {
