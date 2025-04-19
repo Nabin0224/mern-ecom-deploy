@@ -330,7 +330,7 @@ const ShoppingCheckout = () => {
     setTimeout(() => {
       dispatch(createCodOrder(orderData)).then((data)=> {
         if(data.payload.success) {
-          // dispatch(sendSms({to: [orderData?.addressInfo?.phone], text:[`Dear ${firstName}, thanks for your order at Style Me. Your order is confirmed and being processed. Reach us at stylemeofficial.com.`]}))
+          dispatch(sendSms({to: [orderData?.addressInfo?.phone], text:[`Dear ${firstName}, Thanks for your order at STYLE ME. Your order is confirmed and being processed. Reach us at stylemeofficial.com.`]}))
         }
       })
       navigate("/payment-success");
