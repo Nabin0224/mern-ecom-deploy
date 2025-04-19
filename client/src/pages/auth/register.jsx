@@ -98,10 +98,10 @@ useEffect(() => {
                                   <FcGoogle size={20} /> Continue with Google
                                 </Button>
                       
-                                <div className="relative text-center">
+                                {/* <div className="relative text-center">
                                   <span className=" bg-white px-2 text-sm text-gray-500 ">or</span>
-                                </div>
-          <input
+                                </div> */}
+          {/* <input
             className="border-2 border-black/75 rounded-md"
             type="text"
             placeholder="Username"
@@ -110,9 +110,9 @@ useEffect(() => {
               minLength: { value: 4, message: "Minimum length must be 4" },
             })}
           />
-          {errors.username && <span>{errors.username.message}</span>}
+          {errors.username && <span>{errors.username.message}</span>} */}
 
-          <input
+          {/* <input
             className="border-2 border-black/75 rounded-md"
             type="text"
             placeholder="Email"
@@ -139,7 +139,7 @@ useEffect(() => {
             className="w-full border-2 rounded-lg bg-black text-white mx-auto"
             type="submit"
             value="Sign Up"
-          />
+          /> */}
         </div>
       </form>
     </div>

@@ -95,7 +95,7 @@ useEffect(() => {
                         <FcGoogle size={20} /> Continue with Google
                       </Button>
             
-                      <div className="relative text-center">
+                      {/* <div className="relative text-center">
                         <span className=" bg-white px-2 text-sm text-gray-500 ">or</span>
                       </div>
             <input
@@ -124,7 +124,7 @@ useEffect(() => {
               className="w-full border-2 rounded-lg bg-black text-white mx-auto"
               type="submit"
               value="Login"
-            />
+            /> */}
           </div>
         </form>
       </div>

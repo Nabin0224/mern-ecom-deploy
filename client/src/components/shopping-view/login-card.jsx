@@ -116,12 +116,12 @@ useEffect(() => {
             <FcGoogle size={20} /> Continue with Google
           </Button>
 
-          <div className="relative text-center">
+          {/* <div className="relative text-center">
             <span className="bg-white px-2 text-sm text-gray-500">or</span>
-          </div>
+          </div> */}
 
           {/* Email & Password Fields */}
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          {/* <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             {!isLogin && (
               <Input
                 placeholder="Username"
@@ -166,7 +166,7 @@ useEffect(() => {
             >
               {isLogin ? "Sign Up" : "Login"}
             </button>
-          </p>
+          </p> */}
      
     </>
   );
