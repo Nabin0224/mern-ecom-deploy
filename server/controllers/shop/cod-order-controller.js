@@ -2,6 +2,7 @@ const CodOrder = require("../../models/CodOrder");
 const Cart = require("../../models/Cart");
 const EsewaOrder = require("../../models/EsewaOrder");
 const Product = require("../../models/products");
+const {sendOrderConfirmationEmail} = require("../../helpers/gmail")
 
 const createCodOrder = async (req, res) => {
   try {
@@ -59,6 +60,7 @@ const createCodOrder = async (req, res) => {
     await Cart.findByIdAndDelete(getCartId);
 
     await order.save();
+    await sendOrderConfirmationEmail(order); 
 
     res.status(200).json({
       success: true,
