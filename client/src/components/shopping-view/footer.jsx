@@ -112,14 +112,14 @@ const ShoppingFooter = () => {
             <span>
               <Phone />
             </span>
-            <p className="font-light">9800000000</p>
+            <p className="font-light">9864782899</p>
           </div>
           <div className="flex gap-2 mx-4 text-white/80">
             <span>
               <Mail />
             </span>
             <p className="font-light text-xs md:text-sm">
-              stylemeofficial@gmail.com
+              stylemeofficial.np@gmail.com
             </p>
           </div>
         </div>

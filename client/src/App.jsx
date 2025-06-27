@@ -31,6 +31,7 @@ import AddProduct from "./pages/admin-view/add-product";
 import QRCodeScanner from "./components/admin-view/scanqrcod";
 import QrCodeDetails from "./components/admin-view/qrcodedetails";
 import Legal from "./pages/shopping-view/legal";
+import { ROUTES } from "./utils/constants/keyConstants";
 
 const App = () => {
   const { isAuthenticated, isLoading, user } = useSelector(
@@ -52,39 +53,39 @@ const App = () => {
       <div className="flex flex-col">
         <Routes>
           <Route
-            path="/auth"
+            path={ROUTES.AUTH}
             element={
               <CheckAuth isAuthenticated={isAuthenticated} user={user}>
                 <AuthLayout />
               </CheckAuth>
             }
           >
-            <Route path="login" element={<AuthLogin />} />
-            <Route path="register" element={<AuthRegister />} />
+            <Route path={ROUTES.LOGIN} element={<AuthLogin />} />
+            <Route path={ROUTES.REGISTER} element={<AuthRegister />} />
           </Route>
 
           <Route
-            path="/admin"
+            path={ROUTES.ADMIN}
             element={
               <CheckAuth isAuthenticated={isAuthenticated} user={user}>
                 <AdminLayout />
               </CheckAuth>
             }
           >
-            <Route path="dashboard" element={<AdminDashboard />} />
-            <Route path="products" element={<AdminProducts />} />
-            <Route path="orders" element={<AdminOrders />} />
-            <Route path="createorder/:id?" element={<CreateCustomOrder />} />
-            <Route path="addproduct" element={<AddProduct />} />
-            <Route path="addproduct/edit/:id" element={<AddProduct />} />
+            <Route path={ROUTES.DASHBOARD} element={<AdminDashboard />} />
+            <Route path={ROUTES.ADMIN_PRODUCTS} element={<AdminProducts />} />
+            <Route path={ROUTES.ADMIN_ORDERS} element={<AdminOrders />} />
+            <Route path={ROUTES.CREATE_ORDER} element={<CreateCustomOrder />} />
+            <Route path={ROUTES.ADD_PRODUCT} element={<AddProduct />} />
+            <Route path={ROUTES.ADD_PRODUCT_EDIT} element={<AddProduct />} />
             {/* <Route path="qrcode" element={<QrCode/>} /> */}
-            <Route path="scanqrcode" element={<QRCodeScanner />} />
-            <Route path="qrcodedetail/:id" element={<QrCodeDetails />} />
+            <Route path={ROUTES.SCAN_QR_CODE} element={<QRCodeScanner />} />
+            <Route path={ROUTES.QR_CODE_DETAIL} element={<QrCodeDetails />} />
           </Route>
 
-          <Route path="/" element={<ShoppingLayout />}>
+          <Route path={ROUTES.HOME} element={<ShoppingLayout />}>
             <Route
-              path="account"
+              path={ROUTES.ACCOUNT}
               element={
                 <CheckAuth isAuthenticated={isAuthenticated} user={user}>
                   <ShoppingAccount />
@@ -93,25 +94,25 @@ const App = () => {
             />
            
             <Route
-              path="checkout"
+              path={ROUTES.CHECKOUT}
               element={
                 <CheckAuth isAuthenticated={isAuthenticated} user={user}>
                   <ShoppingCheckout />
                 </CheckAuth>
               }
             />
-            <Route path="listing" element={<ShoppingListing />} />
-            <Route path="/" element={<ShoppingHome />} />
-            <Route path="product-detail/:id" element={<ProductDetailsPage />} />
-            <Route path="paypal-return" element={<PayPalReturnPage />} />
-            <Route path="esewa-return" element={<EsewaReturnPage />} />
-            <Route path="payment-success" element={<PaymentSuccessPage />} />
-            <Route path="payment-cancel" element={<PaymentCancelPage />} />
-            <Route path="search" element={<SearchPage />} />
-            <Route path="legal" element={<Legal/>} />
+            <Route path={ROUTES.LISTING} element={<ShoppingListing />} />
+            <Route path={ROUTES.HOME} element={<ShoppingHome />} />
+            <Route path={ROUTES.PRODUCT_DETAIL} element={<ProductDetailsPage />} />
+            <Route path={ROUTES.PAYPAL_RETURN} element={<PayPalReturnPage />} />
+            <Route path={ROUTES.ESEWA_RETURN} element={<EsewaReturnPage />} />
+            <Route path={ROUTES.PAYMENT_SUCCESS} element={<PaymentSuccessPage />} /> 
+            <Route path={ROUTES.PAYMENT_CANCEL} element={<PaymentCancelPage />} />
+            <Route path={ROUTES.SEARCH} element={<SearchPage />} />
+            <Route path={ROUTES.LEGAL} element={<Legal/>} />
           </Route>
 
-          <Route path="/unauth" element={<UnAuthPage />} />
+          <Route path={ROUTES.UNAUTH} element={<UnAuthPage />} />
         </Routes>
       </div>
     </>
