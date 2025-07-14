@@ -75,46 +75,47 @@ const ShoppingFooter = () => {
   };
 
   return (
-    <div className="flex flex-col w-full  bg-black max-h-full border-t">
-      <div className="h-[30%] flex flex-col md:flex-row w-full justify-between gap-2 ">
-        <h1 className="text-white/90 font-semibold md:font-thin text-4xl md:text-6xl  mx-auto md:mx-16 tracking-widest my-4 md:my-12 ">
+    <div className="flex flex-col w-full bg-white max-h-full border-t sm:mb-10 md:mt-40">
+      <div className="h-[30%] flex flex-col md:flex-row w-100% justify-start gap-2 sm:ml-10 md:ml-[-16px] p-4 ">
+        <h1 className="w-[50%] text-3xl sm:ml-8 md:text-6xl md:ml-8 my-4 md:my-12 font-barriecito">
           Style Me
         </h1>
-        <div className="w-full md:w-1/2 relative flex  justify-center">
-          <form className="flex flex-col gap-2" onSubmit={handleSubmit}>
-            <span>
+        <div className="w-full relative flex">
+          <form className="flex flex-col gap-2 w-[100%] justify-center" onSubmit={handleSubmit}>
+            <div className="flex flex-col md:flex-row gap-1">
               <Input
+              
                 type="email"
                 value={inputValue}
                 onChange={handleInputChange}
                 placeholder="example@gmail.com"
-                className="focus:outline focus:outline-4 focus:outline-blue-500 text-white md:absolute md:bottom-8 md:right-24 w-full md:w-[75%] md:h-10"
+                className="focus:outline focus:outline-4 focus:outline-pink-500 text-black  w-auto md:w-[75%] md:h-10 placeholder:text-center text-center"
               />
-            </span>
-            <span>
+            
+            
               <Button
               
                 variant="outline"
                 type="submit"
-                className=" w-full  md:w-[25%] md:absolute md:bottom-8 md:right-10 md:rounded-none md:h-10"
+                className=" w-full  md:w-auto  md:rounded-none md:h-10"
               >
                 SUBSCRIBE
               </Button>
-            </span>
+            </div>
           </form>
         </div>
       </div>
       <Separator className="w-[90%] md:w-[95%] mx-auto opacity-65 mb-4 mt-4" />
       <div className="grid sm:grid-cols-1 md:grid-cols-4  gap-8 md:gap-4 h-full mx-8 md:mt-6 md:mx-8">
-        <div className="text-white flex flex-col gap-3">
+        <div className="text-black flex flex-col gap-3">
           <h3 className="text-2xl font-light mb-1 md:mb-2">Get Connected</h3>
-          <div className="flex gap-2 mx-4 text-white/80 cursor-pointer text-xs md:text-sm">
+          <div className="flex gap-2 mx-4 text-black/80 cursor-pointer text-xs md:text-sm">
             <span>
               <Phone />
             </span>
             <p className="font-light">9864782899</p>
           </div>
-          <div className="flex gap-2 mx-4 text-white/80">
+          <div className="flex gap-2 mx-4 text-black/80">
             <span>
               <Mail />
             </span>
@@ -123,19 +124,19 @@ const ShoppingFooter = () => {
             </p>
           </div>
         </div>
-        <div className="text-white flex flex-col gap-3">
+        <div className="text-black flex flex-col gap-3">
           <h3 className="text-2xl font-light mb-1  md:mb-2">Quick Links</h3>
-          <div className="flex gap-2 mx-4 text-white/80 text-xs">
+          <div className="flex gap-2 mx-4 text-black/80 text-xs">
             <p className="font-light md:text-sm">About Style Me</p>
           </div>
-          <div className="flex gap-2 mx-4 text-white/80 text-xs">
+          <div className="flex gap-2 mx-4 text-black/80 text-xs">
             <p className="font-light md:text-sm">Contact Us</p>
           </div>
         </div>
-        <div className="text-white flex flex-col gap-3 cursor-pointer">
+        <div className="text-black flex flex-col gap-3 cursor-pointer">
           <h3 className="text-2xl font-light mb:1 md:mb-2">Shop Now</h3>
           {shoppingViewHeaderMenuItems.map((menuItem) => (
-            <div className="flex gap-2 mx-4 text-white/80 text-xs md:text-sm">
+            <div className="flex gap-2 mx-4 text-black/80 text-xs md:text-sm">
               <p
                 onClick={() => handleNavigate(menuItem)}
                 key={menuItem.id}
@@ -146,7 +147,7 @@ const ShoppingFooter = () => {
             </div>
           ))}
         </div>
-        <div className="text-white flex flex-col gap-3 cursor-pointer">
+        <div className="text-black flex flex-col gap-3 cursor-pointer">
           <h3 className="text-2xl font-light nb:1 md:mb-2">Legals</h3>
           {/* <div className="flex gap-2 mx-4 text-white/80">
             <p className="font-light text-xs md:text-sm">Privacy Policy</p>
@@ -154,7 +155,7 @@ const ShoppingFooter = () => {
           <div className="flex gap-2 mx-4 text-white/80">
             <p className="font-light text-xs md:text-sm">Shipping Policy</p>
           </div> */}
-          <div className="flex gap-2 mx-4 text-white/80"
+          <div className="flex gap-2 mx-4 text-black/80"
           onClick={() => navigate("/legal")
 
           }
@@ -171,7 +172,7 @@ const ShoppingFooter = () => {
         </div>
       </div>
       <Separator className="w-[90%] md:w-[95%] mx-auto opacity-75 mt-4 mb-1" />
-      <div className="text-white/80 w-full">
+      <div className="text-black/80 w-full">
         <p className=" text-center mx-auto md:mx-[525px] font-extralight text-xs">
           COPYRIGHT © 2025 Style Me | All Rights Reserved
         </p>

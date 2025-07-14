@@ -32,6 +32,7 @@ import QRCodeScanner from "./components/admin-view/scanqrcod";
 import QrCodeDetails from "./components/admin-view/qrcodedetails";
 import Legal from "./pages/shopping-view/legal";
 import { ROUTES } from "./utils/constants/keyConstants";
+import "./index.css"
 
 const App = () => {
   const { isAuthenticated, isLoading, user } = useSelector(

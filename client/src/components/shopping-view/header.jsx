@@ -1,4 +1,3 @@
-import styleme from "../../assets/logo/styleme.jpg";
 import {
   CircleUserRound,
   House,
@@ -42,6 +41,7 @@ import { fetchCartItems } from "../../../store/shop/cart-slice/index";
 import { Label } from "../ui/label";
 import AuthPopup from "./login-card";
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
+import "./Navbar.css";
 
 function MenuItems({ setOpenMobileCartSheet }) {
   const navigate = useNavigate();
@@ -49,16 +49,16 @@ function MenuItems({ setOpenMobileCartSheet }) {
   const [searchParams, setSearchParams] = useSearchParams();
 
   // Function to determine if the link is active
-  const isActive = (path, category = "") => {
-    const currentPath = location.pathname;
-    const currentCategory = searchParams.get("category");
+  // const isActive = (path, category = "") => {
+  //   const currentPath = location.pathname;
+  //   const currentCategory = searchParams.get("category");
 
-    // Check if the path matches and category matches (if provided)
-    if (category) {
-      return currentPath === path && currentCategory === category;
-    }
-    return currentPath === path;
-  };
+  //   // Check if the path matches and category matches (if provided)
+  //   if (category) {
+  //     return currentPath === path && currentCategory === category;
+  //   }
+  //   return currentPath === path;
+  // };
 
   // Handle navigation
   function handleNavigate(menuItem) {
@@ -85,23 +85,29 @@ function MenuItems({ setOpenMobileCartSheet }) {
   }
 
   return (
-    <nav className="flex flex-col items-center gap-10 lg:flex-row ">
-      {shoppingViewHeaderMenuItems.map((menuItem) => (
-       
+    <>
+      <nav class="navbar">
+        <Link to="/">
+          <div class="logo">
+            <h1>Style Me</h1>
+          </div>
+        </Link>
 
-        <Label
-          onClick={() => handleNavigate(menuItem)}
-          className={`text-sm font-medium cursor-pointer transition-all duration-300 relative ${
-            isActive("/listing", menuItem.id)
-              ? " font-[550] text-md underline decoration-black-100"
-              : "hover:underline"
-          }`}
-          key={menuItem.id}
-        >
-          {menuItem.label}
-        </Label>
-      ))}
-    </nav>
+        <ul>
+          {shoppingViewHeaderMenuItems.map((menuItem) => (
+            <li
+              onClick={() => handleNavigate(menuItem)}
+              className={`text-sm font-medium cursor-pointer transition-all duration-300 relative text-md active:font-bold"
+                 
+              }`}
+              key={menuItem.id}
+            >
+              {menuItem.label}
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </>
   );
 }
 
@@ -137,19 +143,20 @@ function HeaderRightContent({
         <div className={`${user ? "hidden" : "block"}`}>
           <Dialog>
             <DialogTrigger asChild>
-            <Button variant="default">Login</Button>
+              <div className="flex items-center justify-center">
+                <User stroke-width="1.3px" />
+              </div>
             </DialogTrigger>
-             <DialogContent className="max-w-[90%] md:max-w-md">
-                      <AuthPopup isLogin={isLogin} setIsLogin={setIsLogin} />
-                    </DialogContent>
+            <DialogContent className="max-w-[90%] md:max-w-md">
+              <AuthPopup isLogin={isLogin} setIsLogin={setIsLogin} />
+            </DialogContent>
           </Dialog>
-        
         </div>
         <Button
           onClick={() => {
             setOpenCartSheet(true);
           }}
-          variant="outline"
+          variant="none"
           size="icon"
           className="relative"
         >
@@ -216,86 +223,96 @@ const ShoppingHeader = () => {
   const [openCartSheet, setOpenCartSheet] = useState(false);
 
   return (
-    <header className="top-0 z-50 w-full border-b bg-white backdrop-blur-md shadow-md transition-all duration-300">
-      <div className="flex h-16 items-center justify-between px-4 md:px-6">
-        <Link
-          to="/
-        "
-          className="flex items-center gap-2"
-        >
-          <img src={styleme} className="h-10 w-10 rounded-sm" />
-          <span className="font-bold">Style Me</span>
-        </Link>
-
-        {/* for mobile devices  */}
-        <div className="flex gap-2">
-          <Sheet
-            open={openCartSheet}
-            onOpenChange={() => {
-              setOpenCartSheet(false);
-              setOpenMobileCartSheet(false);
-            }}
-          >
-            <Button
-              onClick={() => {
-                setOpenCartSheet(true);
-              }}
-              variant="outline"
-              size="icon"
-              className="relative lg:hidden"
-            >
-              <ShoppingCart className="h-4 w-4" />
-              {cartItems?.items?.length > 0 ? (
-                <span className="absolute top-[-2px] right-[4px] font-bold text-xs">
-                  {cartItems?.items?.length}
-                </span>
-              ) : null}
-              <span className="sr-only">User cart</span>
-            </Button>
-            <UserCartWrapper
-              cartItems={
-                cartItems && cartItems.items && cartItems.items.length > 0
-                  ? cartItems.items
-                  : []
-              }
-              setOpenCartSheet={setOpenCartSheet}
-              setOpenMobileCartSheet={setOpenMobileCartSheet}
-            />
-          </Sheet>
-
-          <Sheet
-            open={openMobileCartSheet}
-            onOpenChange={setOpenMobileCartSheet}
-          >
-            <SheetTrigger asChild>
-              <Button
-                onClick={() => setOpenMobileCartSheet(true)}
-                className="lg:hidden"
-              >
-                <Menu className="h-4 w-4" />
-                <span className="sr-only">Toggle header menu</span>
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="right" className="w-[200px] ">
-              <div className="flex flex-col h-full w-full items-center  gap-6">
-                <MenuItems setOpenMobileCartSheet={setOpenMobileCartSheet} />
-                <HeaderRightContent
-                  setOpenMobileCartSheet={setOpenMobileCartSheet}
-                  openMobileCartSheet={openMobileCartSheet}
-                />
-              </div>
-            </SheetContent>
-          </Sheet>
+    <>
+      <div className="topHeader">
+        <div className="sale">
+          <h4>Get upto 30% off on your first purchase</h4>
         </div>
+        <div className="shopNow">
+          <p>Shop Now</p>
+        </div>
+      </div>
+      <div className="flex">
         <div className="hidden lg:block">
           <MenuItems />
         </div>
 
-        <div className="hidden lg:block">
-          <HeaderRightContent />
+        {/* for mobile devices  */}
+        <div className="flex w-full  justify-between md:justify-end items-center gap-4 m-4">
+          <div class="logo md:hidden">
+            <h1>Style Me</h1>
+          </div>
+          <div className="flex gap-4">
+            <Sheet
+              open={openCartSheet}
+              onOpenChange={() => {
+                setOpenCartSheet(false);
+                setOpenMobileCartSheet(false);
+              }}
+            >
+              <Button
+                class=""
+                onClick={() => {
+                  setOpenCartSheet(true);
+                }}
+                variant="none"
+                size="icon"
+                className="relative"
+              >
+                <ShoppingCart className="h-4 w-4" />
+                {cartItems?.items?.length > 0 ? (
+                  <span className="absolute top-[-2px] right-[4px] font-bold text-xs">
+                    {cartItems?.items?.length}
+                  </span>
+                ) : null}
+                <span className="sr-only">User cart</span>
+              </Button>
+              <UserCartWrapper
+                cartItems={
+                  cartItems && cartItems.items && cartItems.items.length > 0
+                    ? cartItems.items
+                    : []
+                }
+                setOpenCartSheet={setOpenCartSheet}
+                setOpenMobileCartSheet={setOpenMobileCartSheet}
+              />
+            </Sheet>
+
+            <Sheet
+              open={openMobileCartSheet}
+              onOpenChange={setOpenMobileCartSheet}
+            >
+              <SheetTrigger asChild>
+                <button class="" onClick={() => setOpenMobileCartSheet(true)}>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    x="0px"
+                    y="0px"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 50 50"
+                  >
+                    <path d="M 3 9 A 1.0001 1.0001 0 1 0 3 11 L 47 11 A 1.0001 1.0001 0 1 0 47 9 L 3 9 z M 3 24 A 1.0001 1.0001 0 1 0 3 26 L 47 26 A 1.0001 1.0001 0 1 0 47 24 L 3 24 z M 3 39 A 1.0001 1.0001 0 1 0 3 41 L 47 41 A 1.0001 1.0001 0 1 0 47 39 L 3 39 z"></path>
+                  </svg>
+                  <span className="sr-only">Toggle header menu</span>
+                </button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-[200px] ">
+                <div className="flex flex-col h-full w-full items-center  gap-6 lg:hidden">
+                  <MenuItems setOpenMobileCartSheet={setOpenMobileCartSheet} />
+                  <HeaderRightContent
+                    setOpenMobileCartSheet={setOpenMobileCartSheet}
+                    openMobileCartSheet={openMobileCartSheet}
+                  />
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
         </div>
       </div>
-    </header>
+
+      <div className="hidden lg:block">{/* <HeaderRightContent /> */}</div>
+    </>
   );
 };
 
