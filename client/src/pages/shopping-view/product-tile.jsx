@@ -4,6 +4,7 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import ProductDetailsPage from "./product-details";
+import { useLocation } from "react-router-dom";
 
 const ShoppingProducttile = ({
   product,
@@ -12,9 +13,10 @@ const ShoppingProducttile = ({
   setOpen,
 }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   return (
     <>
-      <Card className="w-full max-w-sm mx-auto">
+      <Card className="w-full max-w-sm mx-auto shadow-none border-none">
         <div
           onClick={() => {
             handleGetProductDetails(product?._id);
@@ -27,9 +29,9 @@ const ShoppingProducttile = ({
             <img
               src={product?.image[0]}
               alt={product?.title}
-              className="w-full h-[300px] object-cover rounded-t-lg"
+              className="w-full h-[300px] object-cover"
             />
-            {product?.totalStock === 0 ? (
+            {/* {product?.totalStock === 0 ? (
               <Badge className=" absolute top-[2px] left-[2px] bg-red-400 hover:bg-red-600">
                 Out of Stock
               </Badge>
@@ -41,9 +43,10 @@ const ShoppingProducttile = ({
               <Badge className=" absolute top-[2px] left-[2px] bg-red-400 hover:bg-red-600">
                 Sale
               </Badge>
-            ) : null}
+            ) : null} */}
           </div>
-          <CardContent className=" p-2 md:p-4">
+          {location.pathname !== "/" && ( 
+            <CardContent className=" p-2 md:p-4">
             <h2 className="text-lg md:text-xl font-semibold mb-2">
               {product?.title}
             </h2>
@@ -69,9 +72,10 @@ const ShoppingProducttile = ({
                 </span>
               ) : null}
             </div>
-          </CardContent>
+          </CardContent>) } 
+
         </div>
-        <CardFooter className=" relative w-full flex justify-center h-10">
+        { location.pathname !== "/" && (         <CardFooter className=" relative w-full flex justify-center h-10">
           {product?.totalStock === 0 ? (
             <Button className=" opacity-40 cursor-not-allowed absolute bottom-1 w-[90%] flex-grow ">
               Out of Stock
@@ -84,7 +88,8 @@ const ShoppingProducttile = ({
               Add to Cart
             </Button>
           )}
-        </CardFooter>
+        </CardFooter> )}
+
       </Card>
     </>
   );

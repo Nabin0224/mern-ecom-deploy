@@ -20,6 +20,7 @@ import {
   fetchCartItems,
 } from "../../../store/shop/cart-slice/index";
 import { useToast } from "@/hooks/use-toast";
+import '../../components/shopping-view/home.css'
 
 export const ShoppingHome = () => {
   const { productList, productDetails } = useSelector(
@@ -108,10 +109,10 @@ export const ShoppingHome = () => {
   return (
     <div className="flex flex-col min-h-screen">
       {/* <ShoppingHeader/> */}
-      <div className="relative w-full h-[700px] overflow-hidden">
+      {/* <div className="relative w-full h-[700px] overflow-hidden">
         {featureImagesList && featureImagesList.length > 0
           ? featureImagesList?.map((slide, index) => (
-              <img
+              <imL
                 src={slide?.image}
                 key={index}
                 className={`absolute w-full object-cover h-full top-0 left-0 transition-opacity duration-1000 
@@ -120,13 +121,25 @@ export const ShoppingHome = () => {
             ))
           : null}
        
-      </div>
+      </div> */}
+       <div className="offerBanner">
+        <section>
+            <h2>
+                SALE <br /> <p>UPTO 50% OFF </p>
+                </h2>
+
+               <h2> NEW STYLES ADDED
+            </h2>
+        </section>
+
+        </div>
+
 
    
 
-      <section className="New arrivals py-4 bg-gray-50">
+      <section className="New arrivals py-4 bg-imageBackground">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-8">Hottest 🔥</h2>
+          <p className=" text-center mb-8 font-sans font-[300] underline h-9">New In</p>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 p-2 gap-6">
             {productList && productList.length > 0
               ? productList.map((item) => (
