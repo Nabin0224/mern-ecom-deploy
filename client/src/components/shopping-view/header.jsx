@@ -117,7 +117,7 @@ function HeaderRightContent({
 }) {
   function handleLogOut() {
     dispatch(logOut());
-    navigate("/auth/login");
+    navigate("/");
   }
 
   const { cartItems } = useSelector((state) => state.shoppingCart);
@@ -144,7 +144,7 @@ function HeaderRightContent({
           <Dialog>
             <DialogTrigger asChild>
               <div className="flex items-center justify-center">
-                <User stroke-width="1.3px" />
+                <User  stroke-width="1.3px" />
               </div>
             </DialogTrigger>
             <DialogContent className="max-w-[90%] md:max-w-md">
@@ -221,6 +221,7 @@ const ShoppingHeader = () => {
   const [openMobileCartSheet, setOpenMobileCartSheet] = useState(false);
   const { cartItems } = useSelector((state) => state.shoppingCart);
   const [openCartSheet, setOpenCartSheet] = useState(false);
+  const [isLogin, setIsLogin] = useState(false);
 
   return (
     <>
@@ -235,14 +236,29 @@ const ShoppingHeader = () => {
       <div className="flex">
         <div className="hidden lg:block">
           <MenuItems />
+
         </div>
 
         {/* for mobile devices  */}
         <div className="flex w-full  justify-between md:justify-end items-center gap-4 m-4">
           <div class="logo md:hidden">
+            <Link to="/">
             <h1>Style Me</h1>
+            </Link>
           </div>
           <div className="flex gap-4">
+          <div className={`${user ? "hidden" : "block"}`}>
+          <Dialog>
+            <DialogTrigger asChild>
+              <div className="flex items-center justify-center">
+                <User stroke-width="1.3px" />
+              </div>
+            </DialogTrigger>
+            <DialogContent className="max-w-[90%] md:max-w-md">
+              <AuthPopup isLogin={isLogin} setIsLogin={setIsLogin} />
+            </DialogContent>
+          </Dialog>
+          </div>
             <Sheet
               open={openCartSheet}
               onOpenChange={() => {
@@ -311,7 +327,7 @@ const ShoppingHeader = () => {
         </div>
       </div>
 
-      <div className="hidden lg:block">{/* <HeaderRightContent /> */}</div>
+      {/* <div className="hidden lg:block"><HeaderRightContent /></div> */}
     </>
   );
 };
