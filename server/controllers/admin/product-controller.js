@@ -15,13 +15,31 @@ const handleImageUpload = async (req, res) => {
       console.log("mimetype before converting", mimetype);
       // check for heic and convert to jpeg
       if (mimetype == "image/heic") {
-        const outputBuffer = await heicConvert({
-          buffer,
-          format: "JPEG",
-          quality: 1,
-        });
-        buffer = outputBuffer;
-        mimetype = "image/jpeg";
+        // const outputBuffer = await heicConvert({
+        //   buffer,
+        //   format: "JPEG",
+        //   quality: 1,
+        // });
+        // buffer = outputBuffer;
+        // mimetype = "image/jpeg";
+
+        try {
+          // Attempt the conversion
+          const outputBuffer = await heicConvert({
+            buffer,
+            format: "JPEG",
+            quality: 1,
+          });
+          buffer = outputBuffer;
+          mimetype = "image/jpeg";
+        } catch (conversionError) {
+          console.error("HEIC Conversion Failed:", conversionError);
+          // Send a specific error back to the client for this failure
+          return res.status(400).json({
+            success: false,
+            message: "Failed to convert HEIC image. Please try another file.",
+          });
+        }
       }
       console.log("mimetype after converting", mimetype);
       const b64 = Buffer.from(buffer).toString("base64");

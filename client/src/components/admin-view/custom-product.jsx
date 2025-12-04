@@ -86,7 +86,9 @@ const CustomProduct = ({ productList, setItems, items, setOpenProductDialog }) =
         </Button>
       </DialogContent>
     </div>
+          }
   );
 };
+
 
 export default CustomProduct;
