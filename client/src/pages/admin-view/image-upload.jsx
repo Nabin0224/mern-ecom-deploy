@@ -37,28 +37,29 @@ const ProductImageUpload = ({
     const selectedFiles = Array.from(event.target.files);
     if (selectedFiles.length > 0) {
       // Convert HEIC files to JPEG before setting
-      const convertedFiles = [];
-      for (const file of selectedFiles) {
-        if (file.type === "image/heic" || file.name.endsWith(".heic")) {
-          try {
-            const convertedBlob = await heic2any({
-              blob: file,
-              toType: "image/jpeg",
-              quality: 0.9,
-            });
-            const newFile = new File([convertedBlob], file.name.replace(/\.heic$/i, ".jpg"), {
-              type: "image/jpeg",
-            });
-            convertedFiles.push(newFile);
-          } catch (err) {
-            alert("Failed to convert HEIC image. Please try another file.");
-            return;
-          }
-        } else {
-          convertedFiles.push(file);
-        }
-      }
-      setImageFiles(convertedFiles); // Append new images
+      // const convertedFiles = [];
+      // for (const file of selectedFiles) {
+      //   console.log("file type", file.type)
+      //   if (file.type === "image/heic" || file.name.endsWith(".heic") || file.name.endsWith(".HEIF") || file.name.endsWith(".HEIC")) {
+      //     try {
+      //       const convertedBlob = await heic2any({
+      //         blob: file,
+      //         toType: "image/jpeg",
+      //         quality: 0.9,
+      //       });
+      //       const newFile = new File([convertedBlob], file.name.replace(/\.heic$/i, ".jpg"), {
+      //         type: "image/jpeg",
+      //       });
+      //       convertedFiles.push(newFile);
+      //     } catch (err) {
+      //       alert("Failed to convert HEIC image. Please try another file.");
+      //       return;
+      //     }
+      //   } else {
+      //     convertedFiles.push(file);
+      //   }
+      // }
+      setImageFiles(selectedFiles); // Append new images
     }
   }
   
