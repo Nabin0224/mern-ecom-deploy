@@ -70,6 +70,7 @@ export const addProductFormElements = [
       { id: "dress", label: "Dress" },
       { id: "bag", label: "Bags" },
       { id: "winter", label: "Winter Collections" },
+      { id: "boots", label: "Boots" },
       // { id: "women", label: "Women" },
       // { id: "kids", label: "Kids" },
       // { id: "accessories", label: "Accessories" },
@@ -96,6 +97,12 @@ export const addProductFormElements = [
     { id: "L", label: "L" },
     { id: "XL", label: "XL" },
     { id: "Free Size", label: "Free Size" },
+    { id: "35", label: "35" },
+    { id: "36", label: "36" },
+    { id: "37", label: "37" },
+    { id: "38", label: "38" },
+    { id: "39", label: "39" },
+    { id: "40", label: "40" },
 
     ]
   },

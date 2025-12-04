@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://butterflynepal.com/sitemap.xml
+Sitemap: https://stylemeofficial.com/sitemap.xml

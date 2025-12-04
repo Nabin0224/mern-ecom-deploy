@@ -3,10 +3,10 @@ const Product = require("../../models/products");
 
 const addToCart = async (req, res) => {
   try {
-    const { userId, productId, quantity, color } = req.body;
+    const { userId, guestId, productId, quantity, color, size } = req.body;
     console.log("cartItem",req.body)
 
-    if (!userId || !productId || !color || quantity <= 0)
+    if ((!userId && !guestId) || !productId || !color || quantity <= 0 || !size)
       return res.status(400).json({
         success: false,
         message: "Invalid data provided!",
@@ -19,16 +19,21 @@ const addToCart = async (req, res) => {
         message: "Product not found",
       });
 
-    let cart = await Cart.findOne({ userId });
+    let cart;
+    if (userId) {
+      cart = await Cart.findOne({ userId });
+    } else {
+      cart = await Cart.findOne({ guestId });
+    }
     if (!cart) {
-      cart = new Cart({ userId, items: [] });
+      cart = new Cart({ userId: userId || undefined, guestId: guestId || undefined, items: [] });
     }
 
     const findCurrentProductIndex = cart.items.findIndex(
       (item) => item.productId.toString() === productId && item.color == color
     );
     if (findCurrentProductIndex === -1) {
-      cart.items.push({ productId, quantity, color });
+      cart.items.push({ productId, quantity, color, size });
     } else {
       cart.items[findCurrentProductIndex].quantity = quantity;
     }
@@ -42,7 +47,7 @@ const addToCart = async (req, res) => {
     console.log(error);
     res.status(500).json({
       success: false,
-      message: "Error",
+      message: error,
     });
   }
 };
@@ -50,16 +55,16 @@ const addToCart = async (req, res) => {
 const fetchCartItems = async (req, res) => {
   try {
     const { userId } = req.params;
+    const { guestId } = req.query;
     
-   
-
-    if (!userId || userId === "undefined") {
+    if ((!userId || userId === "undefined") && !guestId) {
       return res.status(404).json({
         success: false,
-        messsage: "User Id is Mandatory!",
+        messsage: "User Id or Guest Id is mandatory!",
       });
     }
-    const cart = await Cart.findOne({ userId }).populate({
+    const findFilter = userId && userId !== "undefined" ? { userId } : { guestId };
+    const cart = await Cart.findOne(findFilter).populate({
       path: "items.productId",
       select: "image title price salePrice",
     });
@@ -84,6 +89,7 @@ const fetchCartItems = async (req, res) => {
       productId: item.productId._id,
       image: item.productId.image,
       title: item.productId.title,
+      size: item.size,
       price: item.productId.price,
       salePrice: item.productId.salePrice,
       quantity: item.quantity,
@@ -107,14 +113,14 @@ const fetchCartItems = async (req, res) => {
 
 const updateCartItems = async (req, res) => {
   try {
-    const { userId, productId, quantity, color } = req.body;
+    const { userId, guestId, productId, quantity, color, size} = req.body;
 
-    if (!userId || !productId ||  !color || quantity <= 0)
+    if ((!userId && !guestId) || !productId ||  !color || quantity <= 0 || !size)
       return res.status(400).json({
         success: false,
         message: "Invalid data provided!",
       });
-    const cart = await Cart.findOne({ userId });
+    const cart = await Cart.findOne(userId ? { userId } : { guestId });
 
     if (!cart) {
       return res.status(404).json({
@@ -148,6 +154,7 @@ const updateCartItems = async (req, res) => {
       image: item.productId ? item.productId.image : null,
       title: item.productId ? item.productId.title : "Product not found!",
       price: item.productId ? item.productId.price : null,
+      size: item.size,
       salePrice: item.productId ? item.productId.salePrice : null,
       quantity: item.quantity,
       color: item.color
@@ -169,14 +176,17 @@ const updateCartItems = async (req, res) => {
 
 const deleteCartItems = async (req, res) => {
   try {
-    const { userId, productId } = req.params;
-    if (!userId || !productId) {
+    const { userId, productId, color } = req.params;
+
+    console.log("paramas in delete", req.params)
+    const { guestId } = req.query;
+    if ((!userId && !guestId ) || !productId || !color) {
       return res.status(400).json({
         success: false,
         message: "Invalid data provided!",
       });
     }
-    const cart = await Cart.findOne({ userId }).populate({
+    const cart = await Cart.findOne(userId ? { userId } : { guestId }).populate({
       path: "items.productId",
       select: "image title price salePrice",
     });
@@ -188,8 +198,10 @@ const deleteCartItems = async (req, res) => {
       });
     }
 
+    console.log("cart items in delete", cart.items)
+
     cart.items = cart.items.filter(
-      (item) => item.productId._id.toString() !== productId
+      (item) => !(item.productId._id.toString() === productId && item.color === color)
     );
     await cart.save();
 
@@ -204,7 +216,9 @@ const deleteCartItems = async (req, res) => {
       title: item.productId ? item.productId.title : "Product not found!",
       price: item.productId ? item.productId.price : null,
       salePrice: item.productId ? item.productId.salePrice : null,
+      color: item.color,
       quantity: item.quantity,   
+      size: item.size,
     }));
     res.status(200).json({
       data: {
