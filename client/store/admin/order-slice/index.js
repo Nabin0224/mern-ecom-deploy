@@ -4,9 +4,12 @@ import axios from "axios";
 
 const initialState = {
   orderList: [],
+  websiteOrderList: [],
   orderDetails: null,
   totalOrders: '',
-  totalPages: ''
+  totalWebsiteOrders: '',
+  totalPages: '',
+  totalWebsitePages: ''
 };
 
 export const getAllOrdersForAdmin = createAsyncThunk(
@@ -14,6 +17,15 @@ export const getAllOrdersForAdmin = createAsyncThunk(
   async (page = 1) => {
     const response = await axios.get(
       `${import.meta.env.VITE_API_URL}/api/admin/orders/get?page=${page}`
+    );
+    return response.data;
+  }
+);
+export const getAllWebsiteOrdersForAdmin = createAsyncThunk(
+  "/order/getAllWebsiteOrdersForAdmin",
+  async (page = 1) => {
+    const response = await axios.get(
+      `${import.meta.env.VITE_API_URL}/api/admin/orders/website/get?page=${page}`
     );
     return response.data;
   }
@@ -58,6 +70,20 @@ const adminOrderSlice = createSlice({
         state.currentPage = action.payload.currentPage; // Store current page
       })
       .addCase(getAllOrdersForAdmin.rejected, (state, action) => {
+        state.isLoading = false;
+        state.orderList = [];
+      })
+      .addCase(getAllWebsiteOrdersForAdmin.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getAllWebsiteOrdersForAdmin.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.websiteOrderList = action.payload.data;
+        state.totalWebsitePages = action.payload.totalPages; // Store total pages
+        state.totalWebsiteOrders = action.payload.totalOrders; // Store total pages
+        state.currentPage = action.payload.currentPage; // Store current page
+      })
+      .addCase(getAllWebsiteOrdersForAdmin.rejected, (state, action) => {
         state.isLoading = false;
         state.orderList = [];
       })

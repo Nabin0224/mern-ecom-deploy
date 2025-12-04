@@ -1,0 +1,1 @@
+export const Store_Name = "StyleMe"

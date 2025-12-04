@@ -7,21 +7,12 @@ export default {
   ],
   theme: {
   	extend: {
-		fontFamily: {
-             sans: ['Inter', 'sans-serif'],
-			 archivo: ['"Archivo Black"', 'sans-serif'],
-			 barriecito: ['Barriecito', 'cursive'],
-			 inter: ['Inter', 'sans-serif'],
-			 michroma: ['Michroma', 'sans-serif'],
-		},
-
   		borderRadius: {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
   			sm: 'calc(var(--radius) - 4px)'
   		},
   		colors: {
-			imageBackground: 'hsl(var(--image-background))',
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			card: {

@@ -24,7 +24,7 @@ const ShoppingOrderDetailsView = ({orderDetails}) => {
             </div>
             <div className="flex justify-between items-center mt-2">
                 <p className="font-medium">Order Date</p>
-                <Label>{orderDetails?.orderDate.split("T")[0]}</Label>
+                <Label>{orderDetails?.orderDate?.split("T")[0]}</Label>
             </div>
             <div className="flex justify-between items-center mt-2">
                 <p className="font-medium">Payment Method</p>
@@ -57,10 +57,11 @@ const ShoppingOrderDetailsView = ({orderDetails}) => {
             <ul className='grid gap-3'>
                 {
                     orderDetails?.cartItem && orderDetails?.cartItem.length > 0 ?
-                    orderDetails?.cartItem.map((item)=> <li className='flex items-center justify-between'>
+                    orderDetails?.cartItem.map((item)=> <li className='flex items-center justify-between text-muted-foreground'>
                         <span>{item.title}</span>
                         <span>x {item.quantity}</span>
-                        <span>{item.price}</span>
+                        <span>{item.size}</span>
+                        <span>{orderDetails.totalAmount}</span>
                     </li>
                     ) : null
     

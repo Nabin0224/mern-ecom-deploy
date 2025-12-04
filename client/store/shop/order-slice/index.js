@@ -29,6 +29,7 @@ export const captureOrder = createAsyncThunk('/order/captureOrder', async({payer
 })
 
 export const getAllOrdersByUser = createAsyncThunk("/order/getAllOrdersByUser", async(userId)=> {
+    console.log("check guestId in thunk", userId)
    const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/shop/order/list/${userId}`)
    return response.data
 })
@@ -52,6 +53,7 @@ const shoppingOrderSlice = createSlice({
             state.isLoading = false,
             state.approvalURL = action.payload.approvalURL;
             state.orderId = action.payload.orderId;
+          
             sessionStorage.setItem('currentOrderId', JSON.stringify(action.payload.orderId));
         }).addCase(createNewOrder.rejected, (state)=>{
             state.isLoading = false,

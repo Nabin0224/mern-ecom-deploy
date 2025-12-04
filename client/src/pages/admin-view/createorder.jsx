@@ -27,6 +27,7 @@ import {
 import { toast } from "@/hooks/use-toast";
 import axios from "axios";
 import { sendSms } from "../../../store/admin/sms-slice/index";
+import { Store_Name } from "../../utils/constants/storeConstants";
 
 
 const districts = [
@@ -294,14 +295,14 @@ const CreateCustomOrder = () => {
     console.log("data on submit", data);
     console.log("data.paymentStatus", data.paymenStatus);
     const fullName = data.fullName;
-    const firstName = fullName.split(" ")[0].toUpperCase();
+    const firstName = fullName?.split(" ")[0].toUpperCase();
     console.log("first name", firstName);
 
-    dispatch(
+    !id && dispatch(
       sendSms({
         to: [data.phone],
         text: [
-          `Dear ${firstName}, Thanks for your order at STYLE ME. Your order is confirmed and being processed. Reach us at stylemeofficial.com.`,
+          `Hi ${firstName}, your order at ${Store_Name} is confirmed. Visit www.stylemeofficial.com`,
         ],
       })
     ).then((date) => {

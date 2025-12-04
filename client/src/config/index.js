@@ -3,6 +3,9 @@ import bag from '../assets/category/bag.jpg'
 import dress from '../assets/category/dress.PNG'
 import accessories from '../assets/category/accessories.PNG'
 import foot from '../assets/category/foot.PNG'
+import home_bag from "../assets/category/category_bag.jpg"
+import home_dress from "../assets/category/category_dress.jpg"
+import home_shoes from "../assets/category/category_shoes.jpg"
 
 export const registerFormControls = [
   {
@@ -66,6 +69,7 @@ export const addProductFormElements = [
     options: [
       { id: "dress", label: "Dress" },
       { id: "bag", label: "Bags" },
+      { id: "winter", label: "Winter Collections" },
       // { id: "women", label: "Women" },
       // { id: "kids", label: "Kids" },
       // { id: "accessories", label: "Accessories" },
@@ -79,6 +83,21 @@ export const addProductFormElements = [
     options: [
       { id: "no brand", label: "No Brand" },
     ],
+  },
+  {
+    label: "Sizes",
+    name: "sizes",
+    componentType: "select",
+    multiple: true,
+    options: [
+      { id: "XS", label: "XS" },
+    { id: "S", label: "S" },
+    { id: "M", label: "M" },
+    { id: "L", label: "L" },
+    { id: "XL", label: "XL" },
+    { id: "Free Size", label: "Free Size" },
+
+    ]
   },
   {
     label: "Price",
@@ -179,10 +198,10 @@ export const shoppingViewHeaderMenuItems = [
 
 export const categoryOptionsMap = {
   dress: "Dress",
-  bag: "Bags"
+  bag: "Bags",
   // kids: "Kids",
   // accessories: "Accessories",
-  // footwear: "Footwear",
+  footwear: "Footwear",
 };
 
 export const brandOptionsMap = {
@@ -194,18 +213,6 @@ export const brandOptionsMap = {
   "h&m": "H&M",
 };
 
-export const filterOptions = {
-  category: [
-    { id: "dress", label: "Dress" },
-    { id: "bags", label: "Bags" },
-    // { id: "accessories", label: "Accessories" },
-    // { id: "footwear", label: "Footwear" },
-  ],
-  brand: [
-    { id: "no brand", label: "No Brand" },
-   
-  ],
-};
 
 export const sortOptions = [
   { id: "price-lowtohigh", label: "Price: Low to High" },
@@ -223,13 +230,12 @@ export const addressFormControls = [
     placeholder: "Enter your full name",
   },
   {
-    label: "Select",
+    label: "District",
     name: "city",
     componentType: "select",
-     options : [
+    options: [
       { id: "kathmandu", label: "Kathmandu" },
       { id: "lalitpur", label: "Lalitpur" },
-      
       { id: "bhaktapur", label: "Bhaktapur" },
       { id: "achham", label: "Achham" },
       { id: "amargadhi", label: "Amargadhi" },
@@ -243,127 +249,10 @@ export const addressFormControls = [
       { id: "bharatpur", label: "Bharatpur" },
       { id: "bhadrapur", label: "Bhadrapur" },
       { id: "bhairahawa", label: "Bhairahawa" },
-      
-      { id: "bhojpur", label: "Bhojpur" },
-      { id: "biratnagar", label: "Biratnagar" },
-      { id: "birgunj", label: "Birgunj" },
-      { id: "birtamode", label: "Birtamode" },
-      { id: "chandrapur", label: "Chandrapur" },
-      { id: "charikot", label: "Charikot" },
-      { id: "chautara", label: "Chautara" },
-      { id: "chitwan", label: "Chitwan" },
-      { id: "dadeldhura", label: "Dadeldhura" },
-      { id: "dailekh", label: "Dailekh" },
-      { id: "damauli", label: "Damauli" },
-      { id: "damak", label: "Damak" },
-      { id: "dang", label: "Dang" },
-      { id: "darchula", label: "Darchula" },
-      { id: "dasharathchand", label: "Dasharathchand" },
-      { id: "dhanusha", label: "Dhanusha" },
-      { id: "dharan", label: "Dharan" },
-      { id: "dhading", label: "Dhading" },
-      { id: "dhankuta", label: "Dhankuta" },
-      { id: "dholkha", label: "Dolakha" },
-      { id: "dolpa", label: "Dolpa" },
-      { id: "diktel", label: "Diktel" },
-      { id: "dipayal silgadhi", label: "Dipayal Silgadhi" },
-      { id: "doti", label: "Doti" },
-      { id: "dhulikhel", label: "Dhulikhel" },
-      { id: "dhunche", label: "Dhunche" },
-      { id: "gorkha", label: "Gorkha" },
-      { id: "gaighat", label: "Gaighat" },
-      { id: "ghorahi", label: "Ghorahi" },
-      { id: "gulariya", label: "Gulariya" },
-      { id: "gulmi", label: "Gulmi" },
-      { id: "hetauda", label: "Hetauda" },
-      { id: "humla", label: "Humla" },
-      { id: "ilam", label: "Ilam" },
-      { id: "inaruwa", label: "Inaruwa" },
-      { id: "itahari", label: "Itahari" },
-      { id: "jajarkot", label: "Jajarkot" },
-      { id: "janakpur", label: "Janakpur" },
-      { id: "jaleshwar", label: "Jaleshwar" },
-      { id: "jhapa", label: "Jhapa" },
-      { id: "jhumla", label: "Jumla" },
-      { id: "jiri", label: "Jiri" },
-      { id: "kailali", label: "Kailali" },
-      { id: "kalaiya", label: "Kalaiya" },
-      { id: "kalikot", label: "Kalikot" },
-      { id: "kaski", label: "Kaski" },
-      
-      { id: "kanchanpur", label: "Kanchanpur" },
-      { id: "kapilvastu", label: "Kapilvastu" },
-      { id: "kawasoti", label: "Kawasoti" },
-      { id: "kavrepalanchok", label: "Kavrepalanchok" },
-      { id: "khandbari", label: "Khandbari" },
-      { id: "khotang", label: "Khotang" },
-      { id: "lahan", label: "Lahan" },
-     
-      { id: "lamjung", label: "Lamjung" },
-      { id: "mahendranagar", label: "Mahendranagar" },
-      { id: "mahottari", label: "Mahottari" },
-      { id: "malangwa", label: "Malangwa" },
-      { id: "manang", label: "Manang" },
-      { id: "manma", label: "Manma" },
-      { id: "makwanpur", label: "Makwanpur" },
-      { id: "mangalsen", label: "Mangalsen" },
-      { id: "martadi", label: "Martadi" },
-      { id: "mechinagar", label: "Mechinagar" },
-      { id: "morag", label: "Morang" },
-      { id: "musikot", label: "Musikot" },
-      { id: "mugu", label: "Mugu" },
-      { id: "mustang", label: "Mustang" },
-      { id: "myagdi", label: "Myagdi" },
-      { id: "nawalpur", label: "Nawalpur" },
-      { id: "nepalgunj", label: "Nepalgunj" },
-      { id: "nuwakot", label: "Nuwakot" },
-      { id: "okhaldhunga", label: "Okhaldhunga" },
-      { id: "palpa", label: "Palpa" },
-      { id: "panchthar", label: "Panchthar" },
-      { id: "panauti", label: "Panauti" },
-      { id: "parbat", label: "Parbat" },
-      { id: "parsa", label: "Parsa" },
-      { id: "parasi", label: "Parasi" },
-      { id: "phidim", label: "Phidim" },
-      { id: "pokhara", label: "Pokhara" },
-      { id: "putalibazar", label: "Putalibazar" },
-      { id: "pyuthan", label: "Pyuthan" },
-      { id: "rajapur", label: "Rajapur" },
-      { id: "rajbiraj", label: "Rajbiraj" },
-      { id: "ramechhap", label: "Ramechhap" },
-      { id: "rasuwa", label: "Rasuwa" },
-      { id: "rautahat", label: "Rautahat" },
-      { id: "rolpa", label: "Rolpa" },
-      { id: "rukum east", label: "Rukum East" },
-      { id: "rukum west", label: "Rukum West" },
-      { id: "rukumkot", label: "Rukumkot" },
-      { id: "rupandehi", label: "Rupandehi" },
-      { id: "salyan", label: "Salyan" },
-      { id: "sankhuwasabha", label: "Sankhuwasabha" },
-      { id: "sandhikharka", label: "Sandhikharka" },
-      { id: "saptari", label: "Saptari" },
-      { id: "sarlahi", label: "Sarlahi" },
-      { id: "sindhuli", label: "Sindhuli" },
-      { id: "sindhupalchok", label: "Sindhupalchok" },
-      { id: "siraha", label: "Siraha" },
-      { id: "solukhumbu", label: "Solukhumbu" },
-      { id: "simikot", label: "Simikot" },
-      { id: "sunari", label: "Sunsari" },
-      { id: "syangja", label: "Syangja" },
-      { id: "tanahun", label: "Tanahun" },
-      { id: "taplejung", label: "Taplejung" },
-      { id: "tansen", label: "Tansen" },
-      { id: "terhathum", label: "Terhathum" },
-      { id: "tikapur", label: "Tikapur" },
-      { id: "triveni", label: "Triveni" },
-      { id: "tulsipur", label: "Tulsipur" },
-      { id: "udayapur", label: "Udayapur" },
-      { id: "waling", label: "Waling" }
-    ]
-    
-    // placeholder: "Enter your city",
+      // ...rest of the cities
+      { id: "waling", label: "Waling" },
+    ],
   },
-
   {
     label: "Address",
     name: "address",
@@ -371,8 +260,6 @@ export const addressFormControls = [
     type: "text",
     placeholder: "Enter your address",
   },
- 
-  
   {
     label: "Phone",
     name: "phone",
@@ -381,19 +268,41 @@ export const addressFormControls = [
     placeholder: "Enter your phone number",
   },
   {
-    label: "Nearest Landmark",
+    label: "Email",
+    name: "email",
+    componentType: "input",
+    type: "email",
+    placeholder: "Enter your email address",
+  },
+  {
+    label: "Notes",
     name: "nearest_landmark",
     componentType: "textarea",
     type: "text",
     placeholder: "Enter any additional notes",
   },
 ];
-
- export const categoriesWithImage = [
-    { id: "dress", label: "Dress", image  : dress},
-      { id: "bag", label: "Bag" , image : bag},
-      { id: "footwear", label: "Footwear", image : foot },
-      { id: "accessories", label: "Accessories", image : accessories },
+export const categoriesWithImage = { 
+  category : [
+  { id: "dress", label: "Dress", image  : home_dress},
+  { id: "bag", label: "Bag" , image : home_bag},
+  { id: "footwear", label: "Footwear", image : home_shoes },
+  // { id: "accessories", label: "Accessories", image : accessories },
   
 ]
+}
 
+
+export const filterOptions = {
+  category: [
+    { id: "dress", label: "Dress" },
+    { id: "bags", label: "Bags" },
+    { id: "winter", label: "Winter Collections" },
+    // { id: "accessories", label: "Accessories" },
+    // { id: "footwear", label: "Footwear" },
+  ],
+  // brand: [
+  //   { id: "no brand", label: "No Brand" },
+   
+  // ],
+};

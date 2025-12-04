@@ -9,6 +9,9 @@ import {
   addToCart,
   fetchCartItems,
   updateCartQuantity,
+  addGuestCartItem,
+  updateGuestCartItem,
+  deleteGuestCartItem,
 } from "../../../store/shop/cart-slice/index";
 import { useDispatch } from "react-redux";
 
@@ -25,10 +28,12 @@ import AuthPopup from "../../components/shopping-view/login-card";
 import { AlertDialogContent } from "@/components/ui/alert-dialog";
 import { Sheet } from "@/components/ui/sheet";
 import UserCartWrapper from "../../components/shopping-view/cart-wrapper";
+import { getGuestId } from "@/utils/guestId";
+import { trackEvent } from "../../utils/analytics";
 
 const ProductDetailsPage = () => {
   const [openMobileCartSheet, setOpenMobileCartSheet] = useState(false);
-    const [openCartSheet, setOpenCartSheet] = useState(false);
+  const [openCartSheet, setOpenCartSheet] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -37,10 +42,24 @@ const ProductDetailsPage = () => {
   const { user } = useSelector((state) => state.auth);
   const { formData } = useSelector((state) => state.esewaOrders);
   const { cartItems } = useSelector((state) => state.shoppingCart);
+  const guestCart = useSelector((state) => state.shoppingCart);
   const [cartColor, setCartColor] = useState("");
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showAuthPopup, setShowAuthPopup] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
+  const [selectedSize, setSelectedSize] = useState("");
+  const [showMore, setShowMore] = useState(false);
+
+  console.log("guestCart", guestCart);
+  const displayedCartItems = user?.id
+    ? cartItems && cartItems.items
+      ? cartItems.items
+      : []
+    : Array.isArray(cartItems)
+    ? cartItems
+    : [];
+  console.log("displayed cart items", displayedCartItems);
+  console.log("user cart items", cartItems);
 
   const handleCheckLogin = () => {
     if (!user) {
@@ -74,15 +93,29 @@ const ProductDetailsPage = () => {
     }
   }, [productDetails]);
 
-  console.log("productDetals", productDetails);
-  console.log("cartItems in product details", cartItems)
   useEffect(() => {
-    dispatch(fetchCartItems(user?.id));
-  }, [user, productId]);
+    if (productDetails?.colors && productDetails?.colors.length > 0) {
+      setSelectedColor(productDetails.colors[0].colorName);
+    }
+  }, [productDetails]);
+
+  console.log("productDetals", productDetails);
+  console.log("cartItems in product details", cartItems);
+  console.log("user:", user);
+  console.log("redux shoppingCart.cartItems:", cartItems);
+  console.log("redux guestCart.cartItems:", guestCart.cartItems);
+  console.log("final displayedCartItems:", displayedCartItems);
+
+  useEffect(() => {
+    if (user?.id) {
+      dispatch(fetchCartItems(user.id));
+    }
+  }, [user?.id, productId]);
 
   useEffect(() => {
     dispatch(fetchProductDetails(productId.id));
-  }, [user, productId]);
+  }, [productId]);
+
   useEffect(() => {
     if (cartItemDetails) {
       setCount(cartItemDetails.quantity);
@@ -103,7 +136,58 @@ const ProductDetailsPage = () => {
       (item) =>
         item.productId === getCurrentProductId && item.color === selectedColor
     );
-    console.log("selectedColor", selectedColor)
+    console.log("selectedColor", selectedColor);
+    console.log("Product Details", productDetails);
+
+    if (!user) {
+      if (!selectedColor) {
+        toast({
+          title: "Please choose a color!",
+          variant: "destructive",
+          duration: 1000,
+        });
+        return;
+      }
+      if (!selectedSize) {
+        toast({
+          title: "Please choose a size!",
+          variant: "destructive",
+          duration: 1000,
+        });
+        return;
+      }
+
+      dispatch(
+        addGuestCartItem({
+          productId: getCurrentProductId,
+          quantity: finalQuantity,
+          color: selectedColor,
+          price: productDetails.price,
+          salePrice: productDetails.salePrice,
+          size: selectedSize,
+          title: productDetails.title,
+          image: productDetails.image[0],
+        })
+      );
+      trackEvent("add_to_cart", {
+        currency: "NPR",
+        value: productDetails.salePrice || productDetails.price,
+        items: [
+          {
+            item_id: getCurrentProductId,
+            item_name: productDetails.title,
+            item_variant: selectedColor,
+            price: productDetails.salePrice || productDetails.price,
+            quantity: finalQuantity,
+          },
+        ],
+      });
+      toast({
+        title: "Added to cart",
+        duration: 2000,
+      });
+      return;
+    }
 
     if (existingCartItem) {
       const updatedQuantity = finalQuantity; // Instead of adding, directly replace it
@@ -156,6 +240,7 @@ const ProductDetailsPage = () => {
           productId: getCurrentProductId,
           quantity: finalQuantity,
           color: selectedColor,
+          size: selectedSize || "free size",
         })
       ).then((data) => {
         if (data?.payload?.success) {
@@ -172,6 +257,31 @@ const ProductDetailsPage = () => {
   function handleCartQuantity(getCartItem, typeofAction) {
     if (!selectedColor) {
       toast({ title: "Please select a color first!", variant: "destructive" });
+      return;
+    }
+
+    if (!user) {
+      let updatedQuantity =
+        typeofAction === "plus"
+          ? getCartItem.quantity + 1
+          : getCartItem.quantity - 1;
+
+      if (updatedQuantity < 1) {
+        dispatch(
+          deleteGuestCartItem({
+            productId: getCartItem.productId,
+            color: selectedColor,
+          })
+        );
+        return;
+      }
+      dispatch(
+        updateGuestCartItem({
+          productId: getCartItem.productId,
+          color: selectedColor,
+          quantity: updatedQuantity,
+        })
+      );
       return;
     }
 
@@ -207,6 +317,7 @@ const ProductDetailsPage = () => {
         userId: user?.id,
         productId: getCartItem?.productId,
         color: selectedColor,
+        size: selectedSize,
         quantity: updatedQuantity,
       })
     ).then(() => dispatch(fetchCartItems(user?.id)));
@@ -216,13 +327,15 @@ const ProductDetailsPage = () => {
     <div className="grid grid-cols-1 md:grid-cols-2  gap-2 min-w-fit m-1 p-1 md:p-2 md:m-2 h-full">
       <div className="relative rounded-lg m-1 p-1  h-full  md:p-8 flex-col gap-2">
         {productDetails?.image && productDetails?.image.length > 0 && (
-          <img
-            src={productDetails?.image[currentImageIndex]}
-            alt={productDetails?.title}
-            width={600}
-            height={600}
-            className="aspect-[4/5] h-auto object-center object-cover"
-          />
+          <div className="imageContainer h-[700px]">
+            <img
+              src={productDetails?.image[currentImageIndex]}
+              alt={productDetails?.title}
+              // width={600}
+              // height={600}
+              className="aspect-[4/5] h-full object-center object-cover"
+            />
+          </div>
         )}
         <div className="flex gap-2 mt-2 overflow-auto">
           {productDetails?.image && productDetails?.image.length > 0
@@ -236,8 +349,8 @@ const ProductDetailsPage = () => {
                   height={50}
                   className={`aspect-square rounded-sm object-center object-cover transition-all duration-200 ${
                     currentImageIndex === index
-                      ? "scale-110 border-blue-500 "
-                      : ""
+                      ? "border-4 border-black scale-110"
+                      : "border border-gray-200"
                   } `}
                 />
               ))
@@ -249,9 +362,6 @@ const ProductDetailsPage = () => {
           <h1 className="text-2xl md:text-4xl  font-[300] stroke-none  mb-4 md:mb-12">
             {productDetails?.title}
           </h1>
-          <p className="text-sm font-extralight text-black/70 md:text-2xl mb-4 md:mb-5">
-            {productDetails?.description}
-          </p>
         </div>
         <div className="flex items-center gap-6 mb-6 md:mb-8">
           <p
@@ -286,6 +396,28 @@ const ProductDetailsPage = () => {
                   }}
                 />
               ))}
+            </div>
+          </div>
+        </div>
+        <div className="Color mb-6 md:mb-6">
+          <h2>Size : </h2>
+          <div>
+            <div className="flex gap-2 mt-3">
+              {productDetails && productDetails.sizes.length > 0
+                ? productDetails.sizes.map((size) => (
+                    <Button
+                      variant="Outline"
+                      className={`border-2 ${
+                        selectedSize === size
+                          ? "border-black text-black"
+                          : "border-gray-400 text-gray-400"
+                      }`}
+                      onClick={() => setSelectedSize(size)}
+                    >
+                      {size}
+                    </Button>
+                  ))
+                : null}
             </div>
           </div>
         </div>
@@ -335,8 +467,27 @@ const ProductDetailsPage = () => {
             <span className="sr-only">Increase</span>
           </Button>
         </div>
-
-        <Accordion type="single" collapsible className="w-full mt-6 mb-4">
+        <div className="description mt-10">
+        <h2>Description</h2>
+          <p className="text-xs font-extralight text-black/70 md:text-xl mb-4 md:mb-5 whitespace-pre-wrap mt-2">
+            <p
+              className={` ${
+                showMore ? "max-h-full" : "max-h-24 overflow-hidden"
+              }`}
+            >
+              {productDetails?.description}
+            </p>
+            {productDetails?.description.length > 120 && (
+              <button
+                onClick={() => setShowMore(!showMore)}
+                className=" text-yellow-600 font-medium mt-2"
+              >
+                {showMore ? "Show Less" : "Read More.."}
+              </button>
+            )}
+          </p>
+        </div>
+        <Accordion type="single" collapsible className="w-full mt-2 md:mt-6 mb-4">
           <AccordionItem value="item-1">
             <AccordionTrigger className="font-thin text-md md:text-2xl text-black/60 tracking-wide  hover:no-underline focus:no-underline">
               Shipping Policy
@@ -351,69 +502,84 @@ const ProductDetailsPage = () => {
         <Separator className="w-full bg-black/20" />
 
         <div className="md:bottom-8 w-full mx-auto mb-2">
-  {productDetails?.totalStock === 0 && (
-    <Button className="w-full opacity-60 cursor-not-allowed bg-[#E5E5E5]">
-      Out of Stock
-    </Button>
-  )}
+          {productDetails?.totalStock === 0 && (
+            <Button className="w-full opacity-60 cursor-not-allowed bg-[#E5E5E5]">
+              Out of Stock
+            </Button>
+          )}
 
+          {/* 
   {productDetails?.totalStock !== 0 && !user && (
-    <Dialog open={showAuthPopup} onOpenChange={setShowAuthPopup}>
-      <DialogTrigger asChild>
+    // <Dialog open={showAuthPopup} onOpenChange={setShowAuthPopup}>
+    //   <DialogTrigger asChild>
        
-        <Button
-          variant="secondary"
-          onClick={() => {
-            toast({
-              title: "Please login to add items to cart!",
-              variant: "destructive",
-            });
-            setIsLogin(false);
-            setShowAuthPopup(true);
-          }}
-          className="w-full rounded-sm"
-        >
-          Add to Cart
-        </Button>
+    //     <Button
+    //       variant="secondary"
+    //       onClick={() => {
+    //         toast({
+    //           title: "Please login to add items to cart!",
+    //           variant: "destructive",
+    //         });
+    //         setIsLogin(false);
+    //         setShowAuthPopup(true);
+    //       }}
+    //       className="w-full rounded-sm"
+    //     >
+    //       Add to Cart
+    //     </Button>
        
-      </DialogTrigger>
-      <DialogContent className="max-w-[90%] md:max-w-md">
-        <AuthPopup isLogin={isLogin} setIsLogin={setIsLogin} />
-      </DialogContent>
-    </Dialog>
-  )}
-
-  {productDetails?.totalStock !== 0 && user && (
-     <Sheet
-     open={openCartSheet}
-     onOpenChange={()=> {
-       setOpenCartSheet(false);
-       setOpenMobileCartSheet(false);
-     }}
-     >
+    //   </DialogTrigger>
+    //   <DialogContent className="max-w-[90%] md:max-w-md">
+    //     <AuthPopup isLogin={isLogin} setIsLogin={setIsLogin} />
+    //   </DialogContent>
+    // </Dialog>
+    
     <Button
-      variant="secondary"
-      onClick={() =>
-      {  handleAddtoCart(productDetails?._id, productDetails?.totalStock)
-        selectedColor &&  setOpenCartSheet(true)
-      }
-      }
-      className="w-full rounded-sm"
-    >
-      Add to Cart
-    </Button>
-    <UserCartWrapper
-              cartItems={
-                cartItems && cartItems.items && cartItems.items.length > 0
-                  ? cartItems.items
-                  : []
-              }
-              setOpenCartSheet={setOpenCartSheet}
-              setOpenMobileCartSheet={setOpenMobileCartSheet}
-            />
-        </Sheet>
-  )}
-</div>
+    variant="secondary"
+    onClick={() => {
+      handleAddtoCart(productDetails?._id, productDetails?.totalStock)
+      
+    }}
+    className="w-full rounded-sm"
+  >
+    Add to Cart
+  </Button>
+  )} */}
+
+          {productDetails?.totalStock !== 0 && (
+            <Sheet
+              open={openCartSheet}
+              onOpenChange={() => {
+                setOpenCartSheet(false);
+                setOpenMobileCartSheet(false);
+              }}
+            >
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  handleAddtoCart(
+                    productDetails?._id,
+                    productDetails?.totalStock
+                  );
+                  selectedSize && selectedColor && setOpenCartSheet(true);
+                }}
+                className="w-full rounded-sm"
+              >
+                Add to Cart
+              </Button>
+              <UserCartWrapper
+                cartItems={
+                  displayedCartItems
+                  // cartItems && cartItems.items && cartItems.items.length > 0
+                  // ? cartItems.items
+                  // : []
+                }
+                setOpenCartSheet={setOpenCartSheet}
+                setOpenMobileCartSheet={setOpenMobileCartSheet}
+              />
+            </Sheet>
+          )}
+        </div>
 
         <div className="md:bottom-8 w-full mx-auto ">
           {productDetails?.totalStock === 0 ? (

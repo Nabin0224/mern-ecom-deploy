@@ -7,8 +7,6 @@ import { Provider } from "react-redux"
 import store from '../store/store.js'
 import { Toaster } from './components/ui/toaster'
 
-import './assets/styles/variables.css'
-
 createRoot(document.getElementById('root')).render(
  <BrowserRouter>
  <Provider store={store}>

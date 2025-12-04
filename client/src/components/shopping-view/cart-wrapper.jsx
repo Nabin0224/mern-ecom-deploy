@@ -4,19 +4,47 @@ import { Button } from '../ui/button';
 import UserCartItemsContent from './cart-items-content';
 import { useNavigate } from 'react-router-dom';
 import { Separator } from '@radix-ui/react-dropdown-menu';
+import { useSelector } from 'react-redux';
+import { trackEvent } from '../../utils/analytics';
 
-const UserCartWrapper = ({cartItems, setOpenCartSheet, setOpenMobileCartSheet}) => {
+const UserCartWrapper = ({ setOpenCartSheet, setOpenMobileCartSheet}) => {
     const  navigate = useNavigate();
-    
-    
+    const { cartItems } = useSelector((state)=> state.shoppingCart);
+
+    const safeItems = Array.isArray(cartItems)
+      ? cartItems
+      : (cartItems && cartItems.items ? cartItems.items : []);
+
     const totalCartAmount = 
-    cartItems && cartItems.length > 0 ? 
-    cartItems.reduce(
+    safeItems && safeItems.length > 0 ? 
+    safeItems.reduce(
         (sum, currentItem) => 
              sum + (
         currentItem?.salePrice >  0 ? currentItem.salePrice : currentItem?.price
     ) * currentItem?.quantity, 0  )
     : 0
+
+     
+  const handleCheckout = () => {
+    // Fire Google Analytics Event
+    trackEvent('begin_checkout', {
+      currency: 'NPR',
+      value: totalCartAmount,
+      items: safeItems.map((item) => ({
+        item_id: item._id || item.id,
+        item_name: item.title,
+        item_variant: item.color,
+        price: item.salePrice || item.price,
+        quantity: item.quantity,
+      })),
+    });
+
+    // Navigate after event fires
+    navigate('/checkout');
+    setOpenCartSheet(false);
+    setOpenMobileCartSheet(false);
+  };
+
 
 
   return <SheetContent className = "w-2/3" >
@@ -28,10 +56,9 @@ const UserCartWrapper = ({cartItems, setOpenCartSheet, setOpenMobileCartSheet}) 
         </SheetHeader>
         <div className="mt-8 space-y-4">
         <Separator className=" h-[1px] bg-black/35 mt-10"/>
-        {
-            cartItems && cartItems?.length > 0 ? 
-            cartItems?.map((item) => <UserCartItemsContent  cartItem= {item}/> ) : null
-        }
+        {safeItems && safeItems.length > 0 
+          ? safeItems.map((item) => <UserCartItemsContent cartItem={item} />) 
+          : null}
         </div>
         <Separator className=" h-[1px] bg-black/35 mt-14"/>
         <div className="mt-8 space-y-4">
@@ -40,7 +67,7 @@ const UserCartWrapper = ({cartItems, setOpenCartSheet, setOpenMobileCartSheet}) 
             <span className="font-semibold">Rs{totalCartAmount}</span>
             </div>
         </div>
-        <Button onClick={()=>{ navigate('/checkout'); setOpenCartSheet(false); setOpenMobileCartSheet(false)}} className="w-full mt-8 ">Checkout</Button>
+        <Button onClick={handleCheckout} className="w-full mt-8 ">Checkout</Button>
         
     </SheetContent>
     
