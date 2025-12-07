@@ -521,7 +521,7 @@ const ShoppingCheckout = () => {
             
 
             {/* Promo code input */}
-            <div className="flex gap-2 items-center">
+            {/* <div className="flex gap-2 items-center">
               <input
                 type="text"
                 placeholder="Enter promo code"
@@ -532,7 +532,7 @@ const ShoppingCheckout = () => {
               <Button onClick={handleApplyPromo} disabled={isPromoApplied}>
                 Apply
               </Button>
-            </div>
+            </div> */}
 
             {discount > 0 && (
               <div className="flex justify-between text-green-600 text-sm">
