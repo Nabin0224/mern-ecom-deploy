@@ -114,7 +114,7 @@ export const ShoppingHome = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 to-black/70"></div>
 
         {/* Hero Text */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white px-6">
+        {/* <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white px-6">
           <h1 className="text-4xl md:text-6xl font-bold mb-4 leading-tight">
             Get up to{" "}
             <span className="text-yellow-400 text-6xl md:text-7xl">
@@ -123,7 +123,7 @@ export const ShoppingHome = () => {
             on First Purchase
           </h1>
           <p className="text-[15px] md:text-xl mb-6 mt-6 md:mt-4 opacity-90">
-            Use promo code <span className="text-yellow-200 font-normal">"BUTTERFLYNEPAL15"</span> and enjoy discounts.
+            Use promo code <span className="text-yellow-200 font-normal">"StyleM"</span> and enjoy discounts.
           </p>
           <Button
             onClick={() => navigate("/listing")}
@@ -131,7 +131,7 @@ export const ShoppingHome = () => {
           >
             Shop Now
           </Button>
-        </div>
+        </div> */}
       </div>
 
       {/* ================= CATEGORY SECTION ================= */}

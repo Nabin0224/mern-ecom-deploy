@@ -534,19 +534,19 @@ const ShoppingCheckout = () => {
               </Button>
             </div> */}
 
-            {discount > 0 && (
+            {/* {discount > 0 && (
               <div className="flex justify-between text-green-600 text-sm">
                 <span>Discount ({discount}%):</span>
                 <span>- Rs {discountAmount.toFixed(2)}</span>
               </div>
-            )}
+            )} */}
 
-            {error && <p className="text-red-500 text-sm">{error}</p>}
+            {/* {error && <p className="text-red-500 text-sm">{error}</p>} */}
 
-            <div className="flex justify-between text-lg font-semibold">
+            {/* <div className="flex justify-between text-lg font-semibold">
               <span className="text-muted-foreground">Total</span>
               <span className="text-muted-foreground">Rs {finalTotalCartAmount.toFixed(2)}</span>
-            </div>
+            </div> */}
           </div>
           </Card>
          

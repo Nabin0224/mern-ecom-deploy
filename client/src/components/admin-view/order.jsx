@@ -198,9 +198,9 @@ const AdminOrdersView = () => {
             >
               {/* Header */}
               <div className="text-center">
-                <h1 className="text-5xl font-bold">{Store_Name} 🦋 </h1>
+                <h1 className="text-5xl font-bold">{Store_Name}  </h1>
                 <h2 className="text-2xl font-semibold">Kathmandu</h2>
-                <h2 className="text-2xl font-semibold">9863141737</h2>
+                <h2 className="text-2xl font-semibold">9864782899</h2>
               </div>
 
               {/* Order Information */}
