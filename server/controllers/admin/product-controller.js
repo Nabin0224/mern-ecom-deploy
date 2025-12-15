@@ -14,14 +14,18 @@ const handleImageUpload = async (req, res) => {
       let mimetype = file.mimetype;
       console.log("mimetype before converting", mimetype);
       // check for heic and convert to jpeg
-      if (mimetype == "image/heic" || "image/heif") {
+      if (mimetype === "image/heic" || mimetype === "image/heif") {
+        
         const outputBuffer = await heicConvert({
-          buffer,
+          buffer: file.buffer,
           format: "JPEG",
           quality: 1,
         });
         buffer = outputBuffer;
         mimetype = "image/jpeg";
+      } else {
+        buffer = file.buffer;
+        mimetype = file.mimetype;
       }
       console.log("mimetype after converting", mimetype);
       const b64 = Buffer.from(buffer).toString("base64");
@@ -41,7 +45,7 @@ const handleImageUpload = async (req, res) => {
     console.log(error);
     res.json({
       success: false,
-      message: "Error, error",
+      message: "Error", error,
     });
   }
 };

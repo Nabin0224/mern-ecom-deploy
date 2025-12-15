@@ -85,7 +85,7 @@ const ProductImageUpload = ({
     
     setImageLoadingState(true);
     const uploadedUrls = [];
-
+   console.log(imageFiles, "imgfiles")
     for (const file of imageFiles) {
       const data = new FormData();
       data.append("images", file);
